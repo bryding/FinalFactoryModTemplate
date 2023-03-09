@@ -8,7 +8,7 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 
 ## Getting Started
 
-1. Clone the repo or download it as a zip
+1. Clone the repo (the zip doesn't work)
 1. Download the required Unity version
 1. Open the root folder in Unity
 
