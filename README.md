@@ -5,6 +5,7 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 ## Requirements
 
 * Unity 2022.2.9f1
+* Git & Git LFS
 
 ## Getting Started
 
