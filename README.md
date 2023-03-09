@@ -5,13 +5,19 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 ## Requirements
 
 * Unity 2022.2.9f1
-* Git & Git LFS
 
 ## Getting Started
 
 1. Clone the repo (the zip doesn't work)
 1. Download the required Unity version
 1. Open the root folder in Unity
+1. Navigate to your Final Factory installation folder and then `finalfactory_data/Managed/`
+1. Grab the following DLL's from that folder:
+  * KNN.dll
+  * FFCore.dll
+  * FFSystems.dll
+  * FFComponents.dll
+1. Move these DLL's to the `Assets/FinalFactoryDlls` folder in this project
 
 ## Building and using your mod
 
