@@ -12,9 +12,20 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 1. Download the required Unity version
 1. Open the root folder in Unity
 
-## How to Mod
+## Building and using your mod
 
-### The Basics
+This repo comes with an editor script that will put the managed and burst DLL's into a folder of your choosing. 
+
+1. Navigate to the top menu in Unity, click Modding -> Build X64 Mod
+1. Select the folder you want your DLL's to live in
+1. Move this folder to the `Mods` folder in the Final Factory application root
+1. Boot up Final Factory and your mod should load on startup
+
+_Steam Workshop support under construction_
+<br>
+<br>
+
+## The Basics
 
 All mods must implement exactly one `IUserMod` interface. It has the following API:
 
@@ -46,13 +57,15 @@ void PostInitializationHook();
 
 See `Assets/Scripts/UserModLoader.cs` for an example.
 
-### Systems
+## Systems
 
 You have full access to all the components and systems in Final Factory via the FFCore, FFSystems, and FFComponents DLL's. You can write new systems and burst compiled  jobs in the exact same way I would as the developer.  Any systems you add to the project will get detected in Final Factory when mods load and automatically get added to the running systems list.
 
 See `Assets/Scripts/Systems/FleetFollowSystem.cs` for an example of a system that adds some silly behavior to ships following the player.
+<br>
+<br>
 
-## Resources
+### Resources
 
 If you plan on writing new systems for Final Factory, you'll need some Unity DOTS knowledge. I recommend these resources:
 
