@@ -4,7 +4,7 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 
 ## Requirements
 
-* Unity 2022.2.9f1
+* Unity 2022.2.11f1
 
 ## Getting Started
 
@@ -79,4 +79,6 @@ If you plan on writing new systems for Final Factory, you'll need some Unity DOT
 * [Entities Manual](https://docs.unity3d.com/Packages/com.unity.entities@1.0/manual/index.html)
 * [Turbo Makes Games](https://www.youtube.com/c/TurboMakesGames)
 * [WAYNGames](https://www.youtube.com/@WAYNGames)
-* [Unity Discord](https://discord.gg/unity) (see #dots-forum)
+* [Unity Discord](https://discord.gg/unity) (see #dots-forum)* 
+* [Final Factory Discord](https://discord.gg/finalfactory) (see #modding)
+
