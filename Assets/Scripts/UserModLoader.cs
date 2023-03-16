@@ -8,7 +8,20 @@ public class UserModLoader : IUserModLoader
 {
   public List<EntityConfig> DefineEntityConfigs()
   {
-    return new List<EntityConfig>();
+    var config = new EntityConfig
+    {
+      ItemConfig = new AsteroItemConfigData // Astero was the old name of the game, so you might see it sprinkled about
+      {
+        Name = "Mod Item",
+        Description = "This is a modded item",
+        StackSizeLimit = 50
+      }
+      // The rest of the configs can be set in post init, or anytime after this method is called
+      // The mod loader in Final Factory will automatically add blank entity prefabs if you dont specify one here,
+      // but you'll want to update the rest of its data in post init
+    };
+
+    return new List<EntityConfig> {config};
   }
 
   public void PostInitializationHook()
@@ -20,7 +33,7 @@ public class UserModLoader : IUserModLoader
     var bauxiteIdAsteroidConfig = terrainConfigs[bauxiteId];
     bauxiteIdAsteroidConfig.OreSpawnMultiplier = 100;
     terrainConfigs[bauxiteId] = bauxiteIdAsteroidConfig;
-    
+
     // Update global config example
     var globalConfig = Ecs.GetSingleton<GlobalConfig>();
     var terrainConfig = globalConfig.Terrain;
