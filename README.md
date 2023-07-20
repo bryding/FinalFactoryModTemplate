@@ -4,7 +4,7 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 
 ## Requirements
 
-* Unity 2022.3.3f1
+* Unity 2022.3.5f1
 
 ## Getting Started
 
@@ -26,7 +26,7 @@ This repo comes with an editor script that will put the managed and burst DLL's 
 1. Navigate to the top menu in Unity, click Modding -> Build X64 Mod
 1. Rename the build folder to the name of your mod
 1. Select this renamed folder for your DLL's to live in
-1. Move this folder to the `Mods` folder in the Final Factory application root
+1. Move this folder to the `finalfactory_Data/Mods` folder in the Final Factory application
 1. Boot up Final Factory and your mod should load on startup
 
 _Steam Workshop support under construction_
