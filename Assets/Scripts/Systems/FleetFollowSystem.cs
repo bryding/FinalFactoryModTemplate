@@ -9,6 +9,7 @@ using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
+using UnityEngine;
 
 namespace Systems
 {
@@ -25,6 +26,7 @@ namespace Systems
 
     protected override void PerformSystemUpdate()
     {
+      Debug.Log("Scheduling FleetFollow job...");
       Dependency = new FleetFollowJob
       {
         AllCommanders = SystemAPI.GetComponentLookup<FleetCommander>(true),
