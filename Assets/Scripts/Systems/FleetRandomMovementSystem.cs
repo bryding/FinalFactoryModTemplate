@@ -58,12 +58,6 @@ namespace Systems
           return;
         }
 
-        for (int x = 0; x < 100000; x++)
-        {
-          var temp = RandomSystem.GetRandomForEntity(Seed, Elapsed, entity);
-          if (temp.NextFloat() < -300f) return;
-        }
-
         var nextRandom = RandomSystem.GetRandomForEntity(Seed, Elapsed, entity);
         if (nextRandom.NextFloat() < 0.95f) return;
 
