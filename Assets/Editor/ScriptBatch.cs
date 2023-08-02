@@ -44,7 +44,8 @@ public class ScriptBatch
       FileUtil.DeleteFileOrDirectory(burstedDest);
       if (!File.Exists(burstedDest))
       {
-        FileUtil.CopyFileOrDirectory(burstedSrc, burstedDest);
+        //The bursted source does not seem to be needed, so we don't copy it in.
+        //FileUtil.CopyFileOrDirectory(burstedSrc, burstedDest);
       }
       else
       {
