@@ -4,9 +4,11 @@ using FFComponents.UnitStates.Combat;
 using FFCore.Extensions;
 using FFCore.Systems;
 using FFSystems.Core;
+using FFSystems.UnitStateMachine;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Transforms;
 using UnityEngine;
@@ -14,7 +16,7 @@ using UnityEngine;
 namespace Systems
 {
   [UpdateInGroup(typeof(AsteroPreTransformSimulationGroup))]
-  public partial class FleetFollowSystem : FinalFactorySystemBase
+  public partial class FleetRandomMovementSystem : FinalFactorySystemBase
   {
     protected override void OnCreate()
     {
@@ -26,17 +28,23 @@ namespace Systems
 
     protected override void PerformSystemUpdate()
     {
-      Debug.Log("Scheduling FleetFollow job...");
-      Dependency = new FleetFollowJob
+      //Calling a debug statement is very slow and should NEVER be done in an update call.  However, this makes it
+      //really easy to see that your mod is loaded and running when debugging.  Be sure to remove it before releasing
+      //your mod!
+      Debug.Log("Scheduling Fleet Random Movement job...");
+      Dependency = new FleetRandomMovementJob
       {
         AllCommanders = SystemAPI.GetComponentLookup<FleetCommander>(true),
         Elapsed = ElapsedGameTime,
         Seed = MasterSeed
-      }.Schedule(CachedEntityQuery, Dependency);
+      }.Schedule(CachedEntityQuery, 
+        //Make sure this system runs after FleetIdleSystem has finished running.  If not, FleetIdleSystem will override
+        //each ship's movement and make the FleetIdleSystem's movement changes have no effect.
+        JobHandle.CombineDependencies(Dependency, World.Unmanaged.GetExistingSystemState<FleetIdleSystem>().Dependency));
     }
 
     [BurstCompile]
-    private partial struct FleetFollowJob : IJobEntity
+    private partial struct FleetRandomMovementJob : IJobEntity
     {
       [ReadOnly] public ComponentLookup<FleetCommander> AllCommanders;
 
