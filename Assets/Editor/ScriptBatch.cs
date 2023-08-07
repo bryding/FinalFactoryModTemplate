@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using Codice.CM.Common.Merge;
+using FFCore.Modding;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
@@ -14,7 +16,7 @@ public class ScriptBatch
     var buildFolder = Path.Combine(projectFolder, "PluginTemp");
 
     // Get filename.
-    var path = EditorUtility.SaveFolderPanel("Choose Final Mod Location", "", "");
+    var path = EditorUtility.SaveFolderPanel("Choose Final Mod Location", "build", "");
 
     FileUtil.DeleteFileOrDirectory(buildFolder);
     Directory.CreateDirectory(buildFolder);
@@ -50,6 +52,30 @@ public class ScriptBatch
       {
         Debug.LogWarning($"Couldn't update bursted dll, {burstedDest} is it currently in use?");
       }
+      
+      // Create Manifest File
+      IUserMod modInfo = ModLoader.LoadIUserModForDll(managedSrc);
+      Debug.Log($"Mod Manifest loaded successfully for mod: {modInfo.Name} by {modInfo.Author}");
+      var manifestFile = Path.Combine(buildFolder, "manifest.properties");
+      WriteToManifestFile(manifestFile, modInfo);
+    }
+  }
+
+  private static void WriteToManifestFile(string manifestFile, IUserMod modInfo)
+  {
+    using (StreamWriter file = new StreamWriter(manifestFile))
+    {
+      file.WriteLine($"Name={modInfo.Name}");
+      file.WriteLine($"Description={modInfo.Description}");
+      file.WriteLine($"Author={modInfo.Author}");
+      file.WriteLine($"EmailContact={modInfo.EmailContact}");
+      file.WriteLine($"Website={modInfo.Website}");
+      for(int x=0;x<modInfo.Dependencies.Length;x++)
+      {
+        file.WriteLine($"Dependency{x}={modInfo.Dependencies[x]}");
+      }
+      file.WriteLine($"ModVersion={modInfo.ModVersion}");
+      file.WriteLine($"GameVersion={Application.version}");
     }
   }
 }
