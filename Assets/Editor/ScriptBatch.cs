@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using Codice.CM.Common.Merge;
 using FFCore.Modding;
 using UnityEditor;
+using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 
@@ -10,55 +10,73 @@ public class ScriptBatch
   [MenuItem("Modding/Build X64 Mod (Example)")]
   public static void BuildGame()
   {
-    var modName = "FFMod";
+    var modNamePlaceholder = "FFMod";
 
     var projectFolder = Path.Combine(Application.dataPath, "..");
-    var buildFolder = Path.Combine(projectFolder, "PluginTemp");
+    var pluginTempFolder = Path.Combine(projectFolder, "PluginTemp");
+    var buildFolder = Path.Combine(projectFolder, "build");
 
-    // Get filename.
-    var path = EditorUtility.SaveFolderPanel("Choose Final Mod Location", "build", "");
+    Directory.Delete(pluginTempFolder, true);
+    if (Directory.Exists(pluginTempFolder) || File.Exists(pluginTempFolder))
+    {
+      throw new BuildFailedException("PluginTemp folder is in use.");
+    }
 
-    FileUtil.DeleteFileOrDirectory(buildFolder);
-    Directory.CreateDirectory(buildFolder);
+    Directory.CreateDirectory(pluginTempFolder);
 
     // Build player.
+    Debug.Log("Building mod...");
     var report = BuildPipeline.BuildPlayer(new[] {"Assets/Scenes/SampleScene.unity"},
-      Path.Combine(buildFolder, $"{modName}.exe"), BuildTarget.StandaloneWindows64, BuildOptions.Development);
+      Path.Combine(pluginTempFolder, $"{modNamePlaceholder}.exe"), BuildTarget.StandaloneWindows64, BuildOptions.Development);
 
     if (report.summary.result == BuildResult.Succeeded)
     {
-      // Copy Managed library
-      var managedDest = Path.Combine(path, $"{modName}.dll");
-      var managedSrc = Path.Combine(buildFolder, $"{modName}_Data/Managed/{modName}.dll");
-      FileUtil.DeleteFileOrDirectory(managedDest);
-      if (!File.Exists(managedDest)) // Managed side not unloaded
+      Debug.Log("Mod compile successful.");
+      //Do basic validation on to ensure foldername is correct, then load the modname from the mod
+      var managedSrc = Path.Combine(pluginTempFolder, $"{modNamePlaceholder}_Data/Managed/{modNamePlaceholder}.dll");
+      IUserMod modInfo = ModLoader.LoadIUserModForDll(managedSrc);
+      IUserMod.ValidateShortName(modInfo.ShortName);
+      Debug.Log($"Successfully Loaded and validated mod: {modInfo.ShortName} by {modInfo.Author}");
+      var modFolder = Path.Combine(buildFolder, $"{modInfo.ShortName}");
+      if (Directory.Exists(modFolder) || File.Exists(modFolder))
       {
-        FileUtil.CopyFileOrDirectory(managedSrc, managedDest);
-      }
-      else
-      {
-        Debug.LogWarning($"Couldn't update manged dll, {managedDest} is it currently in use?");
+        Debug.Log("Deleting existing mod folder...");
+        Directory.Delete(modFolder, true);
+        if (Directory.Exists(modFolder) || File.Exists(modFolder))
+        {
+          throw new BuildFailedException($"Couldn't update build output.  Is it currently in use?");
+        }
       }
 
+      Debug.Log("Creating empty mod folder...");
+      Directory.CreateDirectory(modFolder);
+
+      // Copy Managed library
+      Debug.Log("Copying Managed Library...");
+      var managedDest = Path.Combine(modFolder, $"{modInfo.ShortName}.dll");
+      FileUtil.CopyFileOrDirectory(managedSrc, managedDest);
+
       // Copy Burst library
-      var burstedDest = Path.Combine(path, $"{modName}_win_x86_64.dll");
-      var burstedSrc = Path.Combine(buildFolder, $"{modName}_Data/Plugins/x86_64/lib_burst_generated.dll");
-      FileUtil.DeleteFileOrDirectory(burstedDest);
-      if (!File.Exists(burstedDest))
-      {
-        FileUtil.CopyFileOrDirectory(burstedSrc, burstedDest);
-      }
-      else
-      {
-        Debug.LogWarning($"Couldn't update bursted dll, {burstedDest} is it currently in use?");
-      }
+      Debug.Log("Copying Burst Library...");
+      var burstedSrc = Path.Combine(pluginTempFolder, $"{modNamePlaceholder}_Data/Plugins/x86_64/lib_burst_generated.dll");
+      var burstedDest = Path.Combine(modFolder, $"{modInfo.ShortName}_win_x86_64.dll");
+      FileUtil.CopyFileOrDirectory(burstedSrc, burstedDest);
+      
+      // Validate the mod after installation
+      Debug.Log("Validating mod...");
+      IUserMod buildModInfo = ModLoader.LoadIUserModForDll(managedSrc);
+      Debug.Log($"Successfully Loaded and validated mod: {buildModInfo.FullName} by {buildModInfo.Author}");
       
       // Create Manifest File
-      IUserMod modInfo = ModLoader.LoadIUserModForDll(managedSrc);
-      Debug.Log($"Successfully Loaded and validated mod: {modInfo.Name} by {modInfo.Author}");
-      var manifestFile = Path.Combine(path, "manifest.properties");
-      WriteToManifestFile(manifestFile, modInfo);
-      Debug.Log("$Build complete for mod: {modInfo.Name}");
+      Debug.Log("Creating manifest file...");
+      var manifestFile = Path.Combine(modFolder, "manifest.properties");
+      WriteToManifestFile(manifestFile, buildModInfo);
+      Debug.Log($"Build complete for mod: {modInfo.FullName}");
+    }
+    else
+    {
+      Debug.Log("Build failed.");
+      throw new BuildFailedException($"Could not build mod due to error:{report.summary}");
     }
   }
 
@@ -67,7 +85,8 @@ public class ScriptBatch
   {
     using (StreamWriter file = new StreamWriter(manifestFile))
     {
-      file.WriteLine($"Name={modInfo.Name}");
+      file.WriteLine($"ShortName={modInfo.ShortName}");
+      file.WriteLine($"FullName={modInfo.FullName}");
       file.WriteLine($"Description={modInfo.Description}");
       file.WriteLine($"Author={modInfo.Author}");
       file.WriteLine($"EmailContact={modInfo.EmailContact}");
