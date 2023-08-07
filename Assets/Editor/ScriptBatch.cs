@@ -56,11 +56,12 @@ public class ScriptBatch
       // Create Manifest File
       IUserMod modInfo = ModLoader.LoadIUserModForDll(managedSrc);
       Debug.Log($"Mod Manifest loaded successfully for mod: {modInfo.Name} by {modInfo.Author}");
-      var manifestFile = Path.Combine(buildFolder, "manifest.properties");
+      var manifestFile = Path.Combine(path, "manifest.properties");
       WriteToManifestFile(manifestFile, modInfo);
     }
   }
 
+  //TODO: This should get moved into FFCore, probably in IUserMod (along with a parsing routine)
   private static void WriteToManifestFile(string manifestFile, IUserMod modInfo)
   {
     using (StreamWriter file = new StreamWriter(manifestFile))
