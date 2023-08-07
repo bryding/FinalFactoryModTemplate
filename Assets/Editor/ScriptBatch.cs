@@ -55,9 +55,10 @@ public class ScriptBatch
       
       // Create Manifest File
       IUserMod modInfo = ModLoader.LoadIUserModForDll(managedSrc);
-      Debug.Log($"Mod Manifest loaded successfully for mod: {modInfo.Name} by {modInfo.Author}");
+      Debug.Log($"Successfully Loaded and validated mod: {modInfo.Name} by {modInfo.Author}");
       var manifestFile = Path.Combine(path, "manifest.properties");
       WriteToManifestFile(manifestFile, modInfo);
+      Debug.Log("$Build complete for mod: {modInfo.Name}");
     }
   }
 
