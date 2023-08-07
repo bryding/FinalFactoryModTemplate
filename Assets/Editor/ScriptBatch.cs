@@ -72,6 +72,8 @@ public class ScriptBatch
       var manifestFile = Path.Combine(modFolder, "manifest.properties");
       WriteToManifestFile(manifestFile, buildModInfo);
       Debug.Log($"Build complete for mod: {modInfo.FullName}");
+      
+      //TODO: Need to copy in Preview.png file
     }
     else
     {
