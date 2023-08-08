@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using FFCore.Modding;
+using FFCore.Serialization;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -99,7 +100,8 @@ public class ScriptBatch
         file.WriteLine($"Dependency{x}={modInfo.Dependencies[x]}");
       }
       file.WriteLine($"ModVersion={modInfo.ModVersion}");
-      file.WriteLine($"GameVersion={Application.version}");
+      //TODO: Need to get the version from somewhere in the main FinalFactory game
+      file.WriteLine($"GameVersion={FFVersion.Create(Application.version).ToString()}");
     }
   }
 }
