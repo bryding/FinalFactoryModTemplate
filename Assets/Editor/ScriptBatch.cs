@@ -35,9 +35,9 @@ public class ScriptBatch
       //Do basic validation on to ensure foldername is correct, then load the modname from the mod
       var managedSrc = Path.Combine(pluginTempFolder, $"{modNamePlaceholder}_Data/Managed/{modNamePlaceholder}.dll");
       IUserMod modInfo = ModLoader.LoadIUserModForDll(managedSrc);
-      IUserMod.ValidateShortName(modInfo.ShortName);
-      Debug.Log($"Successfully Loaded and validated mod: {modInfo.ShortName} by {modInfo.Author}");
-      var modFolder = Path.Combine(buildFolder, $"{modInfo.ShortName}");
+      IUserMod.ValidateModID(modInfo.ID);
+      Debug.Log($"Successfully Loaded and validated mod: {modInfo.ID} by {modInfo.Author}");
+      var modFolder = Path.Combine(buildFolder, $"{modInfo.ID}");
       if (Directory.Exists(modFolder) || File.Exists(modFolder))
       {
         Debug.Log("Deleting existing mod folder...");
@@ -53,13 +53,13 @@ public class ScriptBatch
 
       // Copy Managed library
       Debug.Log("Copying Managed Library...");
-      var managedDest = Path.Combine(modFolder, $"{modInfo.ShortName}.dll");
+      var managedDest = Path.Combine(modFolder, $"{modInfo.ID}.dll");
       FileUtil.CopyFileOrDirectory(managedSrc, managedDest);
 
       // Copy Burst library
       Debug.Log("Copying Burst Library...");
       var burstedSrc = Path.Combine(pluginTempFolder, $"{modNamePlaceholder}_Data/Plugins/x86_64/lib_burst_generated.dll");
-      var burstedDest = Path.Combine(modFolder, $"{modInfo.ShortName}_win_x86_64.dll");
+      var burstedDest = Path.Combine(modFolder, $"{modInfo.ID}_win_x86_64.dll");
       FileUtil.CopyFileOrDirectory(burstedSrc, burstedDest);
       
       // Validate the mod after installation
@@ -74,6 +74,7 @@ public class ScriptBatch
       Debug.Log($"Build complete for mod: {modInfo.FullName}");
       
       //TODO: Need to copy in Preview.png file
+      //TODO: And validate that it's < 1MB in size
     }
     else
     {
@@ -87,7 +88,7 @@ public class ScriptBatch
   {
     using (StreamWriter file = new StreamWriter(manifestFile))
     {
-      file.WriteLine($"ShortName={modInfo.ShortName}");
+      file.WriteLine($"ID={modInfo.ID}");
       file.WriteLine($"FullName={modInfo.FullName}");
       file.WriteLine($"Description={modInfo.Description}");
       file.WriteLine($"Author={modInfo.Author}");

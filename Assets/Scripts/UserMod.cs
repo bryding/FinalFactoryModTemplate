@@ -4,7 +4,7 @@ using FFCore.Serialization;
 
 public class UserMod : IUserMod
 {
-  public string ShortName => "RandomMovementExample";
+  public string ID => "RandomMovementExample";
   public string FullName => "Random Fleet Movement";
   public string Description => "A mod that teleports your ships around you as you move.";
   public string Author => "Ben";
