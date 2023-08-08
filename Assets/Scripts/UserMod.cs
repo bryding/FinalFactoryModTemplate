@@ -12,11 +12,5 @@ public class UserMod : IUserMod
   public string Website => "http://nevergames.com";
   public string[] Dependencies => Array.Empty<string>();
 
-  public FFVersion ModVersion => new()
-  {
-    Major = 1,
-    Minor = 0,
-    Patch = 0,
-    Rc = 0
-  };
+  public FFVersion ModVersion => new(1, 0, 0, 0);
 }
