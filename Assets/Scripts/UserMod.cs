@@ -1,6 +1,6 @@
 using System;
 using FFCore.Modding;
-using FFCore.Serialization;
+using FFCore.Version;
 
 public class UserMod : IUserMod
 {
