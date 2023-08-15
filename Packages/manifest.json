@@ -1,12 +1,12 @@
 {
   "dependencies": {
-    "com.unity.burst": "1.8.7",
-    "com.unity.collab-proxy": "2.0.5",
+    "com.unity.burst": "1.8.8",
+    "com.unity.collab-proxy": "2.0.7",
     "com.unity.collections": "2.1.4",
-    "com.unity.entities": "1.0.11",
-    "com.unity.entities.graphics": "1.0.11",
+    "com.unity.entities": "1.0.14",
+    "com.unity.entities.graphics": "1.0.14",
     "com.unity.feature.development": "1.0.1",
-    "com.unity.physics": "1.0.11",
+    "com.unity.physics": "1.0.14",
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.timeline": "1.7.5",
     "com.unity.ugui": "1.0.0",
