@@ -1,6 +1,5 @@
 {
-    "name": "FFMod",
-    "rootNamespace": "",
+    "name": "RandomFleetMovement",
     "references": [
         "GUID:734d92eba21c94caba915361bd5ac177",
         "GUID:a5baed0c9693541a5bd947d336ec7659",

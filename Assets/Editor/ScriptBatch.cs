@@ -11,7 +11,7 @@ public class ScriptBatch
   [MenuItem("Modding/Build X64 Mod (Example)")]
   public static void BuildGame()
   {
-    var modNamePlaceholder = "FFMod";
+    var modNamePlaceholder = "RandomFleetMovement";
 
     var projectFolder = Path.Combine(Application.dataPath, "..");
     var pluginTempFolder = Path.Combine(projectFolder, "PluginTemp");
@@ -103,5 +103,32 @@ public class ScriptBatch
       //TODO: Need to get the version from somewhere in the main FinalFactory game
       file.WriteLine($"GameVersion={FFVersion.FinalFactoryVersion.ToString()}");
     }
+  }
+
+  /// <summary>
+  /// Generates an assembly definition file of name <modid>.asmdef inside the scripts folder with contents.
+  /// {
+  ///   "name": "<ModName>",
+  ///   "rootNamespace": "",
+  ///   "references": [
+  ///   "GUID:734d92eba21c94caba915361bd5ac177",
+  ///   "GUID:a5baed0c9693541a5bd947d336ec7659",
+  ///   "GUID:d8b63aba1907145bea998dd612889d6b",
+  ///   "GUID:2665a8d13d1b3f18800f46e256720795",
+  ///   "GUID:e0cd26848372d4e5c891c569017e11f1"
+  ///   ],
+  ///   "includePlatforms": [],
+  ///   "excludePlatforms": [],
+  ///   "allowUnsafeCode": false,
+  ///   "overrideReferences": false,
+  ///   "precompiledReferences": [],
+  ///   "autoReferenced": true,
+  ///   "defineConstraints": [],
+  ///   "versionDefines": [],
+  ///   "noEngineReferences": false
+  /// }
+  /// </summary>
+  private static void WriteToAsmDefFile()
+  {
   }
 }
