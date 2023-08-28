@@ -1,7 +1,9 @@
 ﻿using FFComponents.Combat;
 using FFComponents.Knn;
+using FFComponents.SystemMarkers;
 using FFComponents.UnitStates.Combat;
 using FFCore.Extensions;
+using FFCore.Random;
 using FFCore.Systems;
 using FFSystems.Core;
 using FFSystems.UnitStateMachine;
@@ -15,38 +17,38 @@ using UnityEngine;
 
 namespace Systems
 {
+  [RequireMatchingQueriesForUpdate]
   [UpdateInGroup(typeof(AsteroPreTransformSimulationGroup))]
-  public partial class FleetRandomMovementSystem : FinalFactorySystemBase
+  public partial struct FleetRandomMovementISystem : ISystem
   {
-    protected override void OnCreate()
+    private EntityQuery _query;
+
+    [BurstCompile]
+    public void OnCreate(ref SystemState state)
     {
-      base.OnCreate();
-      SetSystemQueryForInPlayEntities(new EntityQueryBuilder(Allocator.Temp)
+      state.RequireForUpdate<MasterRandom>();
+      state.RequireForUpdate<TimeSystem.TimeSystemData>();
+      _query = new EntityQueryBuilder(Allocator.Temp)
         .WithAll<FleetIdleMarker, FleetShip>()
-        .WithNone<DisableKnnMarker, AbilityMarker>());
-      
-      //As this is just an example, Disable this system.
-      //
-      //This system and FleetRandomMovementISystem do exactly the same thing to demonstrate how to build a mod.
-      //Because they are duplicates, disable this system so they don't conflict with each other.
-      Enabled = false;
+        .WithNone<DisableKnnMarker, AbilityMarker>().WithNone<DeletionMarker, OutOfPlay>().Build(ref state);
     }
 
-    protected override void PerformSystemUpdate()
+    [BurstCompile]
+    public void OnUpdate(ref SystemState state)
     {
       //Calling a debug statement is very slow and should NEVER be done in an update call.  However, this makes it
       //really easy to see that your mod is loaded and running when debugging.  Be sure to remove it before releasing
       //your mod!
       Debug.Log("Scheduling Fleet Random Movement job...");
-      Dependency = new FleetRandomMovementJob
+      state.Dependency = new FleetRandomMovementJob
       {
         AllCommanders = SystemAPI.GetComponentLookup<FleetCommander>(true),
-        Elapsed = ElapsedGameTime,
-        Seed = MasterSeed
-      }.Schedule(CachedEntityQuery, 
+        Elapsed = SystemAPI.GetSingleton<TimeSystem.TimeSystemData>().realElapsedTime,
+        Seed = SystemAPI.GetSingleton<MasterRandom>().TheMasterSeed
+      }.Schedule(_query, 
         //Make sure this system runs after FleetIdleSystem has finished running.  If not, FleetIdleSystem will override
         //each ship's movement and make the FleetIdleSystem's movement changes have no effect.
-        JobHandle.CombineDependencies(Dependency, World.Unmanaged.GetExistingSystemState<FleetIdleSystem>().Dependency));
+        JobHandle.CombineDependencies(state.Dependency, state.WorldUnmanaged.GetExistingSystemState<FleetIdleSystem>().Dependency));
     }
 
     [BurstCompile]
