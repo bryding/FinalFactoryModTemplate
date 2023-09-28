@@ -8,8 +8,13 @@ using UnityEngine;
 
 public class ScriptBatch
 {
-  [MenuItem("Modding/Build X64 Mod (Example)")]
-  public static void BuildGame()
+  [MenuItem("Modding/Build X64 Mod")]
+  public static void BuildGameWithBurst()
+  {
+    BuildGameImpl(false);
+  }
+  
+  public static void BuildGameImpl(bool isBurstCompilationEnabled)
   {
     var modNamePlaceholder = "FFMod";
 
@@ -27,6 +32,7 @@ public class ScriptBatch
 
     // Build player.
     Debug.Log("Building mod...");
+
     var report = BuildPipeline.BuildPlayer(new[] {"Assets/Scenes/SampleScene.unity"},
       Path.Combine(pluginTempFolder, $"{modNamePlaceholder}.exe"), BuildTarget.StandaloneWindows64, BuildOptions.Development);
 
@@ -57,12 +63,17 @@ public class ScriptBatch
       var managedDest = Path.Combine(modFolder, $"{modInfo.ID}.dll");
       FileUtil.CopyFileOrDirectory(managedSrc, managedDest);
 
+      string srcBurstDll = $"{modNamePlaceholder}_Data/Plugins/x86_64/lib_burst_generated.dll";
       // Copy Burst library
-      Debug.Log("Copying Burst Library...");
-      var burstedSrc = Path.Combine(pluginTempFolder, $"{modNamePlaceholder}_Data/Plugins/x86_64/lib_burst_generated.dll");
-      var burstedDest = Path.Combine(modFolder, $"{modInfo.ID}_win_x86_64.dll");
-      FileUtil.CopyFileOrDirectory(burstedSrc, burstedDest);
-      
+      if (File.Exists(srcBurstDll))
+      {
+        Debug.Log("Copying Burst Library...");
+        
+        var burstedSrc = Path.Combine(pluginTempFolder, srcBurstDll);
+        var burstedDest = Path.Combine(modFolder, $"{modInfo.ID}_win_x86_64.dll");
+        FileUtil.CopyFileOrDirectory(burstedSrc, burstedDest);
+      }
+
       // Validate the mod after installation
       Debug.Log("Validating mod...");
       IUserMod buildModInfo = ModLoader.LoadIUserModForDll(managedSrc);

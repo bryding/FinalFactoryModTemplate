@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 952274063, guid: a8b824a5fdc39ac428b7ac5a2a3c7141, type: 3}
-  m_Name: LothsahnModdedItem
+  m_Script: {fileID: 952274063, guid: 72f2ed1550cfd3745923267287937126, type: 3}
+  m_Name: LothBatConfig
   m_EditorClassIdentifier: 
-  _name: Lothsahn
-  _description: A new modded item to be added to the game!
-  _type: loth
+  _name: LothBatMod
+  _description: A feisty Loth Ship
+  _type: lothbatmod
   _iconSprite: {fileID: 21300000, guid: f3502e16dcfdd2a4e94840d9edd46b64, type: 3}
-  _entityPrefab: {fileID: 6638708103766651062, guid: 9d7feba92eb63b842a22dcf452fabfee, type: 3}
+  _entityPrefab: {fileID: 5752663869088129627, guid: f9470105eedac714d9b8440af8725436, type: 3}
   _connectorItemPrefab: {fileID: 0}
   AllowedShips: []
   SpawnedShips: []
@@ -26,11 +26,13 @@ MonoBehaviour:
   CraftRecipe:
   - Item: {fileID: 0}
     Count: 0
+  - Item: {fileID: 0}
+    Count: 0
   FixedRecipe: {fileID: 0}
   _itemConfig:
-    ItemCategory: 0
+    ItemCategory: 4
     Description:
-      utf8LengthInBytes: 0
+      utf8LengthInBytes: 26
       bytes:
         offset0000:
           byte0000: 0
@@ -574,7 +576,7 @@ MonoBehaviour:
         byte0508: 0
         byte0509: 0
     Name:
-      utf8LengthInBytes: 0
+      utf8LengthInBytes: 3
       bytes:
         offset0000:
           byte0000: 0
@@ -710,7 +712,7 @@ MonoBehaviour:
         byte0124: 0
         byte0125: 0
     ItemType:
-      utf8LengthInBytes: 0
+      utf8LengthInBytes: 3
       bytes:
         offset0000:
           byte0000: 0
@@ -743,14 +745,14 @@ MonoBehaviour:
         byte0027: 0
         byte0028: 0
         byte0029: 0
-    StackSizeLimit: 0
+    StackSizeLimit: 100
     IsEnemy: 0
   _placeableConfig:
-    PlaceableType: 1
+    PlaceableType: 0
     IsShip: 0
-    Length: 2
-    Width: 2
-    Height: 2
+    Length: 1
+    Width: 1
+    Height: 0
     HeightPosition: 0
     ConnectionType: 0
     RequiresSpecificConnection: 0
@@ -914,25 +916,25 @@ MonoBehaviour:
   _craftConfig:
     Mass: 0
     BaseCraftTime: 1
-    SpawnsOutsideOfInventory: 0
-    CountWhenCrafted: 0
+    SpawnsOutsideOfInventory: 1
+    CountWhenCrafted: 1
     RequiresSpecificStation: 0
     NotPlayerCraftable: 0
     RawResourceOverride: 0
   _assemblerConfig:
-    ProductionOutputType: 1
-    CraftSpeedModifier: 1
+    ProductionOutputType: 0
+    CraftSpeedModifier: 0
     ProductsPerCycle: 0
     ProductionCycleLength: 0
   _logiUnitConfig:
     LogisticsUnitType: 0
-    MaxWorkingDistance: 0
+    MaxWorkingDistance: 30
     NetworkRadius: 0
-    CarryCapacity: 0
-    Speed: 0
+    CarryCapacity: 5
+    Speed: 1
     AccelerationRate: 0
     BrakingRate: 0
-    MiningSpeed: 0
+    MiningSpeed: 2
     Reach: 0
     CommanderYOffset: 0
     NumResourcesGatherBeforeSelfDestruct: 0
@@ -944,12 +946,13 @@ MonoBehaviour:
     WorkingLifetime: 0
     IsStationMover: 0
   _powerConfig:
-    BaseMaxPower: 2
-    BaseIdlePower: 2
+    BaseMaxPower: 0
+    BaseIdlePower: 0
     BasePowerProduction: 0
     TransmissionRange: 0
     PowerModuleType: 0
     IsReceiver: 0
+    PowerMultipliedBySameType: 0
     MassToPowerConversionRate: 0
     MassToPowerCoefficient: 0
     MassToPowerMinPower: 0
@@ -960,19 +963,19 @@ MonoBehaviour:
     ProductionMultiplier: 0
     HealthRegenRate: 0
   _fleetConfig:
-    ShipType: 0
+    ShipType: 4
     WeaponConfig: 0
     BaseFleetCapacityIncrease: 0
-    BaseFleetUnitCapacityCost: 0
-    KnnSize: 0
-    MaxHealth: 0
-    Speed: 0
+    BaseFleetUnitCapacityCost: 1
+    KnnSize: 0.1
+    MaxHealth: 15
+    Speed: 200
     MainFleetCapacity: 0
-    KeepDistance: 0
+    KeepDistance: 55
     MaxDistanceFromHome: 0
     WanderRadius: 0
     WanderSpeed: 0
-    VisionRange: 0
+    VisionRange: 100
     AttackRange: 0
     AlertRange: 0
     AggroRadius: 0
@@ -1014,6 +1017,7 @@ MonoBehaviour:
     HealthIncreasePerStage: 0
     StageProcessingTime: 0
     HideInitialModel: 0
+    AcceptShipsWhileUnderConstruction: 0
   _terrainConfig:
     MiningSpeedMultiplier:
       x: 0
