@@ -1,30 +1,57 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using EntityManagement;
+using FFCore.Abilities;
 using FFCore.Config;
 using FFCore.Extensions;
+using FFCore.Fleet;
 using FFCore.GlobalConfig;
+using FFCore.Items;
 using FFCore.Modding;
+using UnityEngine;
 
-public class UserModLoader : IUserModLoader
+public class UserModLoader : UserModLoaderMono, IUserModLoader
 {
-  public List<EntityConfig> DefineEntityConfigs()
+  // Add any assets you want to reference here (or another script) so you can reference them in your item configs
+  public GameObject LothBatPrefab;
+  
+  public override List<EntityConfig> DefineEntityConfigs()
   {
     var config = new EntityConfig
     {
+      Prefab = LothBatPrefab,
+      EntityReferenceGuid = Guid.NewGuid(),
       ItemConfig = new AsteroItemConfigData // Astero was the old name of the game, so you might see it sprinkled about
       {
-        Name = "Mod Item",
-        Description = "This is a modded item",
-        StackSizeLimit = 50
-      }
-      // The rest of the configs can be set in post init, or anytime after this method is called
-      // The mod loader in Final Factory will automatically add blank entity prefabs if you dont specify one here,
-      // but you'll want to update the rest of its data in post init
+        Name = "Loth Bat",
+        Description = "A bat that is very loth",
+        StackSizeLimit = 50,
+        ItemCategory = ItemCategory.Ship,
+        ItemType = "bat",
+      },
+      FleetConfig = new FleetConfig
+      {
+        WeaponConfig = ProjectileType.BatBolt,
+        ShipType = ShipType.CombatBot,
+        BaseFleetUnitCapacityCost = 1,
+        KnnSize = .1f,
+        MaxHealth = 25,
+        Speed = 150,
+        KeepDistance = 55,
+        VisionRange = 100,
+      },
+      CraftConfig = new CraftConfigData
+      {
+        BaseCraftTime = 1,
+        CountWhenCrafted = 1,
+        SpawnsOutsideOfInventory = true,
+      },
     };
 
     return new List<EntityConfig> {config};
   }
 
-  public void PostInitializationHook()
+  public override void PostInitializationHook()
   {
     // Update a single item's config example
     var itemConfig = Ecs.GetSingleton<ItemConfig>();

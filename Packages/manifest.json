@@ -7,6 +7,7 @@
     "com.unity.entities.graphics": "1.0.14",
     "com.unity.feature.development": "1.0.1",
     "com.unity.physics": "1.0.14",
+    "com.unity.render-pipelines.universal": "14.0.8",
     "com.unity.textmeshpro": "3.0.6",
     "com.unity.timeline": "1.7.5",
     "com.unity.ugui": "1.0.0",
