@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FFComponents.Modding;
 using FFCore.Config;
 using FFCore.Modding;
@@ -9,7 +10,8 @@ namespace EntityManagement
 {
   public class ModdedEntityPrefabBakerAuthoring : MonoBehaviour
   {
-    public UserModLoaderMono UserModLoader;
+    // Add any assets you want to reference here (or another script) so you can reference them in your item configs
+    public List<GameObject> Prefabs;
   }
 
   public abstract class UserModLoaderMono : MonoBehaviour, IUserModLoader
@@ -23,19 +25,22 @@ namespace EntityManagement
     public override void Bake(ModdedEntityPrefabBakerAuthoring authoring)
     {
       Debug.Log("Baking modded entities...");
-      var configs = authoring.UserModLoader.DefineEntityConfigs();
+      var loader = (UserModLoader)Activator.CreateInstance(typeof(UserModLoader));
+
+      var configs = loader.DefineEntityConfigs();
   
       var entityMetaData = AddBuffer<EntityMetaDataElement>(GetEntity(TransformUsageFlags.Dynamic));
-  
-      foreach (var config in configs)
+
+      for (var index = 0; index < configs.Count; index++)
       {
-        var entity = CreateAdditionalEntity(TransformUsageFlags.Dynamic);
+        var config = configs[index];
+        var entity = GetEntity(authoring.Prefabs[index], TransformUsageFlags.Dynamic);
         var entityMetaDataElement = new EntityMetaDataElement
         {
           Entity = entity,
           Guid = config.EntityReferenceGuid.ToString()
         };
-  
+
         entityMetaData.Add(entityMetaDataElement);
       }
     }

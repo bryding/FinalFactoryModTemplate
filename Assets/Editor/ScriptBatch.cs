@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using FFCore.Modding;
 using FFCore.Version;
+using Unity.Entities.Content;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -33,7 +34,7 @@ public class ScriptBatch
     // Build player.
     Debug.Log("Building mod...");
 
-    var report = BuildPipeline.BuildPlayer(new[] {"Assets/Scenes/SampleScene.unity"},
+    var report = BuildPipeline.BuildPlayer(new[] {"Assets/Scenes/ModScene.unity"},
       Path.Combine(pluginTempFolder, $"{modNamePlaceholder}.exe"), BuildTarget.StandaloneWindows64, BuildOptions.Development);
 
     if (report.summary.result == BuildResult.Succeeded)
@@ -85,6 +86,8 @@ public class ScriptBatch
       WriteToManifestFile(manifestFile, buildModInfo);
       Debug.Log($"Build complete for mod: {modInfo.FullName}");
       
+      PublishExistingBuild(pluginTempFolder, modFolder);
+      
       //TODO: Need to copy in Preview.png file
       //TODO: And validate that it's < 1MB in size
     }
@@ -114,5 +117,17 @@ public class ScriptBatch
       //TODO: Need to get the version from somewhere in the main FinalFactory game
       file.WriteLine($"GameVersion={FFVersion.FinalFactoryVersion.ToString()}");
     }
+  }
+  public static void PublishExistingBuild(string buildFolder, string targetFolder)
+  {
+    Debug.Log("Publishing build...");
+    var streamingAssetsPath = $"{buildFolder}/FFMod_Data/StreamingAssets";
+    //the content sets are defined by the functor passed in here.  
+    RemoteContentCatalogBuildUtility.PublishContent(streamingAssetsPath, targetFolder, f =>
+      new string[]
+      {
+        "all"
+      }, true);
+    Debug.Log($"Publish complete to path {targetFolder}");
   }
 }

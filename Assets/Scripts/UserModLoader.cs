@@ -8,18 +8,13 @@ using FFCore.Fleet;
 using FFCore.GlobalConfig;
 using FFCore.Items;
 using FFCore.Modding;
-using UnityEngine;
 
-public class UserModLoader : UserModLoaderMono, IUserModLoader
+public class UserModLoader : IUserModLoader
 {
-  // Add any assets you want to reference here (or another script) so you can reference them in your item configs
-  public GameObject LothBatPrefab;
-  
-  public override List<EntityConfig> DefineEntityConfigs()
+  public List<EntityConfig> DefineEntityConfigs()
   {
     var config = new EntityConfig
     {
-      Prefab = LothBatPrefab,
       EntityReferenceGuid = Guid.NewGuid(),
       ItemConfig = new AsteroItemConfigData // Astero was the old name of the game, so you might see it sprinkled about
       {
@@ -51,7 +46,7 @@ public class UserModLoader : UserModLoaderMono, IUserModLoader
     return new List<EntityConfig> {config};
   }
 
-  public override void PostInitializationHook()
+  public void PostInitializationHook()
   {
     // Update a single item's config example
     var itemConfig = Ecs.GetSingleton<ItemConfig>();
