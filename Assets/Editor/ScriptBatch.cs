@@ -1,7 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using FFCore.Modding;
 using FFCore.Version;
+using Unity.Entities.Build;
 using Unity.Entities.Content;
+using Unity.Scenes.Editor;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -14,7 +19,7 @@ public class ScriptBatch
   {
     BuildGameImpl(false);
   }
-  
+
   public static void BuildGameImpl(bool isBurstCompilationEnabled)
   {
     var modNamePlaceholder = "FFMod";
@@ -34,8 +39,11 @@ public class ScriptBatch
     // Build player.
     Debug.Log("Building mod...");
 
-    var report = BuildPipeline.BuildPlayer(new[] {"Assets/Scenes/ModScene.unity"},
-      Path.Combine(pluginTempFolder, $"{modNamePlaceholder}.exe"), BuildTarget.StandaloneWindows64, BuildOptions.Development);
+    var report = BuildPipeline.BuildPlayer(new[]
+      {
+        "Assets/Scenes/ModScene.unity"
+      }, Path.Combine(pluginTempFolder, $"{modNamePlaceholder}.exe"), BuildTarget.StandaloneWindows64,
+      BuildOptions.Development);
 
     if (report.summary.result == BuildResult.Succeeded)
     {
@@ -69,7 +77,7 @@ public class ScriptBatch
       if (File.Exists(srcBurstDll))
       {
         Debug.Log("Copying Burst Library...");
-        
+
         var burstedSrc = Path.Combine(pluginTempFolder, srcBurstDll);
         var burstedDest = Path.Combine(modFolder, $"{modInfo.ID}_win_x86_64.dll");
         FileUtil.CopyFileOrDirectory(burstedSrc, burstedDest);
@@ -79,15 +87,15 @@ public class ScriptBatch
       Debug.Log("Validating mod...");
       IUserMod buildModInfo = ModLoader.LoadIUserModForDll(managedSrc);
       Debug.Log($"Successfully Loaded and validated mod: {buildModInfo.FullName} by {buildModInfo.Author}");
-      
+
+      var sceneGuid = ExecuteContentUpdate(Path.Combine(modFolder, "Content"));
+
       // Create Manifest File
       Debug.Log("Creating manifest file...");
       var manifestFile = Path.Combine(modFolder, "manifest.properties");
-      WriteToManifestFile(manifestFile, buildModInfo);
+      WriteToManifestFile(manifestFile, buildModInfo, sceneGuid);
       Debug.Log($"Build complete for mod: {modInfo.FullName}");
-      
-      PublishExistingBuild(pluginTempFolder, modFolder);
-      
+
       //TODO: Need to copy in Preview.png file
       //TODO: And validate that it's < 1MB in size
     }
@@ -99,7 +107,7 @@ public class ScriptBatch
   }
 
   //TODO: This should get moved into FFCore, probably in IUserMod (along with a parsing routine)
-  private static void WriteToManifestFile(string manifestFile, IUserMod modInfo)
+  private static void WriteToManifestFile(string manifestFile, IUserMod modInfo, string subsceneGuid)
   {
     using (StreamWriter file = new StreamWriter(manifestFile))
     {
@@ -109,7 +117,8 @@ public class ScriptBatch
       file.WriteLine($"Author={modInfo.Author}");
       file.WriteLine($"EmailContact={modInfo.EmailContact}");
       file.WriteLine($"Website={modInfo.Website}");
-      for(int x=0;x<modInfo.Dependencies.Length;x++)
+      file.WriteLine($"SubsceneGuid={subsceneGuid}");
+      for (int x = 0; x < modInfo.Dependencies.Length; x++)
       {
         file.WriteLine($"Dependency{x}={modInfo.Dependencies[x]}");
       }
@@ -123,11 +132,67 @@ public class ScriptBatch
     Debug.Log("Publishing build...");
     var streamingAssetsPath = $"{buildFolder}/FFMod_Data/StreamingAssets";
     //the content sets are defined by the functor passed in here.  
-    RemoteContentCatalogBuildUtility.PublishContent(streamingAssetsPath, targetFolder, f =>
-      new string[]
+    RemoteContentCatalogBuildUtility.PublishContent(streamingAssetsPath, targetFolder, f => new string[]
+    {
+      "all"
+    }, true);
+    Debug.Log($"Publish complete to path {targetFolder}");
+  }
+
+  [MenuItem("Modding/Content Update (fixed)")]
+  public static string ExecuteContentUpdate(string publishPath)
+  {
+    Debug.Log("Creating content update...");
+    string buildFolder = Path.Combine(Application.streamingAssetsPath, "ContentBuild");
+    if (!string.IsNullOrEmpty(buildFolder))
+    {
+      var buildTarget = EditorUserBuildSettings.activeBuildTarget;
+
+      if (!Directory.Exists(Path.Combine(Path.GetDirectoryName(Application.dataPath),
+            $"Library/ContentUpdateBuildDir")))
+        Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(Application.dataPath),
+          $"Library/ContentUpdateBuildDir"));
+      if (!Directory.Exists(Path.Combine(Path.GetDirectoryName(Application.dataPath),
+            $"Library/ContentUpdateBuildDir/{PlayerSettings.productName}")))
+        Directory.CreateDirectory(Path.Combine(Path.GetDirectoryName(Application.dataPath),
+          $"Library/ContentUpdateBuildDir/{PlayerSettings.productName}"));
+
+      var tmpBuildFolder = Path.Combine(Path.GetDirectoryName(Application.dataPath),
+        $"Library/ContentUpdateBuildDir/{PlayerSettings.productName}");
+
+      var instance = DotsGlobalSettings.Instance;
+      var playerGuid = instance.GetPlayerType() == DotsGlobalSettings.PlayerType.Client
+        ? instance.GetClientGUID()
+        : instance.GetServerGUID();
+      if (!playerGuid.IsValid) throw new Exception("Invalid Player GUID");
+
+      var subSceneGuids = new HashSet<Unity.Entities.Hash128>();
+      for (int i = 0; i < EditorBuildSettings.scenes.Length; i++)
+      {
+        var ssGuids = EditorEntityScenes.GetSubScenes(EditorBuildSettings.scenes[i].guid);
+        foreach (var ss in ssGuids)
+        {
+          if (!subSceneGuids.Contains(ss))
+          {
+            Debug.Log("GUID -> " + ss);
+            subSceneGuids.Add(ss);
+          }
+        }
+      }
+      if (subSceneGuids.Count == 0)
+      {
+        throw new Exception("No subscenes found");
+      }
+      var subscene = subSceneGuids.First();
+      RemoteContentCatalogBuildUtility.BuildContent(subSceneGuids, playerGuid, buildTarget, tmpBuildFolder);
+        
+      RemoteContentCatalogBuildUtility.PublishContent(tmpBuildFolder, publishPath, f => new string[]
       {
         "all"
-      }, true);
-    Debug.Log($"Publish complete to path {targetFolder}");
+      });
+      Debug.Log($"Publish Content Update complete to path {publishPath}");
+      return subscene.ToString();
+    }
+    throw new Exception("No build folder found");
   }
 }

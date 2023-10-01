@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Unity.Entities.Build;
 using Unity.Entities.Content;
 using Unity.Scenes.Editor;
@@ -66,5 +67,6 @@ namespace Editor
         Debug.Log($"Publish Content Update complete to path {publishFolder}");
       }
     }
+    
   }
 }

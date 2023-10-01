@@ -14,12 +14,6 @@ namespace EntityManagement
     public List<GameObject> Prefabs;
   }
 
-  public abstract class UserModLoaderMono : MonoBehaviour, IUserModLoader
-  {
-    public abstract List<EntityConfig> DefineEntityConfigs();
-    public abstract void PostInitializationHook();
-  }
-
   public class ModdedEntityPrefabBaker : Baker<ModdedEntityPrefabBakerAuthoring>
   {
     public override void Bake(ModdedEntityPrefabBakerAuthoring authoring)
