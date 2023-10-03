@@ -169,6 +169,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prefabs:
   - {fileID: 5752663869088129627, guid: f9470105eedac714d9b8440af8725436, type: 3}
+  Scene:
+    Id:
+      GlobalId:
+        SceneObjectIdentifier0: 102900000
+        SceneObjectIdentifier1: 0
+        AssetGUID:
+          Value:
+            x: 2680440875
+            y: 1306984088
+            z: 2700990384
+            w: 424844081
+        IdentifierType: 1
+      GenerationType: 3
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

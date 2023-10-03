@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using FFComponents.Modding;
-using FFCore.Config;
-using FFCore.Modding;
 using Unity.Entities;
+using Unity.Entities.Content;
 using UnityEngine;
 
 namespace EntityManagement
@@ -12,6 +11,12 @@ namespace EntityManagement
   {
     // Add any assets you want to reference here (or another script) so you can reference them in your item configs
     public List<GameObject> Prefabs;
+    public WeakObjectSceneReference Scene;
+  }
+  
+  public struct SceneComponentData : IComponentData
+  {
+    public WeakObjectSceneReference Scene;
   }
 
   public class ModdedEntityPrefabBaker : Baker<ModdedEntityPrefabBakerAuthoring>
@@ -20,10 +25,11 @@ namespace EntityManagement
     {
       Debug.Log("Baking modded entities...");
       var loader = (UserModLoader)Activator.CreateInstance(typeof(UserModLoader));
-
+      var me = GetEntity(TransformUsageFlags.Dynamic);
+      AddComponent(me, new SceneComponentData { Scene = authoring.Scene });
       var configs = loader.DefineEntityConfigs();
-  
-      var entityMetaData = AddBuffer<EntityMetaDataElement>(GetEntity(TransformUsageFlags.Dynamic));
+
+      var entityMetaData = AddBuffer<EntityMetaDataElement>(me);
 
       for (var index = 0; index < configs.Count; index++)
       {
