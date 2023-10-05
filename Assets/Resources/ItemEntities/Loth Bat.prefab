@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 8759158879145562184}
   - component: {fileID: 7133199215716713639}
   m_Layer: 0
-  m_Name: LothBat
+  m_Name: Loth Bat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

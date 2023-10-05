@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using EntityManagement;
+﻿using System.Collections.Generic;
 using FFCore.Abilities;
 using FFCore.Config;
 using FFCore.Extensions;
@@ -15,10 +13,9 @@ public class UserModLoader : IUserModLoader
   {
     var config = new EntityConfig
     {
-      EntityReferenceGuid = Guid.NewGuid(),
       ItemConfig = new AsteroItemConfigData // Astero was the old name of the game, so you might see it sprinkled about
       {
-        Name = "Loth Bat",
+        Name = "Loth Bat", // This must match your prefab name exactly
         Description = "A bat that is very loth",
         StackSizeLimit = 50,
         ItemCategory = ItemCategory.Ship,
