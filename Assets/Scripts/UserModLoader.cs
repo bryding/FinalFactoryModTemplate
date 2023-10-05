@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FFComponents.Core;
 using FFCore.Abilities;
 using FFCore.Config;
 using FFCore.Extensions;
@@ -53,6 +54,14 @@ public class UserModLoader : IUserModLoader
     bauxiteIdAsteroidConfig.OreSpawnMultiplier = 100;
     terrainConfigs[bauxiteId] = bauxiteIdAsteroidConfig;
 
+    var playerId = itemConfig.GetIdForName("Player");
+    var playerDynamicConfig = itemConfig.DynamicConfig[playerId];
+    
+    var acceptedShips = playerDynamicConfig.AcceptedLogisticsItems;
+    acceptedShips.Add(ItemIdentifierWrapper.From(itemConfig.GetIdForName("Loth Bat")));
+    playerDynamicConfig.AcceptedLogisticsItems = acceptedShips;
+    itemConfig.DynamicConfig[playerId] = playerDynamicConfig;
+    
     // Update global config example
     var globalConfig = Ecs.GetSingleton<GlobalConfig>();
     var terrainConfig = globalConfig.Terrain;
