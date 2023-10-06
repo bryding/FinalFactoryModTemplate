@@ -31,7 +31,6 @@ namespace Systems
       //Calling a debug statement is very slow and should NEVER be done in an update call.  However, this makes it
       //really easy to see that your mod is loaded and running when debugging.  Be sure to remove it before releasing
       //your mod!
-      Debug.Log("Scheduling Fleet Random Movement job...");
       Dependency = new FleetRandomMovementJob
       {
         AllCommanders = SystemAPI.GetComponentLookup<FleetCommander>(true),

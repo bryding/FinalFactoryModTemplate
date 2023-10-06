@@ -13,10 +13,16 @@ namespace Editor
     [MenuItem("Modding/Build X64 Mod")]
     public static void BuildGameWithBurst()
     {
-      BuildGameImpl(false);
+      BuildGameImpl(false, false);
     }
 
-    public static void BuildGameImpl(bool isBurstCompilationEnabled)
+    [MenuItem("Modding/Build and Install")]
+    public static void BuildGameAndInstallLocal()
+    {
+      BuildGameImpl(false, true);
+    }
+
+    public static void BuildGameImpl(bool isBurstCompilationEnabled, bool installLocally)
     {
       var modNamePlaceholder = "FFMod";
 
@@ -92,6 +98,14 @@ namespace Editor
         WriteToManifestFile(manifestFile, buildModInfo);
         Debug.Log($"Build complete for mod: {modInfo.FullName}");
 
+        if (installLocally)
+        {
+          var dataPath = Application.persistentDataPath;
+          var destination = dataPath.Replace("DefaultCompany/FFModTemplate", Path.Combine("Never Games/finalfactory/mods", modInfo.ID));
+          var source = modFolder;
+          CopyDirectory(source, destination);
+        }
+        
         //TODO: Need to copy in Preview.png file
         //TODO: And validate that it's < 1MB in size
       }
@@ -135,5 +149,26 @@ namespace Editor
       //TODO: Need to get the version from somewhere in the main FinalFactory game
       file.WriteLine($"GameVersion={FFVersion.FinalFactoryVersion.ToString()}");
     }
+    public static void CopyDirectory(string sourceDir, string destDir)
+    {
+      // If the destination directory doesn't exist, create it
+      if (!Directory.Exists(destDir))
+        Directory.CreateDirectory(destDir);
+
+      // Get all files in the source directory and copy them to the destination directory
+      foreach (string file in Directory.GetFiles(sourceDir))
+      {
+        string destFile = Path.Combine(destDir, Path.GetFileName(file));
+        File.Copy(file, destFile);
+      }
+
+      // Recursively copy subdirectories
+      foreach (string directory in Directory.GetDirectories(sourceDir))
+      {
+        string destDirectory = Path.Combine(destDir, Path.GetFileName(directory));
+        CopyDirectory(directory, destDirectory);
+      }
+    }
+    
   }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using FFComponents.Core;
 using FFCore.Abilities;
 using FFCore.Config;
+using FFCore.Config.Technologies;
 using FFCore.Extensions;
 using FFCore.Fleet;
 using FFCore.GlobalConfig;
@@ -10,13 +10,15 @@ using FFCore.Modding;
 
 public class UserModLoader : IUserModLoader
 {
+  const string LothBat = "Loth Bat";
+  
   public List<EntityConfig> DefineEntityConfigs()
   {
     var config = new EntityConfig
     {
       ItemConfig = new AsteroItemConfigData // Astero was the old name of the game, so you might see it sprinkled about
       {
-        Name = "Loth Bat", // This must match your prefab name exactly
+        Name = LothBat, // This must match your prefab name exactly
         Description = "A bat that is very loth",
         StackSizeLimit = 50,
         ItemCategory = ItemCategory.Ship,
@@ -57,9 +59,9 @@ public class UserModLoader : IUserModLoader
     var playerId = itemConfig.GetIdForName("Player");
     var playerDynamicConfig = itemConfig.DynamicConfig[playerId];
     
-    var acceptedShips = playerDynamicConfig.AcceptedLogisticsItems;
-    acceptedShips.Add(ItemIdentifierWrapper.From(itemConfig.GetIdForName("Loth Bat")));
-    playerDynamicConfig.AcceptedLogisticsItems = acceptedShips;
+    var acceptedShips = playerDynamicConfig.AcceptedShips;
+    acceptedShips.Add(itemConfig.GetIdForName(LothBat));
+    playerDynamicConfig.AcceptedShips = acceptedShips;
     itemConfig.DynamicConfig[playerId] = playerDynamicConfig;
     
     // Update global config example
@@ -68,5 +70,30 @@ public class UserModLoader : IUserModLoader
     terrainConfig.MinOre = 999999999;
     globalConfig.Terrain = terrainConfig;
     Ecs.SetSingleton(globalConfig);
+  }
+  
+  public List<TechnologyConfig> AddTechnologies()
+  {
+    var config = new TechnologyConfig
+    {
+      Name = LothBat,
+      Description = "Unlocks bigger, badder, Loth Bats.",
+      ItemsUnlocked = new List<string> {LothBat},
+      IconNameFromModdedBundle = LothBat,
+      Cost = 50,
+      Disabled = false,
+      Requirements = new List<string> {"Start Tech"},
+      ResearchRequirements = new List<TechnologyConfig.SpecificResearchRequirement>()
+      {
+        new()
+        {
+          Name = "Asteroid Research",
+          Value = 10,
+        }
+      },
+      Rewards = new List<TechnologyConfig.TechnologyRewardFunction>(),
+    };
+
+    return new List<TechnologyConfig> {config};
   }
 }
