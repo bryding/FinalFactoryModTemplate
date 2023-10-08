@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FFComponents.Knn;
 using FFCore.Abilities;
 using FFCore.Config;
 using FFCore.Config.Technologies;
@@ -7,6 +8,7 @@ using FFCore.Fleet;
 using FFCore.GlobalConfig;
 using FFCore.Items;
 using FFCore.Modding;
+using Utils;
 
 public class UserModLoader : IUserModLoader
 {
@@ -18,7 +20,7 @@ public class UserModLoader : IUserModLoader
     {
       ItemConfig = new AsteroItemConfigData // Astero was the old name of the game, so you might see it sprinkled about
       {
-        Name = LothBat, // This must match your prefab name exactly
+        Name = LothBat,
         Description = "A bat that is very loth",
         StackSizeLimit = 50,
         ItemCategory = ItemCategory.Ship,
@@ -41,6 +43,24 @@ public class UserModLoader : IUserModLoader
         CountWhenCrafted = 1,
         SpawnsOutsideOfInventory = true,
       },
+      IconAssetName = LothBat,
+      RenderingData = new RenderingData
+      {
+        ModelPath = LothBat,
+      },
+      CraftRecipe = new List<RecipeItemDataRaw>()
+      {
+        new()
+        {
+          ItemName = "Plasma Engine Parts",
+          Count = 2,
+        },
+        new()
+        {
+          ItemName = "AI Controller Circuit",
+          Count = 1,
+        }
+      }
     };
 
     return new List<EntityConfig> {config};
@@ -56,14 +76,23 @@ public class UserModLoader : IUserModLoader
     bauxiteIdAsteroidConfig.OreSpawnMultiplier = 100;
     terrainConfigs[bauxiteId] = bauxiteIdAsteroidConfig;
 
+    // Update the accepted ships for various structures so the Loth Bat can be part of the their fleet
     var playerId = itemConfig.GetIdForName("Player");
-    var playerDynamicConfig = itemConfig.DynamicConfig[playerId];
+    ConfigUtils.AddShipToAcceptedShips(itemConfig, playerId, LothBat);
     
-    var acceptedShips = playerDynamicConfig.AcceptedShips;
-    acceptedShips.Add(itemConfig.GetIdForName(LothBat));
-    playerDynamicConfig.AcceptedShips = acceptedShips;
-    itemConfig.DynamicConfig[playerId] = playerDynamicConfig;
+    var shipYardId = itemConfig.GetIdForName("Ship Yard");
+    ConfigUtils.AddShipToAcceptedShips(itemConfig, shipYardId, LothBat);
     
+    var defensePlatformId = itemConfig.GetIdForName("Defense Platform");
+    ConfigUtils.AddShipToAcceptedShips(itemConfig, defensePlatformId, LothBat);
+    
+    // Currently the mod loader doesn't support adjusting the friendly vision. I'll fix this at some point, but this
+    // is a good example of being able to change any components you want on entity prefabs in this hook.
+    Ecs.SetComponent(itemConfig.GetPrefabForName(LothBat),new KnnFleetVision
+    {
+      Range = 50,
+    });
+
     // Update global config example
     var globalConfig = Ecs.GetSingleton<GlobalConfig>();
     var terrainConfig = globalConfig.Terrain;
@@ -71,7 +100,7 @@ public class UserModLoader : IUserModLoader
     globalConfig.Terrain = terrainConfig;
     Ecs.SetSingleton(globalConfig);
   }
-  
+
   public List<TechnologyConfig> AddTechnologies()
   {
     var config = new TechnologyConfig
@@ -82,7 +111,7 @@ public class UserModLoader : IUserModLoader
       IconNameFromModdedBundle = LothBat,
       Cost = 50,
       Disabled = false,
-      Requirements = new List<string> {"Start Tech"},
+      Requirements = new List<string> {"Start Tech", "Mining Logistics"},
       ResearchRequirements = new List<TechnologyConfig.SpecificResearchRequirement>()
       {
         new()

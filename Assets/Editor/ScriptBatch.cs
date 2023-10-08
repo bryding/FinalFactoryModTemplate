@@ -159,7 +159,7 @@ namespace Editor
       foreach (string file in Directory.GetFiles(sourceDir))
       {
         string destFile = Path.Combine(destDir, Path.GetFileName(file));
-        File.Copy(file, destFile);
+        File.Copy(file, destFile, true);
       }
 
       // Recursively copy subdirectories

@@ -31,15 +31,16 @@ namespace Systems
       //Calling a debug statement is very slow and should NEVER be done in an update call.  However, this makes it
       //really easy to see that your mod is loaded and running when debugging.  Be sure to remove it before releasing
       //your mod!
-      Dependency = new FleetRandomMovementJob
+      var job = new FleetRandomMovementJob
       {
         AllCommanders = SystemAPI.GetComponentLookup<FleetCommander>(true),
         Elapsed = ElapsedGameTime,
         Seed = MasterSeed
-      }.Schedule(CachedEntityQuery, 
-        //Make sure this system runs after FleetIdleSystem has finished running.  If not, FleetIdleSystem will override
-        //each ship's movement and make the FleetIdleSystem's movement changes have no effect.
-        JobHandle.CombineDependencies(Dependency, World.Unmanaged.GetExistingSystemState<FleetIdleSystem>().Dependency));
+      };
+      // Dependency = job.Schedule(CachedEntityQuery, 
+      // //Make sure this system runs after FleetIdleSystem has finished running.  If not, FleetIdleSystem will override
+      // //each ship's movement and make the FleetIdleSystem's movement changes have no effect.
+      // JobHandle.CombineDependencies(Dependency, World.Unmanaged.GetExistingSystemState<FleetIdleSystem>().Dependency));
     }
 
     [BurstCompile]
