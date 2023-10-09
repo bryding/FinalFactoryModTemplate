@@ -3,9 +3,11 @@ using FFComponents.Knn;
 using FFCore.Abilities;
 using FFCore.Config;
 using FFCore.Config.Technologies;
+using FFCore.Crafting;
 using FFCore.Extensions;
 using FFCore.Fleet;
 using FFCore.GlobalConfig;
+using FFCore.Inventory;
 using FFCore.Items;
 using FFCore.Modding;
 using Utils;
@@ -13,10 +15,11 @@ using Utils;
 public class UserModLoader : IUserModLoader
 {
   const string LothBat = "Loth Bat";
+  private const string LothAssembler = "Loth Assembler";
   
   public List<EntityConfig> DefineEntityConfigs()
   {
-    var config = new EntityConfig
+    var lothBat = new EntityConfig
     {
       ItemConfig = new AsteroItemConfigData // Astero was the old name of the game, so you might see it sprinkled about
       {
@@ -63,7 +66,87 @@ public class UserModLoader : IUserModLoader
       }
     };
 
-    return new List<EntityConfig> {config};
+    var lothAssembler = new EntityConfig
+    {
+      ItemConfig = new AsteroItemConfigData
+      {
+        Name = LothAssembler,
+        Description = "A turbo charged assembler.",
+        StackSizeLimit = 10,
+        ItemCategory = ItemCategory.Stations,
+        ItemType = "assembler",
+      },
+      AssemblerConfig = new AssemblerConfig
+      {
+        CraftSpeedModifier = 3,
+        ProductionOutputType = ProductionOutputType.Items,
+      },
+      CraftConfig = new CraftConfigData
+      {
+        BaseCraftTime = 1,
+        CountWhenCrafted = 1,
+        SpawnsOutsideOfInventory = false,
+      },
+      PlaceableConfig = new PlaceableConfig
+      {
+        Length = 2,
+        Width = 2,
+        Height = 2,
+        PlaceableType = PlaceableType.AssemblyModule,
+      },
+      PowerConfig = new PowerConfig
+      {
+        BaseMaxPower = 40,
+        BaseIdlePower = 5,
+        MaxTemp = 102,
+        HeatRate = .02f,
+      },
+      FleetConfig = new FleetConfig
+      {
+        MaxHealth = 300,
+      },
+      InventoryMetaDataConfig = new InventoryMetaDataConfig
+      {
+        // The secondary index is the index of the inventory that is used for the output of the assembler.
+        SecondaryIndexStart = 6,
+        SecondaryIndexEnd = 7,
+        ConnectorIndexStart = 7,
+        ConnectorIndexEnd = 11,
+        PrimaryIndexEnd = 6,
+        LimitBasedOnFilter = true,
+        LimitTypeToOneSlot = true,
+        UseConnectorInventory = true,
+        InserterDropoffInventory = InventoryType.Connector,
+        InserterPickupInventory = InventoryType.Secondary,
+        OperationType = InventoryOperationType.Standard,
+      },
+      IconAssetName = LothAssembler,
+      RenderingData = new RenderingData
+      {
+        ModelPath = "Assembler", // Since this is the name of an existing model from the game, the mod loader will assign that model to this new entity.
+      },
+      CraftRecipe = new List<RecipeItemDataRaw>()
+      {
+        new()
+        {
+          ItemName = "Medium Density Structure",
+          Count = 20,
+        },
+        new()
+        {
+          ItemName = "AI Controller Circuit",
+          Count = 5,
+        },
+        new()
+        {
+          ItemName = "Fabricator",
+          Count = 5,
+        }
+      }
+      
+    };
+
+    return new List<EntityConfig> {lothBat, lothAssembler};
   }
 
   public void PostInitializationHook()
@@ -103,7 +186,7 @@ public class UserModLoader : IUserModLoader
 
   public List<TechnologyConfig> AddTechnologies()
   {
-    var config = new TechnologyConfig
+    var lothBatTech = new TechnologyConfig
     {
       Name = LothBat,
       Description = "Unlocks bigger, badder, Loth Bats.",
@@ -122,7 +205,26 @@ public class UserModLoader : IUserModLoader
       },
       Rewards = new List<TechnologyConfig.TechnologyRewardFunction>(),
     };
+    var lothAssemblerTech = new TechnologyConfig
+    {
+      Name = LothAssembler,
+      Description = "Unlocks a more powerful assembler",
+      ItemsUnlocked = new List<string> {LothAssembler},
+      IconNameFromModdedBundle = LothAssembler,
+      Cost = 200,
+      Disabled = false,
+      Requirements = new List<string> {"Start Tech", "Automation"},
+      ResearchRequirements = new List<TechnologyConfig.SpecificResearchRequirement>()
+      {
+        new()
+        {
+          Name = "Planetary Research",
+          Value = 200,
+        }
+      },
+      Rewards = new List<TechnologyConfig.TechnologyRewardFunction>(),
+    };
 
-    return new List<TechnologyConfig> {config};
+    return new List<TechnologyConfig> {lothBatTech, lothAssemblerTech};
   }
 }
