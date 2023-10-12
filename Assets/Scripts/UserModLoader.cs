@@ -16,6 +16,7 @@ public class UserModLoader : IUserModLoader
 {
   const string LothBat = "Loth Bat";
   private const string LothAssembler = "Loth Assembler";
+  private const string LothPrinter = "Loth Printer";
   
   public List<EntityConfig> DefineEntityConfigs()
   {
@@ -145,8 +146,83 @@ public class UserModLoader : IUserModLoader
       }
       
     };
+    
+    var lothPrinter = new EntityConfig
+    {
+      ItemConfig = new AsteroItemConfigData
+      {
+        Name = LothPrinter,
+        Description = "A turbo charged printer.",
+        StackSizeLimit = 10,
+        ItemCategory = ItemCategory.Stations,
+        ItemType = "assembler",
+      },
+      AssemblerConfig = new AssemblerConfig
+      {
+        CraftSpeedModifier = 3,
+        ProductionOutputType = ProductionOutputType.Items,
+      },
+      CraftConfig = new CraftConfigData
+      {
+        BaseCraftTime = 1,
+        CountWhenCrafted = 1,
+        SpawnsOutsideOfInventory = false,
+      },
+      PlaceableConfig = new PlaceableConfig
+      {
+        Length = 2,
+        Width = 2,
+        Height = 2,
+        PlaceableType = PlaceableType.AssemblyModule,
+      },
+      PowerConfig = new PowerConfig
+      {
+        BaseMaxPower = 40,
+        BaseIdlePower = 5,
+        MaxTemp = 102,
+        HeatRate = .02f,
+      },
+      FleetConfig = new FleetConfig
+      {
+        MaxHealth = 300,
+      },
+      InventoryMetaDataConfig = new InventoryMetaDataConfig
+      {
+        // The secondary index is the index of the inventory that is used for the output of the assembler.
+        SecondaryIndexStart = 6,
+        SecondaryIndexEnd = 7,
+        ConnectorIndexStart = 7,
+        ConnectorIndexEnd = 11,
+        PrimaryIndexEnd = 6,
+        LimitBasedOnFilter = true,
+        LimitTypeToOneSlot = true,
+        UseConnectorInventory = true,
+        InserterDropoffInventory = InventoryType.Connector,
+        InserterPickupInventory = InventoryType.Secondary,
+        OperationType = InventoryOperationType.Standard,
+      },
+      IconAssetName = LothPrinter,
+      RenderingData = new RenderingData
+      {
+        ModelPath = LothPrinter, // Since this is the name of an existing model from the game, the mod loader will assign that model to this new entity.
+      },
+      CraftRecipe = new List<RecipeItemDataRaw>()
+      {
+        new()
+        {
+          ItemName = "Medium Density Structure",
+          Count = 20,
+        },
+        new()
+        {
+          ItemName = "Fabricator",
+          Count = 15,
+        }
+      }
+      
+    };
 
-    return new List<EntityConfig> {lothBat, lothAssembler};
+    return new List<EntityConfig> {lothBat, lothAssembler, lothPrinter};
   }
 
   public void PostInitializationHook()
@@ -209,7 +285,7 @@ public class UserModLoader : IUserModLoader
     {
       Name = LothAssembler,
       Description = "Unlocks a more powerful assembler",
-      ItemsUnlocked = new List<string> {LothAssembler},
+      ItemsUnlocked = new List<string> {LothAssembler, LothPrinter},
       IconNameFromModdedBundle = LothAssembler,
       Cost = 200,
       Disabled = false,
