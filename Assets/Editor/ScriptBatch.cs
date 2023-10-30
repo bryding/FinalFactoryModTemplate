@@ -101,14 +101,14 @@ namespace Editor
         
         // Setup Preview.png
         Debug.Log("Finding and Validating Preview file...");
-        string previewFile = Path.Combine(projectFolder, "Preview.jpg");
+        string previewFile = Path.Combine(projectFolder, "Preview.gif");
         if (!File.Exists(previewFile))
         {
           previewFile = Path.Combine(projectFolder, "Preview.png");
           if (!File.Exists(previewFile))
           {
             throw new BuildFailedException(
-              $"Could not build mod due to error: No Preview file available.  Please define a Preview.png or Preview.jpg in the root directory. (e.g. {previewFile})");
+              $"Could not build mod due to error: No Preview file available.  Please define a Preview.png or Preview.gif in the root directory. (e.g. {previewFile})");
           }
         }
         
@@ -124,13 +124,13 @@ namespace Editor
         //Windows is case insensitive, so the actual file might not match the exact case, so we fix it with the copy.
         if (previewFile.EndsWith(".png"))
         {
-          Debug.Log("Copying Png preview file...");
+          Debug.Log("Copying png preview file...");
           File.Copy(previewFile, Path.Combine(modFolder, "Preview.png"));
         }
         else
         {
-          Debug.Log("Copying Jpg preview file...");
-          File.Copy(previewFile, Path.Combine(modFolder, "Preview.jpg"));
+          Debug.Log("Copying gif preview file...");
+          File.Copy(previewFile, Path.Combine(modFolder, "Preview.gif"));
         }
 
         if (installLocally)
