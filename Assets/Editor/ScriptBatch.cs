@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using FFCore.Modding;
 using FFCore.Version;
+using Microsoft.CSharp.RuntimeBinder;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
@@ -96,18 +97,52 @@ namespace Editor
         Debug.Log("Creating manifest file...");
         var manifestFile = Path.Combine(modFolder, "manifest.properties");
         WriteToManifestFile(manifestFile, buildModInfo);
-        Debug.Log($"Build complete for mod: {modInfo.FullName}");
+        Debug.Log($"Compile complete for mod: {modInfo.FullName}");
+        
+        // Setup Preview.png
+        Debug.Log("Finding and Validating Preview file...");
+        string previewFile = Path.Combine(projectFolder, "Preview.jpg");
+        if (!File.Exists(previewFile))
+        {
+          previewFile = Path.Combine(projectFolder, "Preview.png");
+          if (!File.Exists(previewFile))
+          {
+            throw new BuildFailedException(
+              $"Could not build mod due to error: No Preview file available.  Please define a Preview.png or Preview.jpg in the root directory. (e.g. {previewFile})");
+          }
+        }
+        
+        var size = new FileInfo(previewFile).Length;
+        Debug.Log($"Found Preview file of size:{size}");
+        //Steam has a file size limitation for the preview file of 1MB.  If too large, fail with a descriptive error
+        if (size > 1000000)
+        {
+          throw new BuildFailedException($"Could not build mod due to error: Preview file ({previewFile}) is larger than 1MB.");
+        }
+        
+        //Copy the Preview.png and ensure the new case sensitivity is correct (Capital P, lowercase rest)
+        //Windows is case insensitive, so the actual file might not match the exact case, so we fix it with the copy.
+        if (previewFile.EndsWith(".png"))
+        {
+          Debug.Log("Copying Png preview file...");
+          File.Copy(previewFile, Path.Combine(modFolder, "Preview.png"));
+        }
+        else
+        {
+          Debug.Log("Copying Jpg preview file...");
+          File.Copy(previewFile, Path.Combine(modFolder, "Preview.jpg"));
+        }
 
         if (installLocally)
         {
+          Debug.Log("Installing mod locally...");
           var dataPath = Application.persistentDataPath;
           var destination = dataPath.Replace("DefaultCompany/FFModTemplate", Path.Combine("Never Games/finalfactory/mods", modInfo.ID));
           var source = modFolder;
           CopyDirectory(source, destination);
         }
         
-        //TODO: Need to copy in Preview.png file
-        //TODO: And validate that it's < 1MB in size
+        Debug.Log("Build Successful.");
       }
       else
       {

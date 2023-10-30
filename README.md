@@ -4,7 +4,7 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 
 ## Requirements
 
-* Unity 2022.3.5f1
+* Unity 2022.3.7f1
 
 ## Getting Started
 
@@ -16,8 +16,10 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
   * FFCore.dll
   * FFSystems.dll
   * FFComponents.dll
+  * FFTechnology.dll
 1. Copy these DLL's to the `Assets/FinalFactoryDlls` folder in this project
 1. Open the root folder in Unity
+1. Place a preview file for Steam (Must be <1MB) in the template project root folder.  It must be called Preview.png or Preview.jpg
 
 ## Building and using your mod
 
