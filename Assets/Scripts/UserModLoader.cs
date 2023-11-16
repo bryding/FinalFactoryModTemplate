@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FFComponents.Core;
 using FFComponents.Knn;
 using FFCore.Abilities;
 using FFCore.Config;
@@ -10,14 +11,14 @@ using FFCore.GlobalConfig;
 using FFCore.Inventory;
 using FFCore.Items;
 using FFCore.Modding;
+using UnityEngine;
 using Utils;
-
 public class UserModLoader : IUserModLoader
 {
-  const string LothBat = "Loth Bat";
+  private const string LothBat = "Loth Bat";
   private const string LothAssembler = "Loth Assembler";
   private const string LothPrinter = "Loth Printer";
-  
+
   public List<EntityConfig> DefineEntityConfigs()
   {
     var lothBat = new EntityConfig
@@ -28,7 +29,7 @@ public class UserModLoader : IUserModLoader
         Description = "A bat that is very loth",
         StackSizeLimit = 50,
         ItemCategory = ItemCategory.Ship,
-        ItemType = "bat",
+        ItemType = "bat"
       },
       FleetConfig = new FleetConfig
       {
@@ -39,30 +40,30 @@ public class UserModLoader : IUserModLoader
         MaxHealth = 25,
         Speed = 150,
         KeepDistance = 55,
-        VisionRange = 100,
+        VisionRange = 100
       },
       CraftConfig = new CraftConfigData
       {
         BaseCraftTime = 1,
         CountWhenCrafted = 1,
-        SpawnsOutsideOfInventory = true,
+        SpawnsOutsideOfInventory = true
       },
       IconAssetName = LothBat,
       RenderingData = new RenderingData
       {
-        ModelPath = LothBat,
+        ModelPath = LothBat
       },
-      CraftRecipe = new List<RecipeItemDataRaw>()
+      CraftRecipe = new List<RecipeItemDataRaw>
       {
         new()
         {
           ItemName = "Plasma Engine Parts",
-          Count = 2,
+          Count = 2
         },
         new()
         {
           ItemName = "AI Controller Circuit",
-          Count = 1,
+          Count = 1
         }
       }
     };
@@ -75,36 +76,36 @@ public class UserModLoader : IUserModLoader
         Description = "A turbo charged assembler.",
         StackSizeLimit = 10,
         ItemCategory = ItemCategory.Stations,
-        ItemType = "assembler",
+        ItemType = "assembler"
       },
       AssemblerConfig = new AssemblerConfig
       {
         CraftSpeedModifier = 3,
-        ProductionOutputType = ProductionOutputType.Items,
+        ProductionOutputType = ProductionOutputType.Items
       },
       CraftConfig = new CraftConfigData
       {
         BaseCraftTime = 1,
         CountWhenCrafted = 1,
-        SpawnsOutsideOfInventory = false,
+        SpawnsOutsideOfInventory = false
       },
       PlaceableConfig = new PlaceableConfig
       {
         Length = 2,
         Width = 2,
         Height = 2,
-        PlaceableType = PlaceableType.AssemblyModule,
+        PlaceableType = PlaceableType.AssemblyModule
       },
       PowerConfig = new PowerConfig
       {
         BaseMaxPower = 40,
         BaseIdlePower = 5,
         MaxTemp = 102,
-        HeatRate = .02f,
+        HeatRate = .02f
       },
       FleetConfig = new FleetConfig
       {
-        MaxHealth = 300,
+        MaxHealth = 300
       },
       InventoryMetaDataConfig = new InventoryMetaDataConfig
       {
@@ -119,34 +120,35 @@ public class UserModLoader : IUserModLoader
         UseConnectorInventory = true,
         InserterDropoffInventory = InventoryType.Connector,
         InserterPickupInventory = InventoryType.Secondary,
-        OperationType = InventoryOperationType.Standard,
+        OperationType = InventoryOperationType.Standard
       },
       IconAssetName = LothAssembler,
       RenderingData = new RenderingData
       {
-        ModelPath = "Assembler", // Since this is the name of an existing model from the game, the mod loader will assign that model to this new entity.
+        ModelPath =
+          "Assembler" // Since this is the name of an existing model from the game, the mod loader will assign that model to this new entity.
       },
-      CraftRecipe = new List<RecipeItemDataRaw>()
+      CraftRecipe = new List<RecipeItemDataRaw>
       {
         new()
         {
           ItemName = "Medium Density Structure",
-          Count = 20,
+          Count = 20
         },
         new()
         {
           ItemName = "AI Controller Circuit",
-          Count = 5,
+          Count = 5
         },
         new()
         {
           ItemName = "Fabricator",
-          Count = 5,
+          Count = 5
         }
       }
-      
+
     };
-    
+
     var lothPrinter = new EntityConfig
     {
       ItemConfig = new AsteroItemConfigData
@@ -155,36 +157,36 @@ public class UserModLoader : IUserModLoader
         Description = "A turbo charged printer.",
         StackSizeLimit = 10,
         ItemCategory = ItemCategory.Stations,
-        ItemType = "assembler",
+        ItemType = "assembler"
       },
       AssemblerConfig = new AssemblerConfig
       {
         CraftSpeedModifier = 3,
-        ProductionOutputType = ProductionOutputType.Items,
+        ProductionOutputType = ProductionOutputType.Items
       },
       CraftConfig = new CraftConfigData
       {
         BaseCraftTime = 1,
         CountWhenCrafted = 1,
-        SpawnsOutsideOfInventory = false,
+        SpawnsOutsideOfInventory = false
       },
       PlaceableConfig = new PlaceableConfig
       {
         Length = 2,
         Width = 2,
         Height = 2,
-        PlaceableType = PlaceableType.AssemblyModule,
+        PlaceableType = PlaceableType.AssemblyModule
       },
       PowerConfig = new PowerConfig
       {
         BaseMaxPower = 40,
         BaseIdlePower = 5,
         MaxTemp = 102,
-        HeatRate = .02f,
+        HeatRate = .02f
       },
       FleetConfig = new FleetConfig
       {
-        MaxHealth = 300,
+        MaxHealth = 300
       },
       InventoryMetaDataConfig = new InventoryMetaDataConfig
       {
@@ -199,30 +201,55 @@ public class UserModLoader : IUserModLoader
         UseConnectorInventory = true,
         InserterDropoffInventory = InventoryType.Connector,
         InserterPickupInventory = InventoryType.Secondary,
-        OperationType = InventoryOperationType.Standard,
+        OperationType = InventoryOperationType.Standard
       },
       IconAssetName = LothPrinter,
       RenderingData = new RenderingData
       {
-        ModelPath = LothPrinter, // Since this is the name of an existing model from the game, the mod loader will assign that model to this new entity.
+        ModelPath =
+          LothPrinter // Since this is the name of an existing model from the game, the mod loader will assign that model to this new entity.
       },
-      CraftRecipe = new List<RecipeItemDataRaw>()
+      CraftRecipe = new List<RecipeItemDataRaw>
       {
         new()
         {
           ItemName = "Medium Density Structure",
-          Count = 20,
+          Count = 20
         },
         new()
         {
           ItemName = "Fabricator",
-          Count = 15,
+          Count = 15
         }
       }
-      
+
     };
 
-    return new List<EntityConfig> {lothBat, lothAssembler, lothPrinter};
+    var gherikConnector = new EntityConfig
+    {
+      ItemConfig = new AsteroItemConfigData
+      {
+        Name = "Connector"
+      },
+      RenderingData = new RenderingData
+      {
+        ModelPath = "Connector"
+      },
+      PlaceableConfig = new PlaceableConfig
+      {
+        Length = 1,
+        Width = 1,
+        Height = 1
+      },
+      IconAssetName = "GConnector"
+    };
+
+    return new List<EntityConfig>
+    {
+      lothBat,
+      lothAssembler,
+      lothPrinter
+    };
   }
 
   public void PostInitializationHook()
@@ -238,18 +265,18 @@ public class UserModLoader : IUserModLoader
     // Update the accepted ships for various structures so the Loth Bat can be part of the their fleet
     var playerId = itemConfig.GetIdForName("Player");
     ConfigUtils.AddShipToAcceptedShips(itemConfig, playerId, LothBat);
-    
+
     var shipYardId = itemConfig.GetIdForName("Ship Yard");
     ConfigUtils.AddShipToAcceptedShips(itemConfig, shipYardId, LothBat);
-    
+
     var defensePlatformId = itemConfig.GetIdForName("Defense Platform");
     ConfigUtils.AddShipToAcceptedShips(itemConfig, defensePlatformId, LothBat);
-    
+
     // Currently the mod loader doesn't support adjusting the friendly vision. I'll fix this at some point, but this
     // is a good example of being able to change any components you want on entity prefabs in this hook.
-    Ecs.SetComponent(itemConfig.GetPrefabForName(LothBat),new KnnFleetVision
+    itemConfig.GetPrefabForName(LothBat).SetComponent(new KnnFleetVision
     {
-      Range = 50,
+      Range = 50
     });
 
     // Update global config example
@@ -258,6 +285,36 @@ public class UserModLoader : IUserModLoader
     terrainConfig.MinOre = 999999999;
     globalConfig.Terrain = terrainConfig;
     Ecs.SetSingleton(globalConfig);
+
+
+    // Get existing data and stuff
+    var realConnector = itemConfig.GetPrefabForName("Connector");
+    var gherikConnector = itemConfig.GetPrefabForName("GherikConnector");
+    var gherikId = gherikConnector.GetComponent<AsteroItem>().ConfigIndex;
+    var realId = realConnector.GetComponent<AsteroItem>().ConfigIndex;
+
+    var prefabs = itemConfig.ItemPrefabs;
+
+    // Update the gherik prefab to the connector's prefab
+    prefabs[gherikId] = realConnector;
+    itemConfig.PlaceableConfigLookup[gherikId] = itemConfig.PlaceableConfigLookup[realId];
+
+    // Update the placeable component data from the real connector
+    var realPlaceable = realConnector.GetComponent<Placeable>();
+    // YOU MUST UPDATE THE ITEM IDENTIFIER HERE OR THE PLACEALBE WILL HAVE THE OLD ITEM ID ON IT 
+    realPlaceable.ItemIdentifier = gherikId;
+    gherikConnector.SetComponent(realPlaceable);
+
+    // Update power config example
+    itemConfig.PowerConfigLookup[gherikId] = itemConfig.PowerConfigLookup[realId];
+    var gherikPower = itemConfig.PowerConfigLookup[gherikId];
+    gherikPower.BaseIdlePower = 50;
+    itemConfig.PowerConfigLookup[gherikId] = gherikPower;
+  }
+
+  public void OnGameStart(Canvas inGameUiCanvas)
+  {
+
   }
 
   public List<TechnologyConfig> AddTechnologies()
@@ -266,41 +323,60 @@ public class UserModLoader : IUserModLoader
     {
       Name = LothBat,
       Description = "Unlocks bigger, badder, Loth Bats.",
-      ItemsUnlocked = new List<string> {LothBat},
+      ItemsUnlocked = new List<string>
+      {
+        LothBat
+      },
       IconNameFromModdedBundle = LothBat,
       Cost = 50,
       Disabled = false,
-      Requirements = new List<string> {"Start Tech", "Mining Logistics"},
-      ResearchRequirements = new List<TechnologyConfig.SpecificResearchRequirement>()
+      Requirements = new List<string>
+      {
+        "Start Tech",
+        "Mining Logistics"
+      },
+      ResearchRequirements = new List<TechnologyConfig.SpecificResearchRequirement>
       {
         new()
         {
           Name = "Asteroid Research",
-          Value = 10,
+          Value = 10
         }
       },
-      Rewards = new List<TechnologyConfig.TechnologyRewardFunction>(),
+      Rewards = new List<TechnologyConfig.TechnologyRewardFunction>()
     };
     var lothAssemblerTech = new TechnologyConfig
     {
       Name = LothAssembler,
       Description = "Unlocks a more powerful assembler",
-      ItemsUnlocked = new List<string> {LothAssembler, LothPrinter},
+      ItemsUnlocked = new List<string>
+      {
+        LothAssembler,
+        LothPrinter
+      },
       IconNameFromModdedBundle = LothAssembler,
       Cost = 200,
       Disabled = false,
-      Requirements = new List<string> {"Start Tech", "Automation"},
-      ResearchRequirements = new List<TechnologyConfig.SpecificResearchRequirement>()
+      Requirements = new List<string>
+      {
+        "Start Tech",
+        "Automation"
+      },
+      ResearchRequirements = new List<TechnologyConfig.SpecificResearchRequirement>
       {
         new()
         {
           Name = "Planetary Research",
-          Value = 200,
+          Value = 200
         }
       },
-      Rewards = new List<TechnologyConfig.TechnologyRewardFunction>(),
+      Rewards = new List<TechnologyConfig.TechnologyRewardFunction>()
     };
 
-    return new List<TechnologyConfig> {lothBatTech, lothAssemblerTech};
+    return new List<TechnologyConfig>
+    {
+      lothBatTech,
+      lothAssemblerTech
+    };
   }
 }
