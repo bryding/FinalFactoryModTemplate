@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.danielmansson.mathematics.fixedpoint": "https://github.com/danielmansson/Unity.Mathematics.FixedPoint.git",
     "com.unity.burst": "1.8.9",
     "com.unity.collab-proxy": "2.0.7",
     "com.unity.collections": "2.1.4",
