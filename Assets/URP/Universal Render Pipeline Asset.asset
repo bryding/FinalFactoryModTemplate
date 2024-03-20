@@ -19,8 +19,8 @@ MonoBehaviour:
   m_RendererDataList:
   - {fileID: 11400000, guid: b0b51f454f373b046a65927f1be8d65f, type: 2}
   m_DefaultRendererIndex: 0
-  m_RequireDepthTexture: 0
-  m_RequireOpaqueTexture: 0
+  m_RequireDepthTexture: 1
+  m_RequireOpaqueTexture: 1
   m_OpaqueDownsampling: 1
   m_SupportsTerrainHoles: 1
   m_SupportsHDR: 1
@@ -45,16 +45,16 @@ MonoBehaviour:
   m_AdditionalLightsShadowResolutionTierHigh: 1024
   m_ReflectionProbeBlending: 0
   m_ReflectionProbeBoxProjection: 0
-  m_ShadowDistance: 50
-  m_ShadowCascadeCount: 1
+  m_ShadowDistance: 500
+  m_ShadowCascadeCount: 3
   m_Cascade2Split: 0.25
   m_Cascade3Split: {x: 0.1, y: 0.3}
   m_Cascade4Split: {x: 0.067, y: 0.2, z: 0.467}
   m_CascadeBorder: 0.2
-  m_ShadowDepthBias: 1
-  m_ShadowNormalBias: 1
+  m_ShadowDepthBias: 2
+  m_ShadowNormalBias: 1.42
   m_AnyShadowsSupported: 1
-  m_SoftShadowsSupported: 0
+  m_SoftShadowsSupported: 1
   m_ConservativeEnclosingSphere: 1
   m_NumIterationsEnclosingSphere: 64
   m_SoftShadowQuality: 2
@@ -69,7 +69,7 @@ MonoBehaviour:
   m_StoreActionsOptimization: 0
   m_EnableRenderGraph: 0
   m_UseAdaptivePerformance: 1
-  m_ColorGradingMode: 0
+  m_ColorGradingMode: 1
   m_ColorGradingLutSize: 32
   m_UseFastSRGBLinearConversion: 0
   m_SupportDataDrivenLensFlare: 1
@@ -104,6 +104,10 @@ MonoBehaviour:
   m_PrefilterDBufferMRT1: 1
   m_PrefilterDBufferMRT2: 1
   m_PrefilterDBufferMRT3: 1
+  m_PrefilterSoftShadowsQualityLow: 0
+  m_PrefilterSoftShadowsQualityMedium: 0
+  m_PrefilterSoftShadowsQualityHigh: 0
+  m_PrefilterSoftShadows: 0
   m_PrefilterScreenCoord: 1
   m_PrefilterNativeRenderPass: 1
   m_ShaderVariantLogLevel: 0
