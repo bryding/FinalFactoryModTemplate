@@ -1,13 +1,31 @@
 {
   "dependencies": {
-    "com.danielmansson.mathematics.fixedpoint": {
-      "version": "https://github.com/danielmansson/Unity.Mathematics.FixedPoint.git",
+    "com.akb.knn": {
+      "version": "https://github.com/bryding/KNN.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.burst": "1.1.2",
+        "com.unity.collections": "0.1.1-preview",
+        "com.unity.mathematics": "1.1.0"
+      },
+      "hash": "0cfac4e89632c35e503f60918f87c88476fdb9de"
+    },
+    "com.nevergames.mathematics.fixedpoint": {
+      "version": "https://github.com/bryding/Unity.Mathematics.FixedPoint.git",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.mathematics": "1.1.0"
       },
-      "hash": "d44836cab621f299d6d1bfa275daa437aafc739b"
+      "hash": "5177022547ecee3e5cd9b6cf6c05f9425542de16"
+    },
+    "com.nevergames.steamworks.facepunch": {
+      "version": "https://github.com/Final-Factory/Facepunch.Steamworks.git?path=/UnityPlugin",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "4e8f65f260eba16ed3cc97a3e6a701b2d5e7c773"
     },
     "com.unity.burst": {
       "version": "1.8.11",
@@ -124,6 +142,16 @@
       "depth": 1,
       "source": "registry",
       "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.netcode.gameobjects": {
+      "version": "1.7.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.nuget.mono-cecil": "1.10.1",
+        "com.unity.transport": "1.4.0"
+      },
       "url": "https://packages.unity.com"
     },
     "com.unity.nuget.mono-cecil": {
@@ -281,6 +309,17 @@
         "com.unity.modules.animation": "1.0.0",
         "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.transport": {
+      "version": "2.0.2",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.collections": "2.1.4",
+        "com.unity.burst": "1.8.4",
+        "com.unity.mathematics": "1.2.6"
       },
       "url": "https://packages.unity.com"
     },

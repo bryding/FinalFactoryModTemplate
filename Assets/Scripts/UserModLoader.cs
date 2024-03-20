@@ -11,6 +11,7 @@ using FFCore.GlobalConfig;
 using FFCore.Inventory;
 using FFCore.Items;
 using FFCore.Modding;
+using Unity.Mathematics.FixedPoint;
 using UnityEngine;
 using Utils;
 public class UserModLoader : IUserModLoader
@@ -44,7 +45,7 @@ public class UserModLoader : IUserModLoader
       },
       CraftConfig = new CraftConfigData
       {
-        BaseCraftTime = 1,
+        BaseCraftTimeFP = 1,
         CountWhenCrafted = 1,
         SpawnsOutsideOfInventory = true
       },
@@ -80,12 +81,12 @@ public class UserModLoader : IUserModLoader
       },
       AssemblerConfig = new AssemblerConfig
       {
-        CraftSpeedModifier = 3,
+        CraftSpeedModifierFP = 3,
         ProductionOutputType = ProductionOutputType.Items
       },
       CraftConfig = new CraftConfigData
       {
-        BaseCraftTime = 1,
+        BaseCraftTimeFP = 1,
         CountWhenCrafted = 1,
         SpawnsOutsideOfInventory = false
       },
@@ -100,8 +101,8 @@ public class UserModLoader : IUserModLoader
       {
         BaseMaxPower = 40,
         BaseIdlePower = 5,
-        MaxTemp = 102,
-        HeatRate = .02f
+        MaxTempFP = 102,
+        HeatRateFP = fp.one / 50
       },
       FleetConfig = new FleetConfig
       {
@@ -161,12 +162,12 @@ public class UserModLoader : IUserModLoader
       },
       AssemblerConfig = new AssemblerConfig
       {
-        CraftSpeedModifier = 3,
+        CraftSpeedModifierFP = 3,
         ProductionOutputType = ProductionOutputType.Items
       },
       CraftConfig = new CraftConfigData
       {
-        BaseCraftTime = 1,
+        BaseCraftTimeFP = 1,
         CountWhenCrafted = 1,
         SpawnsOutsideOfInventory = false
       },
@@ -181,8 +182,8 @@ public class UserModLoader : IUserModLoader
       {
         BaseMaxPower = 40,
         BaseIdlePower = 5,
-        MaxTemp = 102,
-        HeatRate = .02f
+        MaxTempFP = 102,
+        HeatRateFP = fp.one / 50
       },
       FleetConfig = new FleetConfig
       {
@@ -259,7 +260,7 @@ public class UserModLoader : IUserModLoader
     var terrainConfigs = itemConfig.TerrainConfigs;
     var bauxiteId = itemConfig.GetIdForName("Bauxite Asteroid");
     var bauxiteIdAsteroidConfig = terrainConfigs[bauxiteId];
-    bauxiteIdAsteroidConfig.OreSpawnMultiplier = 100;
+    bauxiteIdAsteroidConfig.OreSpawnMultiplierFP = 100;
     terrainConfigs[bauxiteId] = bauxiteIdAsteroidConfig;
 
     // Update the accepted ships for various structures so the Loth Bat can be part of the their fleet

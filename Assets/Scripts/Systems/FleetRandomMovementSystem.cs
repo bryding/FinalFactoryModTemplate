@@ -4,14 +4,12 @@ using FFComponents.UnitStates.Combat;
 using FFCore.Extensions;
 using FFCore.Systems;
 using FFSystems.Core;
-using FFSystems.UnitStateMachine;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Jobs;
 using Unity.Mathematics;
+using Unity.Mathematics.FixedPoint;
 using Unity.Transforms;
-using UnityEngine;
 
 namespace Systems
 {
@@ -48,7 +46,7 @@ namespace Systems
     {
       [ReadOnly] public ComponentLookup<FleetCommander> AllCommanders;
 
-      public double Elapsed;
+      public fp Elapsed;
       public uint Seed;
 
       public void Execute(Entity entity, ref LocalTransform localTransform, in FleetShip fleetShip)
