@@ -33,6 +33,7 @@ There are two ways you can install your mod:
 <br>
 OR
 <br>
+
 1. Navigate to the top menu in Unity, click Modding \-\> Build and Install  (this will build your mod and install it into the folder listed above)
 
 Then start Final Factory and your mod should load on startup
