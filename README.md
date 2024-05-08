@@ -30,14 +30,12 @@ This repo comes with an editor script that will put the managed and burst DLL's 
 There are two ways you can install your mod:
 
 1. Manually copy the folder in \<project root\>/build to the `C:\Users\<user>\AppData\LocalLow\Never Games\finalfactory\mods` folder 
+<br>
 OR
+<br>
 1. Navigate to the top menu in Unity, click Modding \-\> Build and Install  (this will build your mod and install it into the folder listed above)
 
 Then start Final Factory and your mod should load on startup
-
-_Steam Workshop support under construction_
-<br>
-<br>
 
 ## Uploading your mod to the workshop
 
