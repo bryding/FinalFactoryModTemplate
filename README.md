@@ -12,7 +12,6 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 1. Download the required Unity version
 1. Navigate to your Final Factory installation folder and then `finalfactory_data/Managed/`
 1. Grab the following DLL's from that folder:
-  * KNN.dll
   * FFCore.dll
   * FFSystems.dll
   * FFComponents.dll

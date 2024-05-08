@@ -31,7 +31,10 @@ namespace Editor
       var pluginTempFolder = Path.Combine(projectFolder, "PluginTemp");
       var buildFolder = Path.Combine(projectFolder, "build");
 
-      Directory.Delete(pluginTempFolder, true);
+      if (Directory.Exists(pluginTempFolder) || File.Exists(pluginTempFolder)) {
+        Directory.Delete(pluginTempFolder, true);
+      }
+      
       if (Directory.Exists(pluginTempFolder) || File.Exists(pluginTempFolder))
       {
         throw new BuildFailedException("PluginTemp folder is in use.");
