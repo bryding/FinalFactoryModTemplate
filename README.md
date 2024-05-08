@@ -18,20 +18,20 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
   * FFTechnology.dll
 1. Copy these DLL's to the `Assets/FinalFactoryDlls` folder in this project
 1. Open the root folder in Unity
-1. Place a preview file for Steam (Must be <1MB) in the template project root folder.  It must be called Preview.png or Preview.jpg
+1. Place a preview file for Steam (Must be \<1MB) in the template project root folder.  It must be called Preview.png or Preview.jpg
 
 ## Building your mod
 
 This repo comes with an editor script that will put the managed and burst DLL's into a folder of your choosing. 
 
-1. Navigate to the top menu in Unity, click Modding -> Build X64 Mod to build your mod.  Your mod will build in the <project root>/build folder
+1. Navigate to the top menu in Unity, click Modding \-\> Build X64 Mod to build your mod.  Your mod will build in the \<project root\>/build folder
 
 ## Installing your mod
 There are two ways you can install your mod:
 
-1. Manually copy the folder in <project root>/build to the `C:\Users\<user>\AppData\LocalLow\Never Games\finalfactory\mods` folder 
+1. Manually copy the folder in \<project root\>/build to the `C:\Users\<user>\AppData\LocalLow\Never Games\finalfactory\mods` folder 
 OR
-1. Navigate to the top menu in Unity, click Modding -> Build and Install  (this will build your mod and install it into the folder listed above)
+1. Navigate to the top menu in Unity, click Modding \-\> Build and Install  (this will build your mod and install it into the folder listed above)
 
 Then start Final Factory and your mod should load on startup
 
