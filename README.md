@@ -40,7 +40,7 @@ Then start Final Factory and your mod should load on startup
 1. Go to the Mod Menu
 1. Next to your mod, there should be a blue ^ icon
 1. Click the icon and it will upload to the workshop.  Note: It may take a few minutes for the workshop to show your mod.  Once it's fully published, refreshing the screen will remove the ^ icon
-1. If you want to upload your mod again, increment your mod version, rebuild, and the upload icon will reappear
+1. If you want to upload your mod again, increment your mod version, rebuild, reinstall, and the upload icon will reappear
 
 ## The Basics
 
