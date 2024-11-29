@@ -23,6 +23,10 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 1. Open the root folder in Unity
 1. Place a preview image file for Steam (Must be \<1MB) in the template project root folder.  It must be called Preview.png or Preview.jpg
   * This is the image that will show for your mod on the steam workshop when you upload the mod
+  
+> WARNING
+> Known Issue: When you first open the project, you may get error that assemblies failed to load (e.g. Unity.Netcode.Runtime).  
+> Simply clear these errors and restart the Unity project, and the errors will go away.
 
 ## Building your mod
 
