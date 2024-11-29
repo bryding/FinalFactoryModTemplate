@@ -11,14 +11,18 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 1. Clone the repo (the zip doesn't work)
 1. Download the required Unity version
 1. Navigate to your Final Factory installation folder and then `finalfactory_data/Managed/`
+  * For example: "C:\Program Files\Steam\steamapps\common\FinalFactory\finalfactory_Data\Managed"
+  * If you compiled Final Factory locally, it would be in the builds folder.
 1. Grab the following DLL's from that folder:
   * FFCore.dll
   * FFSystems.dll
   * FFComponents.dll
   * FFTechnology.dll
+  * FFNetcode.dll (If present)
 1. Copy these DLL's to the `Assets/FinalFactoryDlls` folder in this project
 1. Open the root folder in Unity
-1. Place a preview file for Steam (Must be \<1MB) in the template project root folder.  It must be called Preview.png or Preview.jpg
+1. Place a preview image file for Steam (Must be \<1MB) in the template project root folder.  It must be called Preview.png or Preview.jpg
+  * This is the image that will show for your mod on the steam workshop when you upload the mod
 
 ## Building your mod
 

@@ -341,7 +341,7 @@ public class UserModLoader : IUserModLoader
         new()
         {
           Name = "Asteroid Research",
-          Value = 10
+          ValueFp = 10
         }
       },
       Rewards = new List<TechnologyConfig.TechnologyRewardFunction>()
@@ -368,7 +368,7 @@ public class UserModLoader : IUserModLoader
         new()
         {
           Name = "Planetary Research",
-          Value = 200
+          ValueFp = 200
         }
       },
       Rewards = new List<TechnologyConfig.TechnologyRewardFunction>()
