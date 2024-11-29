@@ -4,7 +4,7 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 
 ## Requirements
 
-* Unity 2022.3.17f1
+* Unity 2022.3.39f1
 
 ## Getting Started
 
@@ -23,6 +23,7 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 1. Open the root folder in Unity
 1. Place a preview image file for Steam (Must be \<1MB) in the template project root folder.  It must be called Preview.png or Preview.jpg
   * This is the image that will show for your mod on the steam workshop when you upload the mod
+1. Install the Unity hub, and use the unity hub to open this project folder.  This will prompt to install Unity 2022.3.39f1.
   
 > WARNING  
 > Known Issue: When you first open the project, you may get error that assemblies failed to load (e.g. Unity.Netcode.Runtime).  
