@@ -255,6 +255,7 @@ public class UserModLoader : IUserModLoader
 
   public void PostInitializationHook()
   {
+    Debug.Log("Post initialization for Random Movement Mod started...");
     // Update a single item's config example
     var itemConfig = Ecs.GetSingleton<ItemConfig>();
     var terrainConfigs = itemConfig.TerrainConfigs;
@@ -291,8 +292,10 @@ public class UserModLoader : IUserModLoader
     // Get existing data and stuff
     var realConnector = itemConfig.GetPrefabForName("Connector");
     var gherikConnector = itemConfig.GetPrefabForName("GherikConnector");
+    Debug.Log("Loading Astero Items for mod...");
     var gherikId = gherikConnector.GetComponent<AsteroItem>().ConfigIndex;
     var realId = realConnector.GetComponent<AsteroItem>().ConfigIndex;
+    Debug.Log("Loaded Astero Item Components...");
 
     var prefabs = itemConfig.ItemPrefabs;
 
@@ -300,6 +303,7 @@ public class UserModLoader : IUserModLoader
     prefabs[gherikId] = realConnector;
     itemConfig.PlaceableConfigLookup[gherikId] = itemConfig.PlaceableConfigLookup[realId];
 
+    Debug.Log("Loading Placeable for connector...");
     // Update the placeable component data from the real connector
     var realPlaceable = realConnector.GetComponent<Placeable>();
     // YOU MUST UPDATE THE ITEM IDENTIFIER HERE OR THE PLACEALBE WILL HAVE THE OLD ITEM ID ON IT 
@@ -311,6 +315,7 @@ public class UserModLoader : IUserModLoader
     var gherikPower = itemConfig.PowerConfigLookup[gherikId];
     gherikPower.BaseIdlePower = 50;
     itemConfig.PowerConfigLookup[gherikId] = gherikPower;
+    Debug.Log("Post initialization for Random Movement Mod done.");
   }
 
   public void OnGameStart(Canvas inGameUiCanvas)
