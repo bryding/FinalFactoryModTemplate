@@ -2,6 +2,16 @@
 
 This is the official documentation on how to mod Final Factory and how its internal systems work.
 
+## Reverse Engineering
+
+You may (or may not) have noticed, but Final Factory does not contain a restrictive EULA preventing you from decompiling
+or reverse engineering for the purposes of mod development.  **This is intentional.**
+
+The developers of Final Factory strongly encourage you to use the necessary tools, including reverse engineering, for
+the purpose of mod development.  Please do not use our sources, assets, and other IP to make competing products or for 
+other commercial purposes--but otherwise, we're here to support you on your Modding journey.  Please reach out in 
+Discord--we're happy to help and often share source code snippets to help.
+
 ## Configuration vs Behavioral Mods
 
 There are two types ways to mod Final Factory:
