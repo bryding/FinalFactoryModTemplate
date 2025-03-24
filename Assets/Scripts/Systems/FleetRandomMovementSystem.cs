@@ -4,9 +4,11 @@ using FFComponents.UnitStates.Combat;
 using FFCore.Extensions;
 using FFCore.Systems;
 using FFSystems.Core;
+using FFSystems.UnitStateMachine;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
+using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Mathematics.FixedPoint;
 using Unity.Transforms;
@@ -35,10 +37,10 @@ namespace Systems
         Elapsed = ElapsedGameTime,
         Seed = MasterSeed
       };
-      // Dependency = job.Schedule(CachedEntityQuery, 
+      Dependency = job.Schedule(CachedEntityQuery, 
       // //Make sure this system runs after FleetIdleSystem has finished running.  If not, FleetIdleSystem will override
       // //each ship's movement and make the FleetIdleSystem's movement changes have no effect.
-      // JobHandle.CombineDependencies(Dependency, World.Unmanaged.GetExistingSystemState<FleetIdleSystem>().Dependency));
+      JobHandle.CombineDependencies(Dependency, World.Unmanaged.GetExistingSystemState<FleetIdleSystem>().Dependency));
     }
 
     [BurstCompile]
