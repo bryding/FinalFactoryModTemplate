@@ -6,7 +6,7 @@ public class UserMod : IUserMod
 {
   public string ID => "RandomMovementExample";
   public string FullName => "Random Fleet Movement";
-  public string Description => "A mod that teleports your ships around you as you move.";
+  public string Description => "Example Mod for Mod Authors: Mod that randomly teleports your ships around you as you move.";
   public string Author => "Ben";
   public string EmailContact => "mod@nevergames.com";
   public string Website => "http://nevergames.com";
