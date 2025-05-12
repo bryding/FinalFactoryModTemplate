@@ -135,4 +135,4 @@ entities containing <DeletionMarker> by using a .WithNone\<DeletionMarker\>() in
 
 If you have any last minute cleanup you wish to trigger for entities that are about to be deleted, this **SHOULD BE**
 performed in FFControllerLateGroup, not FFFixedLateGroup.  Entities are deleted on every frame, but at high FPS, Fixed
-groups do not run on every frame, so a cleanup system in Fixed may not see an entity before it's deleted.
+groups do not run on every frame, so a cleanup system in Fixed may never see an entity before it's deleted.
