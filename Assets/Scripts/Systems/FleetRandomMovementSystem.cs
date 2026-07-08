@@ -13,7 +13,7 @@ using Unity.Transforms;
 
 namespace Systems
 {
-  [UpdateInGroup(typeof(FFPreTransformControllerGroup))]
+  [UpdateInGroup(typeof(FFControllerPreTransformGroup))]
   public partial class FleetRandomMovementSystem : FinalFactorySystemBase
   {
     protected override void OnCreate()
