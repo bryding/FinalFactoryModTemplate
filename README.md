@@ -10,20 +10,21 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 
 1. Clone the repo (the zip doesn't work)
 1. Download the required Unity version
-1. Navigate to your Final Factory installation folder and then `finalfactory_data/Managed/`
-  * For example: "C:\Program Files\Steam\steamapps\common\FinalFactory\finalfactory_Data\Managed"
-  * If you compiled Final Factory locally, it would be in the builds folder.
-1. Grab the following DLL's from that folder:
-  * FFCore.dll
-  * FFSystems.dll
-  * FFComponents.dll
-  * FFTechnology.dll
-  * FFNetcode.dll
-1. Copy these DLL's to the `Assets/FinalFactoryDlls` folder in this project
-1. Open the root folder in Unity
+1. Copy the required Final Factory DLL's into the project **before** you open it in Unity.  The project references these DLL's, so they must be in place the first time the editor opens.
+  * Rename `finalfactory.properties.template` to `finalfactory.properties`, then edit it and set `FinalFactoryDir` to your Final Factory install folder (the one containing `finalfactory_Data`).  Use forward slashes; they work on Windows too.
+    * For example: `FinalFactoryDir=C:/Program Files/Steam/steamapps/common/FinalFactory`
+    * If you compiled Final Factory locally, point it at your builds folder.
+  * Run the copy script from the project root:
+    * Windows: `copy-finalfactory-dlls.cmd` (double-click it, or run it from a terminal)
+    * Mac / Linux: `./copy-finalfactory-dlls.sh`
+  * This copies the following DLL's from `<install>/finalfactory_Data/Managed/` into `Assets/FinalFactoryDlls`: FFCore.dll, FFSystems.dll, FFComponents.dll, FFTechnology.dll, FFNetcode.dll
+  * Your `finalfactory.properties` is gitignored (only the `.template` is tracked), so your local path stays out of git.  When the game updates, just re-run the script to refresh the DLL's.
+1. Install the Unity hub, and use the unity hub to open this project folder.  This will prompt to install the exact Unity version this project uses (currently 6000.3.19f1, as recorded in `ProjectSettings/ProjectVersion.txt`).
 1. Place a preview image file for Steam (Must be \<1MB) in the template project root folder.  It must be called Preview.png or Preview.jpg
   * This is the image that will show for your mod on the steam workshop when you upload the mod
-1. Install the Unity hub, and use the unity hub to open this project folder.  This will prompt to install the exact Unity version this project uses (currently 6000.3.19f1, as recorded in `ProjectSettings/ProjectVersion.txt`).
+
+> NOTE  
+> Once the project is open in Unity, you can also manage the DLL's from the menu: `Modding` \-\> `Set Final Factory Path...` (picks the folder and writes `finalfactory.properties` for you) and `Modding` \-\> `Copy Final Factory DLLs` (re-copies them).  These are just a convenience for after the first open — the initial copy above must be done before the editor is opened.
   
 > WARNING  
 > Known Issue: When you first open the project, you may get error that assemblies failed to load (e.g. Unity.Netcode.Runtime).  

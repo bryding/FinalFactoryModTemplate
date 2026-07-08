@@ -11,6 +11,151 @@ namespace Editor
 {
   public static class ScriptBatch
   {
+    private const string PropertiesFileName = "finalfactory.properties";
+    private const string FinalFactoryDirKey = "FinalFactoryDir";
+    private const string WindowsCopyScript = "copy-finalfactory-dlls.cmd";
+    private const string UnixCopyScript = "copy-finalfactory-dlls.sh";
+
+    [MenuItem("Modding/Set Final Factory Path...", false, 0)]
+    public static void SetFinalFactoryPath()
+    {
+      var propsFile = Path.Combine(GetProjectFolder(), PropertiesFileName);
+      var current = ReadFinalFactoryDir(propsFile);
+      var start = !string.IsNullOrEmpty(current) && Directory.Exists(current) ? current : "";
+
+      var selected = EditorUtility.OpenFolderPanel(
+        "Select your Final Factory installation folder", start, "");
+      if (string.IsNullOrEmpty(selected))
+      {
+        // User cancelled the folder picker.
+        return;
+      }
+
+      WriteFinalFactoryDir(propsFile, selected);
+      Debug.Log($"Saved Final Factory path to {propsFile}: {selected}");
+
+      if (EditorUtility.DisplayDialog("Final Factory Path",
+            $"Saved path to {PropertiesFileName}. Copy the required DLLs now?", "Copy DLLs", "Later"))
+      {
+        CopyFinalFactoryDlls();
+      }
+    }
+
+    /// <summary>
+    ///   Runs the platform copy script (copy-finalfactory-dlls.cmd / .sh), which reads
+    ///   finalfactory.properties and copies the required DLLs. The copy logic lives in those scripts so it
+    ///   isn't duplicated here.
+    /// </summary>
+    [MenuItem("Modding/Copy Final Factory DLLs", false, 1)]
+    public static void CopyFinalFactoryDlls()
+    {
+      var projectFolder = GetProjectFolder();
+      var isWindows = Application.platform == RuntimePlatform.WindowsEditor;
+      var scriptName = isWindows ? WindowsCopyScript : UnixCopyScript;
+      var scriptPath = Path.Combine(projectFolder, scriptName);
+
+      if (!File.Exists(scriptPath))
+      {
+        EditorUtility.DisplayDialog("Copy Final Factory DLLs", $"Could not find the copy script:\n{scriptPath}", "OK");
+        return;
+      }
+
+      var startInfo = new System.Diagnostics.ProcessStartInfo
+      {
+        WorkingDirectory = projectFolder,
+        UseShellExecute = false,
+        RedirectStandardOutput = true,
+        RedirectStandardError = true,
+        CreateNoWindow = true
+      };
+      if (isWindows)
+      {
+        startInfo.FileName = "cmd.exe";
+        startInfo.Arguments = $"/c \"{scriptPath}\"";
+      }
+      else
+      {
+        startInfo.FileName = "/bin/bash";
+        startInfo.Arguments = $"\"{scriptPath}\"";
+      }
+
+      string output;
+      int exitCode;
+      try
+      {
+        using var process = System.Diagnostics.Process.Start(startInfo);
+        // Output is small (a handful of lines), so reading each stream to end in turn won't deadlock.
+        var stdout = process.StandardOutput.ReadToEnd();
+        var stderr = process.StandardError.ReadToEnd();
+        process.WaitForExit();
+        exitCode = process.ExitCode;
+        output = (stdout + stderr).Trim();
+      }
+      catch (System.Exception e)
+      {
+        Debug.LogError($"Failed to run {scriptName}: {e}");
+        EditorUtility.DisplayDialog("Copy Final Factory DLLs", $"Failed to run {scriptName}:\n{e.Message}", "OK");
+        return;
+      }
+
+      if (exitCode == 0)
+      {
+        Debug.Log($"Copy Final Factory DLLs succeeded:\n{output}");
+        AssetDatabase.Refresh();
+        EditorUtility.DisplayDialog("Copy Final Factory DLLs", string.IsNullOrEmpty(output) ? "Done." : output, "OK");
+      }
+      else
+      {
+        Debug.LogError($"{scriptName} failed (exit {exitCode}):\n{output}");
+        EditorUtility.DisplayDialog("Copy Final Factory DLLs", $"Failed (exit code {exitCode}):\n\n{output}", "OK");
+      }
+    }
+
+    private static string GetProjectFolder()
+    {
+      return Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
+    }
+
+    private static string ReadFinalFactoryDir(string propsFile)
+    {
+      if (!File.Exists(propsFile))
+      {
+        return null;
+      }
+
+      foreach (var raw in File.ReadAllLines(propsFile))
+      {
+        var line = raw.Trim();
+        if (line.Length == 0 || line.StartsWith("#"))
+        {
+          continue;
+        }
+
+        var idx = line.IndexOf('=');
+        if (idx < 0)
+        {
+          continue;
+        }
+
+        if (line.Substring(0, idx).Trim() == FinalFactoryDirKey)
+        {
+          return line.Substring(idx + 1).Trim();
+        }
+      }
+
+      return null;
+    }
+
+    private static void WriteFinalFactoryDir(string propsFile, string dir)
+    {
+      // Forward slashes keep the value valid in a .properties file and still work on Windows.
+      var normalized = dir.Replace("\\", "/");
+      using var file = new StreamWriter(propsFile, false);
+      file.WriteLine("# Local Final Factory setup. This file is gitignored.");
+      file.WriteLine("# Path to your Final Factory install folder (the one containing finalfactory_Data).");
+      file.WriteLine($"{FinalFactoryDirKey}={normalized}");
+    }
+
     [MenuItem("Modding/Build X64 Mod")]
     public static void BuildGameWithBurst()
     {
