@@ -4,21 +4,30 @@ This repo demonstrates how to create basic mods in Final Factory and can be used
 
 ## Requirements
 
-* Unity 2022.3.17f1
+* Unity 6000.0.35f1
 
 ## Getting Started
 
 1. Clone the repo (the zip doesn't work)
 1. Download the required Unity version
 1. Navigate to your Final Factory installation folder and then `finalfactory_data/Managed/`
+  * For example: "C:\Program Files\Steam\steamapps\common\FinalFactory\finalfactory_Data\Managed"
+  * If you compiled Final Factory locally, it would be in the builds folder.
 1. Grab the following DLL's from that folder:
   * FFCore.dll
   * FFSystems.dll
   * FFComponents.dll
   * FFTechnology.dll
+  * FFNetcode.dll
 1. Copy these DLL's to the `Assets/FinalFactoryDlls` folder in this project
 1. Open the root folder in Unity
-1. Place a preview file for Steam (Must be \<1MB) in the template project root folder.  It must be called Preview.png or Preview.jpg
+1. Place a preview image file for Steam (Must be \<1MB) in the template project root folder.  It must be called Preview.png or Preview.jpg
+  * This is the image that will show for your mod on the steam workshop when you upload the mod
+1. Install the Unity hub, and use the unity hub to open this project folder.  This will prompt to install Unity 6000.0.35f1.
+  
+> WARNING  
+> Known Issue: When you first open the project, you may get error that assemblies failed to load (e.g. Unity.Netcode.Runtime).  
+> Simply clear these errors and restart the Unity project, and the errors will go away.
 
 ## Building your mod
 
