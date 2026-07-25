@@ -11,12 +11,29 @@
       },
       "hash": "0cfac4e89632c35e503f60918f87c88476fdb9de"
     },
+    "com.coplaydev.unity-mcp": {
+      "version": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#v10.0.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.modules.animation": "1.0.0",
+        "com.unity.modules.imageconversion": "1.0.0",
+        "com.unity.modules.physics": "1.0.0",
+        "com.unity.modules.physics2d": "1.0.0",
+        "com.unity.modules.uielements": "1.0.0",
+        "com.unity.modules.screencapture": "1.0.0",
+        "com.unity.modules.unitywebrequest": "1.0.0",
+        "com.unity.nuget.newtonsoft-json": "3.0.2",
+        "com.unity.test-framework": "1.1.31"
+      },
+      "hash": "d49ae2953580f3481beb1e084a1da2682f0b5610"
+    },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "ceac8d6946b1125fe782cd171fbcb245b567dbf9"
+      "hash": "e5acc106ee196bc5a32fb14cdf2987b0f96d11e0"
     },
     "com.nevergames.mathematics.fixedpoint": {
       "version": "https://github.com/bryding/Unity.Mathematics.FixedPoint.git",
@@ -32,7 +49,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "4e8f65f260eba16ed3cc97a3e6a701b2d5e7c773"
+      "hash": "551cc9b04f441fb1609753595741b323c8596d1a"
     },
     "com.unity.burst": {
       "version": "1.8.29",
@@ -115,7 +132,7 @@
       "depth": 0,
       "source": "builtin",
       "dependencies": {
-        "com.unity.ide.visualstudio": "2.0.26",
+        "com.unity.ide.visualstudio": "2.0.27",
         "com.unity.ide.rider": "3.0.40",
         "com.unity.editorcoroutines": "1.1.0",
         "com.unity.performance.profile-analyzer": "1.4.0",
@@ -133,8 +150,8 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.26",
-      "depth": 1,
+      "version": "2.0.27",
+      "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.test-framework": "1.1.33"

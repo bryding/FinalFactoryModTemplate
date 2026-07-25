@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.akb.knn": "https://github.com/bryding/KNN.git",
+    "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#v10.0.0",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.nevergames.mathematics.fixedpoint": "https://github.com/bryding/Unity.Mathematics.FixedPoint.git",
     "com.nevergames.steamworks.facepunch": "https://github.com/Final-Factory/Facepunch.Steamworks.git?path=/UnityPlugin",
@@ -10,6 +11,7 @@
     "com.unity.entities": "1.4.7",
     "com.unity.entities.graphics": "1.4.20",
     "com.unity.feature.development": "1.0.2",
+    "com.unity.ide.visualstudio": "2.0.27",
     "com.unity.multiplayer.center": "1.0.1",
     "com.unity.netcode.gameobjects": "2.13.0",
     "com.unity.nuget.newtonsoft-json": "3.2.2",
