@@ -101,6 +101,18 @@ Thumbs.db
 # ============ #
 
 /[Dd]evbuild/
-/Assets/FinalFactoryDlls/
+
+# The game DLLs are local copies (copy-finalfactory-dlls script) — never commit the binaries,
+# but DO track the .meta files: they pin Auto Reference OFF on each DLL, which keeps the game's
+# global Debug type from colliding with the Debug alias inside Unity packages (netcode,
+# shadergraph, burst) and breaking their compile.
+/Assets/FinalFactoryDlls/*.dll
+
+# Entities scene-import cache — generated, never hand-edited.
+/Assets/SceneDependencyCache/
+/Assets/SceneDependencyCache.meta
 
 finalfactory.properties
+# Generated IDE/solution files
+*.slnx
+/.vscode/

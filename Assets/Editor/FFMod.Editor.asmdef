@@ -1,0 +1,24 @@
+{
+    "name": "FFMod.Editor",
+    "rootNamespace": "",
+    "references": [
+        "MCPForUnity.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "FFCore.dll",
+        "FFComponents.dll",
+        "FFSystems.dll",
+        "FFTechnology.dll",
+        "FFNetcode.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

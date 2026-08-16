@@ -19,6 +19,7 @@ public class UserModLoader : IUserModLoader
   private const string LothBat = "Loth Bat";
   private const string LothAssembler = "Loth Assembler";
   private const string LothPrinter = "Loth Printer";
+  private const string GherikConnector = "GherikConnector";
 
   public List<EntityConfig> DefineEntityConfigs()
   {
@@ -226,14 +227,21 @@ public class UserModLoader : IUserModLoader
 
     };
 
+    // A minimal placeable that starts life as a clone of the game's Connector. The interesting
+    // part happens in PostInitializationHook below, where its prefab and configs are copied from
+    // the real Connector — a useful pattern when your modded item is a variant of an existing one.
     var gherikConnector = new EntityConfig
     {
       ItemConfig = new AsteroItemConfigData
       {
-        Name = "Connector"
+        Name = GherikConnector,
+        Description = "A Connector variant cloned from the real thing in PostInitializationHook.",
+        StackSizeLimit = 50,
+        ItemCategory = ItemCategory.Stations
       },
       RenderingData = new RenderingData
       {
+        // The name of an existing model from the game, so the mod loader reuses that model.
         ModelPath = "Connector"
       },
       PlaceableConfig = new PlaceableConfig
@@ -242,14 +250,17 @@ public class UserModLoader : IUserModLoader
         Width = 1,
         Height = 1
       },
-      IconAssetName = "GConnector"
+      // Same reuse trick as ModelPath: name an existing game icon. If you want your own look,
+      // drop a PNG in Assets/Resources/Icons and use its file name here instead.
+      IconAssetName = "Connector"
     };
 
     return new List<EntityConfig>
     {
       lothBat,
       lothAssembler,
-      lothPrinter
+      lothPrinter,
+      gherikConnector
     };
   }
 

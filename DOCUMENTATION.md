@@ -110,14 +110,30 @@ simulation is predictable.
 
 ### Rate Limiting
 
-In future versions, rate limiting will be turned on (likely 60UPS--Updates per Second).  This is required for the 
-multiplayer rollout. When this happens, Delta time for Fixed groups will be 1000ms/UPS, which means that if the game 
-cannot keep up, the user will experience time dilation in order to keep simulation consistent.  This is similar to how 
-Factorio works.  You can see this behavior by running "setRateLimit <UPS>" in the console.
+Rate limiting is **live**: the simulation runs on a fixed heartbeat — 60 UPS (updates per second) in single-player
+and 16 UPS in multiplayer, where the heartbeat is driven by the network lockstep clock.  Delta time for Fixed groups
+is a fixed per-heartbeat step; if the machine cannot keep up, the game time-dilates to keep simulation consistent
+(similar to Factorio).
 
-If FPS > UPS, you will see multiple calls to Update() methods in Controller groups for each
-Fixed group's Update() call.  If FPS goes below target UPS, Fixed system groups will run on every Controller Update() 
-call.
+If FPS > UPS, Controller groups Update() several times for each Fixed group Update().  If FPS drops below the target
+UPS, Fixed groups run at most once per rendered frame and simulation slows down rather than desyncing.
+
+### Multiplayer determinism rules
+
+Final Factory multiplayer is **deterministic lockstep**: every peer runs the same simulation and must produce
+bit-identical results.  Mod systems that touch factory/simulation state run inside that simulation on every peer, so
+they must follow the same rules as the game's own systems.  Breaking them produces desyncs that are miserable to
+debug — the game diverges silently and the session eventually drops.
+
+1. **Fixed-point math only** for simulation state: use `fp` from `Unity.Mathematics.FixedPoint`, never `float`
+   or `double`.  Float math rounds differently across CPUs; `fp` doesn't.
+2. **Simulation state changes belong in Fixed groups.**  Controller groups run at render rate, which differs per
+   machine — a Controller system that writes factory state will desync.
+3. **No wall-clock, frame-rate, or `UnityEngine.Random` inputs** to simulation state.  For randomness, use the
+   per-entity helper the example system uses: `RandomSystem.GetRandomForEntity(Seed, Elapsed, entity)` — it's
+   seeded from deterministic inputs, so every peer draws the same numbers.
+4. **Presentation reads simulation, never the other way.**  Anything float-based (transforms used for rendering,
+   animation state, camera) is presentation; a simulation system that reads it imports non-determinism.
 
 ## Entity Lifecycle & Deletion
 
@@ -136,3 +152,39 @@ entities containing <DeletionMarker> by using a .WithNone\<DeletionMarker\>() in
 If you have any last minute cleanup you wish to trigger for entities that are about to be deleted, this **SHOULD BE**
 performed in FFControllerLateGroup, not FFFixedLateGroup.  Entities are deleted on every frame, but at high FPS, Fixed
 groups do not run on every frame, so a cleanup system in Fixed may never see an entity before it's deleted.
+
+## How the game loads your mod
+
+Understanding the load pipeline makes rejections easy to diagnose.  On startup the game scans its mods folder
+(`.../Never Games/finalfactory/mods/`), and for each subfolder:
+
+1. Reads `manifest.properties` (written for you by the `Modding > Build` menu) and checks the folder name matches
+   the manifest's `ID`.
+2. Inspects `<ID>.dll` **reflection-only first** (a `MetadataLoadContext`), before actually loading it.  Unity's
+   runtime can never unload an assembly, and one incompatible DLL would brick the game's ECS type system — so
+   incompatibilities are detected up front and the mod is rejected cleanly instead.
+3. Checks the mod's referenced Entities/game assembly versions against the running game (the compile-against-current-
+   DLLs rule).
+4. Loads the assembly, finds your `IUserMod`, and if present your `IUserModLoader`, then runs:
+   `DefineEntityConfigs()` → config/system initialization → `AddTechnologies()` → `PostInitializationHook()` →
+   (on new/loaded game) `OnGameStart(...)`.
+5. Loads `<ID>_win_x86_64.dll` — your Burst-compiled native code — only if it was built against the **exact** game
+   version; otherwise the game silently falls back to your managed code (slower, but correct) until you rebuild.
+6. New ECS systems in your assembly are discovered and scheduled automatically.
+
+A mod is **rejected** (shown disabled in the Mod Menu with a reason) when: the ID contains spaces or illegal
+characters; the folder name ≠ manifest ID; the manifest or DLL is missing; the assembly contains zero or multiple
+`IUserMod` implementations; a declared dependency is missing; or the DLL was compiled against an incompatible game
+version.
+
+## Testing your mod
+
+**Mod code never runs inside the mod template's own Unity editor** — the template is a build environment.  Systems
+are registered from mod assemblies only in real player builds of the game.  The development loop is:
+
+1. `Modding > Build and Install` in the template project.
+2. Launch Final Factory (Steam copy is fine).
+3. Confirm the mod is listed and enabled in the Mod Menu; then test in a game.
+
+For logs, the game's `Player.log` lives next to the mods folder
+(`.../Never Games/finalfactory/`) — mod load errors and your own `Debug.Log` output land there.

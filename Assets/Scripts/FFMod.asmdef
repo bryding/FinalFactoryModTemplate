@@ -14,8 +14,14 @@
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "FFCore.dll",
+        "FFComponents.dll",
+        "FFSystems.dll",
+        "FFTechnology.dll",
+        "FFNetcode.dll"
+    ],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],

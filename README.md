@@ -1,104 +1,126 @@
 # Final Factory Mod Template
 
-This repo demonstrates how to create basic mods in Final Factory and can be used as a template for Final Factory mods generally.
+A working, buildable example mod for [Final Factory](https://store.steampowered.com/app/1383150/Final_Factory/), meant to be used as the starting point for your own mods. It adds three items (a combat ship, an assembler, and a printer), a technology branch to unlock them, a couple of config tweaks, and one custom ECS system — so every kind of mod you might write has an example to crib from.
+
+Questions? Ask in the [Final Factory Discord](https://discord.gg/finalfactory) `#modding` channel — we're happy to help, and we often share game source snippets to unblock modders.
 
 ## Requirements
 
-* Unity 6000.3 (get the latest 6000.3.x release, e.g. 6000.3.19f1)
+* Unity **6000.3.19f1** (the exact version is recorded in `ProjectSettings/ProjectVersion.txt`; Unity Hub will offer to install it when you open the project)
+* A Final Factory install (Steam, or a local build)
 
-## Getting Started
+## Getting started
 
-1. Clone the repo (the zip doesn't work)
-1. Download the required Unity version
-1. Copy the required Final Factory DLL's into the project **before** you open it in Unity.  The project references these DLL's, so they must be in place the first time the editor opens.
-  * Rename `finalfactory.properties.template` to `finalfactory.properties`, then edit it and set `FinalFactoryDir` to your Final Factory install folder (the one containing `finalfactory_Data`).  Use forward slashes; they work on Windows too.
-    * For example: `FinalFactoryDir=C:/Program Files/Steam/steamapps/common/FinalFactory`
-    * If you compiled Final Factory locally, point it at your builds folder.
-  * Run the copy script from the project root:
-    * Windows: `copy-finalfactory-dlls.cmd` (double-click it, or run it from a terminal)
-    * Mac / Linux: `./copy-finalfactory-dlls.sh`
-  * This copies the following DLL's from `<install>/finalfactory_Data/Managed/` into `Assets/FinalFactoryDlls`: FFCore.dll, FFSystems.dll, FFComponents.dll, FFTechnology.dll, FFNetcode.dll
-  * Your `finalfactory.properties` is gitignored (only the `.template` is tracked), so your local path stays out of git.  When the game updates, just re-run the script to refresh the DLL's.
-1. Install the Unity hub, and use the unity hub to open this project folder.  This will prompt to install the exact Unity version this project uses (currently 6000.3.19f1, as recorded in `ProjectSettings/ProjectVersion.txt`).
-1. Place a preview image file for Steam (Must be \<1MB) in the template project root folder.  It must be called Preview.png or Preview.jpg
-  * This is the image that will show for your mod on the steam workshop when you upload the mod
+1. **Clone the repo** (use `git clone` — downloading the zip does not work because of Git LFS).
+2. **Copy the game DLLs into the project — before opening it in Unity.** The project references the game's assemblies, so they must exist the first time the editor opens:
+   * Rename `finalfactory.properties.template` to `finalfactory.properties`, then edit it and set `FinalFactoryDir` to your Final Factory install folder (the one containing `finalfactory_Data`). Use forward slashes; they work on Windows too.
+     * Steam example: `FinalFactoryDir=C:/Program Files (x86)/Steam/steamapps/common/Final Factory`
+     * If you build the game locally, point it at your build output instead.
+   * Run the copy script from the project root:
+     * Windows: `copy-finalfactory-dlls.cmd` (double-click it, or run it from a terminal)
+     * Mac / Linux: `./copy-finalfactory-dlls.sh`
+   * This copies `FFCore.dll`, `FFSystems.dll`, `FFComponents.dll`, `FFTechnology.dll`, and `FFNetcode.dll` into `Assets/FinalFactoryDlls/`. Your `finalfactory.properties` is gitignored, so your local path stays out of git. **When the game updates, re-run the script** and rebuild your mod.
+3. **Open the project** with Unity Hub (it will prompt to install the exact editor version if you don't have it).
+4. **Add a Steam Workshop preview image**: put a `Preview.png` or `Preview.gif` (under 1 MB — Steam's limit) in the project root. The build fails with a clear error if it's missing or too big.
 
-> NOTE  
-> Once the project is open in Unity, you can also manage the DLL's from the menu: `Modding` \-\> `Set Final Factory Path...` (picks the folder and writes `finalfactory.properties` for you) and `Modding` \-\> `Copy Final Factory DLLs` (re-copies them).  These are just a convenience for after the first open — the initial copy above must be done before the editor is opened.
-  
-> WARNING  
-> Known Issue: When you first open the project, you may get error that assemblies failed to load (e.g. Unity.Netcode.Runtime).  
-> Simply clear these errors and restart the Unity project, and the errors will go away.
+> NOTE
+> Once the project is open, the DLL steps are also available as menu items: `Modding > Set Final Factory Path...` and `Modding > Copy Final Factory DLLs`. They're a convenience for later — the *first* copy must happen before the editor ever opens.
 
-## Building your mod
+> WARNING
+> Known issue: on first open you may see "assembly failed to load" errors (e.g. `Unity.Netcode.Runtime`). Clear the errors and restart Unity once; they don't come back.
 
-This repo comes with an editor script that will put the managed and burst DLL's into a folder of your choosing. 
+## Build, install, test
 
-1. Navigate to the top menu in Unity, click Modding \-\> Build X64 Mod to build your mod.  Your mod will build in the \<project root\>/build folder
+1. `Modding > Build X64 Mod` builds into `<project root>/build/<YourModID>/` — the managed DLL, the Burst native DLL, an AssetBundle with your prefabs/icons, `manifest.properties`, and your preview image.
+2. `Modding > Build and Install` additionally copies that folder into the game's mod directory:
+   * Windows: `%USERPROFILE%\AppData\LocalLow\Never Games\finalfactory\mods\<YourModID>`
+   * macOS: `~/Library/Application Support/Never Games/finalfactory/mods/<YourModID>`
+3. Start Final Factory. Your mod loads at startup — check the in-game **Mod Menu** to confirm it's listed and enabled.
 
-## Installing your mod
-There are two ways you can install your mod:
+**Important: mod code only runs inside the real game.** Pressing Play in *this* Unity project does not load your mod — the template project is a build environment, not a game host. The loop is always: build → install → launch Final Factory.
 
-1. Manually copy the folder in \<project root\>/build to the `C:\Users\<user>\AppData\LocalLow\Never Games\finalfactory\mods` folder OR
-1. Navigate to the top menu in Unity, click Modding \-\> Build and Install  (this will build your mod and install it into the folder listed above)
+## Uploading to the Steam Workshop
 
-Then start Final Factory and your mod should load on startup
+1. Start Final Factory with your mod installed.
+2. Open the Mod Menu — your mod has a blue `^` icon next to it.
+3. Click it to upload. The workshop listing can take a few minutes to appear; once it's fully published, refreshing the screen removes the `^` icon.
+4. To upload an update: increment your mod version in `UserMod.cs`, rebuild, reinstall, and the upload icon reappears.
 
-## Uploading your mod to the workshop
+## The mod API
 
-1. Start up Final Factory with your mod installed
-1. Go to the Mod Menu
-1. Next to your mod, there should be a blue ^ icon
-1. Click the icon and it will upload to the workshop.  Note: It may take a few minutes for the workshop to show your mod.  Once it's fully published, refreshing the screen will remove the ^ icon
-1. If you want to upload your mod again, increment your mod version, rebuild, reinstall, and the upload icon will reappear
+Every mod implements exactly one `IUserMod` — the mod's identity (see `Assets/Scripts/UserMod.cs`):
 
-## The Basics
-
-All mods must implement exactly one `IUserMod` interface. It has the following API:
-
-```C#
-string Name { get; }
+```csharp
+string ID { get; }              // folder + workshop identity: letters/digits/underscore only, NO spaces
+string FullName { get; }
 string Description { get; }
 string Author { get; }
-ModVersion Version { get; }
+string EmailContact { get; }
+string Website { get; }
+string[] Dependencies { get; }  // IDs of mods yours requires (empty array if none)
+FFVersion ModVersion { get; }   // your mod's version, e.g. new(1, 0, 20, 0)
 ```
 
-See `Assets/Scripts/UserMod.cs`for an example.
+Optionally, implement `IUserModLoader` to actually change the game (see `Assets/Scripts/UserModLoader.cs`):
 
-Additionally, mods can optionally implement the `IUserModLoader` interface. It has the following API:
-
-```C#
-/// <summary>
-///   If you want to add any entities to the game, define them here. Each entity should be associated with an entity
-///   prefab and all the various item configs. If you don't want to add any entities, return an empty list.
-/// </summary>
-/// <returns>A list of configs associated with each new entity you want to add to the game</returns>
-List<EntityConfig> DefineEntityConfigs();
-/// <summary>
-///   Use this hook to define any logic that happens after all the configuration and systems have been loaded.
-///   The sky is the limit here. You can access all the config in the game at this point and change anything you want
-///   about the items in the game or change what systems are running.
-/// </summary>
-void PostInitializationHook();
+```csharp
+List<EntityConfig> DefineEntityConfigs(); // add new items/buildings/ships (or return an empty list)
+List<TechnologyConfig> AddTechnologies(); // add research that unlocks your items
+void PostInitializationHook();            // after all config + systems load: tweak ANY config in the game
+void OnGameStart(Canvas inGameUiCanvas);  // when a new/loaded game starts: hook UI, late setup
 ```
 
-See `Assets/Scripts/UserModLoader.cs` for an example.
+### What the examples show
 
-## Systems
+| File | Demonstrates |
+|---|---|
+| `Assets/Scripts/UserMod.cs` | The identity boilerplate |
+| `Assets/Scripts/UserModLoader.cs` | New ship/assembler/printer configs with recipes; cloning an existing entity (the Gherik Connector); editing existing item, terrain, and global config; adding technologies |
+| `Assets/Scripts/Systems/FleetRandomMovementSystem.cs` | A Burst-compiled ECS system with a job, correct system-group placement, and deterministic per-entity randomness |
+| `Assets/Scripts/Utils/ConfigUtils.cs` | A small helper for editing accepted-ship lists |
+| `Assets/Resources/` | How icons (`Icons/`) and entity prefabs (`ItemEntities/`) get into your mod's AssetBundle |
 
-You have full access to all the components and systems in Final Factory via the FFCore, FFSystems, and FFComponents DLL's. You can write new systems and burst compiled  jobs in the exact same way I would as the developer.  Any systems you add to the project will get detected in Final Factory when mods load and automatically get added to the running systems list.
+New systems you write are auto-detected when the game loads your mod — no registration call needed. For how Final Factory's systems, groups, and update timing work (and the multiplayer determinism rules your systems must follow), read **`DOCUMENTATION.md`**.
 
-See `Assets/Scripts/Systems/FleetFollowSystem.cs` for an example of a system that adds some silly behavior to ships following the player.
-<br>
-<br>
+## Multiplayer & determinism (read before writing a system)
 
-### Resources
+Final Factory multiplayer runs the simulation in deterministic lockstep on every peer. A mod system that touches factory/simulation state must follow the same rules the game's own systems do, or it will desync multiplayer sessions:
 
-If you plan on writing new systems for Final Factory, you'll need some Unity DOTS knowledge. I recommend these resources:
+* Use `fp` fixed-point math (`Unity.Mathematics.FixedPoint`) for simulation state — never `float`.
+* Put simulation logic in **Fixed** groups (`FFFixedPreTransformGroup` is the usual home); Controller groups are for presentation only.
+* Never derive simulation state from wall-clock time, frame rate, or `UnityEngine.Random` — use the per-entity `RandomSystem` helper (see `FleetRandomMovementSystem.cs`).
+* Delete entities by adding `DeletionMarker`, never `DestroyEntity` (details in `DOCUMENTATION.md`).
 
-* [Entities Manual](https://docs.unity3d.com/Packages/com.unity.entities@1.0/manual/index.html)
+## Troubleshooting
+
+| Symptom | Cause / fix |
+|---|---|
+| Mod doesn't appear in the Mod Menu | Folder name must equal your mod `ID` exactly, and the folder needs `<ID>.dll` + `manifest.properties`. `Build and Install` gets this right — manual copies often don't. |
+| "Invalid mod ID" | `ID` may only contain letters, digits, and underscores — no spaces. |
+| Mod rejected: incompatible game version | Rebuild against the current game's DLLs: re-run the copy script, then rebuild. |
+| Mod rejected: no (or multiple) `IUserMod` | Your assembly must contain exactly one `IUserMod` implementation. |
+| Burst DLL ignored in-game | The native Burst DLL is exact-game-version locked; the game silently falls back to managed code after an update until you rebuild. |
+| Hundreds of `CS0576`/`Debug` errors in a Unity package | The game DLLs got re-imported with **Auto Reference** enabled. The tracked `.meta` files under `Assets/FinalFactoryDlls/` pin it off — don't delete or regenerate them. |
+| Game update broke your mod | Re-run the DLL copy script, fix compile errors, rebuild, reinstall. |
+
+## Modding with an AI agent
+
+This repo is set up for agentic coding tools (Claude Code, Codex, etc.):
+
+* `CLAUDE.md` / `AGENTS.md` carry the project rules, the compile-verification ritual, and the determinism constraints, so an agent can work reliably out of the box.
+* `.claude/skills/` includes workflows for building + installing the mod and for adding a new item end-to-end.
+* The project ships the [MCP for Unity](https://github.com/CoplayDev/unity-mcp) bridge, which lets an agent drive the Unity editor directly (compile checks, menu items, console reading). Point your agent at this repo and ask it to "build and install the mod" to see the loop.
+
+## Learning DOTS
+
+Writing behavioral mods needs Unity DOTS (ECS) knowledge. Good starting points:
+
+* [Entities Manual](https://docs.unity3d.com/Packages/com.unity.entities@1.4/manual/index.html)
 * [Turbo Makes Games](https://www.youtube.com/c/TurboMakesGames)
 * [WAYNGames](https://www.youtube.com/@WAYNGames)
-* [Unity Discord](https://discord.gg/unity) (see #dots-forum)* 
-* [Final Factory Discord](https://discord.gg/finalfactory) (see #modding)
+* [Unity Discord](https://discord.gg/unity) — `#dots-forum`
+* [Final Factory Discord](https://discord.gg/finalfactory) — `#modding`
 
+## Reverse engineering
+
+Final Factory deliberately ships without a restrictive EULA clause against decompiling for mod development — we encourage it. Please don't use our sources, assets, or IP for competing or commercial products; otherwise, dig in, and reach out in Discord if you get stuck.

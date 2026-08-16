@@ -28,9 +28,8 @@ namespace Systems
 
     protected override void PerformSystemUpdate()
     {
-      //Calling a debug statement is very slow and should NEVER be done in an update call.  However, this makes it
-      //really easy to see that your mod is loaded and running when debugging.  Be sure to remove it before releasing
-      //your mod!
+      // Tip: if you want proof your system is running, a Debug.Log here is the easy way to see it —
+      // but logging every update is very slow, so be sure to remove it before releasing your mod.
       var job = new FleetRandomMovementJob
       {
         AllCommanders = SystemAPI.GetComponentLookup<FleetCommander>(true),
