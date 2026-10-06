@@ -16,6 +16,10 @@
 *.asset merge=unityyamlmerge eol=lf
 *.meta merge=unityyamlmerge eol=lf
 *.controller merge=unityyamlmerge eol=lf
+## Generated API reference and tools: LF everywhere, so a regeneration on Windows shows no false changes ##
+Documentation/API/** text eol=lf
+Tools/** text eol=lf
+
 ## git-lfs ##
 #Image
 *.jpg filter=lfs diff=lfs merge=lfs -text
