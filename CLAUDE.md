@@ -169,6 +169,66 @@ Note: the game currently turns multiplayer off while any mod is enabled. Followi
 lets a mod work in multiplayer once the game allows mods there; it also keeps single player correct (the
 simulation runs at 16 heartbeats a second regardless of frame rate).
 
+## Starting your own mod from this template
+
+1. `Assets/Scripts/UserMod.cs`: your `ID` (letters, digits, underscores), name, author, version.
+2. Keep the examples until you have built your first feature: the skills point at them as models
+   (`lothPrinter`, `RepairBeacon`, ...). Then remove what you do not need: the entity configs and
+   technologies in `UserModLoader.cs` and the matching lines in `PostInitializationHook`/`OnGameStart`,
+   `Assets/Scripts/Examples/`, `Assets/Scripts/Systems/FleetRandomMovementSystem.cs`, and the
+   `.meta` file next to each deleted file or folder. Icons and prefabs in `Assets/Resources/` you no
+   longer use can stay (they only make the asset bundle bigger); if you delete the `Loth Bat` prefab,
+   also remove it from the list in `Assets/Scenes/ModScene/ModSubScene.unity` in the editor. That
+   scene only exists so the build can compile a player for the Burst DLL; your entity prefabs load
+   from the asset bundle (`Assets/Resources/ItemEntities`), not from it.
+3. Run `Tools/compile-check.sh` and `Tools/check-mp-safety.sh` after each step.
+
+## Recipes for common tasks
+
+- **Check names before the game does.** Recipe items, technology names and research types must be
+  the game's exact English names. They are the `Key` column of
+  `<Final Factory>/Localization/LocalizationMasterTable_en.csv`; grep it
+  (`grep -c '"Asteroid Science"' .../LocalizationMasterTable_en.csv`). A wrong name is a load error
+  in the game, not a compile error here. Your mod's own names and descriptions are shown as you write
+  them (there is no localization route for mod text).
+- **Positions and units.** World positions are in world units; one grid tile is 10 world units.
+  `LocalTransform.Position` (float, world units) is the simulation position of ships, drops and
+  players. A building's position is its grid tile: `Placeable.CenterTile` (tiles, `int3`), or
+  `Placeable.FpWorldPositionBasedOnGridTile` / `WorldPositionBasedOnGridTile` (its centre in world
+  units). `MathHelper.worldDistance(tileA.xz, tileB.xz)` is the fixed-point world distance between
+  two tiles; for a world position, convert with `new fp2((fp)p.x, (fp)p.z)` and use
+  `fpmath.distance`. The `fp` types are in `Documentation/API/Unity.Mathematics.FixedPoint.md`.
+- **Items lying on the ground ("drops").** An entity with `Pickupable` (its `VacuumRange`) and
+  `AsteroItem`, plus one of `DirectItemDrop` (`ItemId`, `Count`: an item stack, such as mined
+  ore), `ResearchDrop` (research points) or `LuminOrbDrop`. The item's category is
+  `ItemConfig.AsteroItemLookup[itemId].ItemCategory`. The game's own vacuum, which pulls drops to
+  players, runs in `FFFixedEarlyGroup` and marks what it picks up with `DeletionMarker` (applied
+  before `FFFixedPreTransformGroup` runs), so a system in `FFFixedPreTransformGroup` that queries `.WithNone<DeletionMarker>()`
+  never takes an item a player already took.
+- **Putting items into a building.** The building needs an inventory: give its `EntityConfig` an
+  `InventoryMetaDataConfig`, and check in `PostInitializationHook` that its prefab has
+  `InventoryMetaData` and the `InventorySlot`, `InventoryFilter` and `InventoryUpdateNotifier`
+  buffers. Then, in a simulation system,
+  `InventoryHelper.AddItems(itemId, count, stackSizeLimit, metaData, slots, notifiers, filters, InventoryType.Primary, 2, true)`
+  returns how many it added (0 when full); the stack limit is
+  `itemConfig.AsteroItemLookup[itemId].GetStackSizeLimit(gameplaySettings.StackSizeModifier)`.
+  Using `InventorySlot` and friends needs the `Unity.Netcode.Runtime` reference in `FFMod.asmdef`
+  (the template has it; `compile-check` prints a hint on the CS0012 error otherwise).
+- **Package assemblies.** `FFMod.asmdef` references Unity packages by GUID; when a game type you use
+  comes from a package it does not list, compiling fails with CS0012 naming the assembly. Add its
+  GUID from `Tools/lib/package-assemblies.tsv` to `"references"`.
+- **Player-action kinds.** Choose a block of 100 that no other mod uses, well away from the game's
+  own small numbers (for example a random block between 40000 and 99999), and write it in your
+  README so other modders can avoid it. Known blocks: 47000-47099 (this template's example),
+  48200-48499 (Gherik's mods). A kind of your own reaches a structure while it is flying, but not a
+  construction ghost (the game applies only its own listed kinds to ghosts).
+- **Range rings and other looks.** Presentation only: a Controller-group system (or the game's
+  own systems) may read `HoverSelectionState` and the world and set rendering-only values. See the
+  multiplayer rules for what must never happen there.
+
+The game install also has an `AgentKit/` folder: that is for AI agents that PLAY the game, not for
+modding.
+
 ## Unity Editor Interaction
 
 > 🔌 **Interact with the Unity editor through the MCP bridge — ONLY the MCP bridge.**
@@ -252,6 +312,9 @@ blue `^` icon), not from Unity.
 | `add-player-action` | let players change something through a network operation, with its UI |
 | `check-mp-safety` | review code for multiplayer determinism before you call it done |
 | `api-lookup` | find the right game type or method in `Documentation/API` |
+
+On Windows the `Tools/` scripts run from Git Bash. `check-mp-safety` silences a line you have checked
+when it or the line before carries a `// mp-safe: <reason>` comment.
 
 ## Architecture
 

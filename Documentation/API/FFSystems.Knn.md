@@ -30,68 +30,6 @@ public struct DebugKnnDisablerDisplaySystem.DebugKnnDisabler : IJobEntity, IJobC
 | `public EntityCommandBuffer.ParallelWriter Cb` |  |
 | `public Entity KnnDisabledIndicatorEntity` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## DebugKnnDisablerDisplaySystem.DebugKnnDisabler.InternalCompiler
-
-```csharp
-public struct DebugKnnDisablerDisplaySystem.DebugKnnDisabler.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## DebugKnnDisablerDisplaySystem.DebugKnnDisabler.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct DebugKnnDisablerDisplaySystem.DebugKnnDisabler.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref DebugKnnDisablerDisplaySystem.DebugKnnDisabler job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref DebugKnnDisablerDisplaySystem.DebugKnnDisabler job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref DebugKnnDisablerDisplaySystem.DebugKnnDisabler job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref DebugKnnDisablerDisplaySystem.DebugKnnDisabler job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref DebugKnnDisablerDisplaySystem.DebugKnnDisabler job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref DebugKnnDisablerDisplaySystem.DebugKnnDisabler job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## DebugKnnDisablerDisplaySystem.DebugKnnDisabler.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct DebugKnnDisablerDisplaySystem.DebugKnnDisabler.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## EnemyKnnDisablerSystem
 
@@ -124,68 +62,6 @@ public struct EnemyKnnDisablerSystem.KnnDisablerJob : IJobEntity, IJobEntityChun
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
 | `public bool OnChunkBegin(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
 | `public void OnChunkEnd(in ArchetypeChunk chunk, int unfilteredChunkIndex, bool useEnabledMask, in v128 chunkEnabledMask, bool chunkWasExecuted)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## EnemyKnnDisablerSystem.KnnDisablerJob.InternalCompiler
-
-```csharp
-public struct EnemyKnnDisablerSystem.KnnDisablerJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## EnemyKnnDisablerSystem.KnnDisablerJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct EnemyKnnDisablerSystem.KnnDisablerJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref EnemyKnnDisablerSystem.KnnDisablerJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref EnemyKnnDisablerSystem.KnnDisablerJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref EnemyKnnDisablerSystem.KnnDisablerJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref EnemyKnnDisablerSystem.KnnDisablerJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref EnemyKnnDisablerSystem.KnnDisablerJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref EnemyKnnDisablerSystem.KnnDisablerJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## EnemyKnnDisablerSystem.KnnDisablerJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct EnemyKnnDisablerSystem.KnnDisablerJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## EnemyKnnDisablerSystem.KnnEnablerJob
 
@@ -202,68 +78,6 @@ public struct EnemyKnnDisablerSystem.KnnEnablerJob : IJobEntity, IJobChunk
 | `public bool OnlyDisableKnn` |  |
 | `public ComponentLookup<ScalableLaserOwner> ScalableLaserOwners` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## EnemyKnnDisablerSystem.KnnEnablerJob.InternalCompiler
-
-```csharp
-public struct EnemyKnnDisablerSystem.KnnEnablerJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## EnemyKnnDisablerSystem.KnnEnablerJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct EnemyKnnDisablerSystem.KnnEnablerJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref EnemyKnnDisablerSystem.KnnEnablerJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref EnemyKnnDisablerSystem.KnnEnablerJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref EnemyKnnDisablerSystem.KnnEnablerJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref EnemyKnnDisablerSystem.KnnEnablerJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref EnemyKnnDisablerSystem.KnnEnablerJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref EnemyKnnDisablerSystem.KnnEnablerJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## EnemyKnnDisablerSystem.KnnEnablerJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct EnemyKnnDisablerSystem.KnnEnablerJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## EnemySpawnerDisableCheckerSystem
 

@@ -79,68 +79,6 @@ public struct DysonDroneNavToStarSystem.DysonDroneNavToStarJob : IJobEntity, IJo
 | `public ComponentLookup<DysonDroneTransit> TransitLookup` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
 | `public static float3 RandomUnitVector(ref Random random)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## DysonDroneNavToStarSystem.DysonDroneNavToStarJob.InternalCompiler
-
-```csharp
-public struct DysonDroneNavToStarSystem.DysonDroneNavToStarJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## DysonDroneNavToStarSystem.DysonDroneNavToStarJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct DysonDroneNavToStarSystem.DysonDroneNavToStarJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref DysonDroneNavToStarSystem.DysonDroneNavToStarJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref DysonDroneNavToStarSystem.DysonDroneNavToStarJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref DysonDroneNavToStarSystem.DysonDroneNavToStarJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref DysonDroneNavToStarSystem.DysonDroneNavToStarJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref DysonDroneNavToStarSystem.DysonDroneNavToStarJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref DysonDroneNavToStarSystem.DysonDroneNavToStarJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## DysonDroneNavToStarSystem.DysonDroneNavToStarJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct DysonDroneNavToStarSystem.DysonDroneNavToStarJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## DysonStarSlotFinderSystem
 
@@ -167,68 +105,6 @@ public struct DysonStarSlotFinderSystem.StarSlotFinderJob : IJobEntity, IJobChun
 | `public EntityCommandBuffer Cb` |  |
 | `public ComponentLookup<TerrainExtractorStation> TerrainExtractorStationLookup` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## DysonStarSlotFinderSystem.StarSlotFinderJob.InternalCompiler
-
-```csharp
-public struct DysonStarSlotFinderSystem.StarSlotFinderJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## DysonStarSlotFinderSystem.StarSlotFinderJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct DysonStarSlotFinderSystem.StarSlotFinderJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref DysonStarSlotFinderSystem.StarSlotFinderJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref DysonStarSlotFinderSystem.StarSlotFinderJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref DysonStarSlotFinderSystem.StarSlotFinderJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref DysonStarSlotFinderSystem.StarSlotFinderJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref DysonStarSlotFinderSystem.StarSlotFinderJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref DysonStarSlotFinderSystem.StarSlotFinderJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## DysonStarSlotFinderSystem.StarSlotFinderJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct DysonStarSlotFinderSystem.StarSlotFinderJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## FleetIdleStationSystem
 
@@ -289,68 +165,6 @@ public struct FleetIdleSystem.FleetIdleJob : IJobEntity, IJobChunk
 | `public fp Dt` |  |
 | `public NativeArray<FleetConfig> FleetConfigs` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## FleetIdleSystem.FleetIdleJob.InternalCompiler
-
-```csharp
-public struct FleetIdleSystem.FleetIdleJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## FleetIdleSystem.FleetIdleJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct FleetIdleSystem.FleetIdleJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref FleetIdleSystem.FleetIdleJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref FleetIdleSystem.FleetIdleJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref FleetIdleSystem.FleetIdleJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref FleetIdleSystem.FleetIdleJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref FleetIdleSystem.FleetIdleJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref FleetIdleSystem.FleetIdleJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## FleetIdleSystem.FleetIdleJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct FleetIdleSystem.FleetIdleJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## OrbitStarStateSystem
 
@@ -412,68 +226,6 @@ public struct ShipNavigationToEntranceJob : IJobEntity, IJobChunk
 | `public EntityCommandBuffer Cb` |  |
 | `public NativeArray<FleetConfig> FleetConfigs` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## ShipNavigationToEntranceJob.InternalCompiler
-
-```csharp
-public struct ShipNavigationToEntranceJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## ShipNavigationToEntranceJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct ShipNavigationToEntranceJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref ShipNavigationToEntranceJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref ShipNavigationToEntranceJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref ShipNavigationToEntranceJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref ShipNavigationToEntranceJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref ShipNavigationToEntranceJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref ShipNavigationToEntranceJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## ShipNavigationToEntranceJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct ShipNavigationToEntranceJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## ShipNavigationToEntranceSystem
 

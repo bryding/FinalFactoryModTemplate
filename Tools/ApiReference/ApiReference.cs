@@ -269,14 +269,21 @@ internal static class Program
     {
         if (!IsPubliclyVisible(type) || type.IsImplicitlyDeclared) return false;
         // Compiler- and source-generator-made types (lambdas, job wrappers, "__codegen__" helpers).
-        if (type.Name.Contains("<") || type.Name.Contains("__") || type.Name.StartsWith("<", StringComparison.Ordinal)) return false;
+        for (var t = type; t != null; t = t.ContainingType)
+        {
+            if (t.Name.Contains("<") || t.Name.Contains("__") || t.Name.StartsWith("InternalCompiler", StringComparison.Ordinal)) return false;
+        }
         var full = FullName(type);
         var ns = NamespaceOf(type);
         if (rule.OnlyTypes.Count > 0) return rule.OnlyTypes.Contains(full);
         if (config.ExcludeTypes.Contains(full)) return false;
-        if (config.ExcludeNamespaces.Any(p => ns == p || ns.StartsWith(p + ".", StringComparison.Ordinal))) return false;
-        if (rule.IncludeNamespaces.Count == 0) return true;
-        return rule.IncludeNamespaces.Any(p => p == "" ? ns.Length == 0 : ns == p || ns.StartsWith(p + ".", StringComparison.Ordinal));
+        // A namespace the assembly rule names explicitly is included even under a global exclude ("Unity").
+        if (rule.IncludeNamespaces.Count > 0)
+        {
+            return rule.IncludeNamespaces.Any(p => p == "" ? ns.Length == 0 : ns == p || ns.StartsWith(p + ".", StringComparison.Ordinal));
+        }
+
+        return !config.ExcludeNamespaces.Any(p => ns == p || ns.StartsWith(p + ".", StringComparison.Ordinal));
     }
 
     private static string Attributes(ISymbol symbol)
@@ -340,7 +347,14 @@ internal static class Program
     private static bool IsShownMember(ISymbol member, INamedTypeSymbol type)
     {
         if (member.IsImplicitlyDeclared) return false;
-        if (member.Name.Contains("<") || member.Name.Contains("__")) return false;
+        if (member.Name.Contains("<") || member.Name.Contains("__") || member.Name.StartsWith("InternalCompiler", StringComparison.Ordinal)) return false;
+        // The Schedule/Run methods the Entities source generator adds to every IJobEntity: noise, and never
+        // called from outside the job's own system.
+        if (member is IMethodSymbol && IsJobEntity(type) &&
+            member.Name is "Schedule" or "ScheduleParallel" or "ScheduleByRef" or "ScheduleParallelByRef" or "Run" or "RunByRef")
+        {
+            return false;
+        }
         var access = member.DeclaredAccessibility;
         var visible = access == Accessibility.Public ||
                       (!type.IsSealed && !type.IsValueType && (access == Accessibility.Protected || access == Accessibility.ProtectedOrInternal));
@@ -409,6 +423,9 @@ internal static class Program
         md.AppendLine();
     }
 
+    private static bool IsJobEntity(INamedTypeSymbol type) =>
+        type.AllInterfaces.Any(i => i.Name == "IJobEntity");
+
     private static int MemberOrder(ISymbol m) => m switch
     {
         IFieldSymbol => 0,
@@ -438,7 +455,7 @@ internal static class DocCommentReader
         var result = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var file in Directory.EnumerateFiles(sourceDir, "*.cs", SearchOption.AllDirectories))
         {
-            var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(file),
+            var tree = CSharpSyntaxTree.ParseText(ReadSource(file),
                 new CSharpParseOptions(LanguageVersion.Latest, DocumentationMode.Parse));
             foreach (var node in tree.GetRoot().DescendantNodes())
             {
@@ -473,6 +490,14 @@ internal static class DocCommentReader
         }
 
         return result;
+    }
+
+    // Most game sources are UTF-8; a few are Windows-1252, which UTF-8 decoding turns into U+FFFD.
+    private static string ReadSource(string file)
+    {
+        var bytes = File.ReadAllBytes(file);
+        var text = new UTF8Encoding(false, false).GetString(bytes);
+        return text.Contains('�') ? Encoding.Latin1.GetString(bytes) : text;
     }
 
     private static string Prefix(SyntaxNode node)

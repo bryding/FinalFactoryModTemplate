@@ -51,6 +51,7 @@ namespace Examples.RepairBeacon
     {
       var dt = SystemAPI.GetSingleton<FFTimeData>().deltaTime;
 
+      // mp-safe: the order beacons are listed in cannot change a building's total repair (a sum).
       var beaconEntities = beaconQuery.ToEntityArray(Allocator.Temp);
       var beacons = new NativeList<ActiveBeacon>(beaconEntities.Length, Allocator.TempJob);
       foreach (var entity in beaconEntities)

@@ -89,6 +89,9 @@ if [[ $status -ne 0 && -z "$errors" ]]; then errors="$output"; fi
 if [[ -n "$errors" ]]; then
   root_native="$(native_path "$ROOT")"
   printf '%s\n' "$errors" | sed "s#${root_native//\\/\\\\}[\\/]##"
+  if printf '%s\n' "$errors" | grep -q 'error CS0012'; then
+    echo "hint: CS0012 means a type you use comes from a package assembly FFMod.asmdef does not reference. Add it to \"references\" in Assets/Scripts/FFMod.asmdef (its GUID is in Tools/lib/package-assemblies.tsv)." >&2
+  fi
   echo "FAILED: $(printf '%s\n' "$errors" | wc -l | tr -d ' ') error(s)" >&2
   exit 1
 fi

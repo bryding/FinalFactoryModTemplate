@@ -115,68 +115,6 @@ public struct MiningStationProductionBonusSystem.MiningStationProductionBonusJob
 | `public NativeArray<fp> ProductivityUpgrades` |  |
 | `public ComponentLookup<StationGrid> StationGridLookup` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## MiningStationProductionBonusSystem.MiningStationProductionBonusJob.InternalCompiler
-
-```csharp
-public struct MiningStationProductionBonusSystem.MiningStationProductionBonusJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## MiningStationProductionBonusSystem.MiningStationProductionBonusJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct MiningStationProductionBonusSystem.MiningStationProductionBonusJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref MiningStationProductionBonusSystem.MiningStationProductionBonusJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref MiningStationProductionBonusSystem.MiningStationProductionBonusJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref MiningStationProductionBonusSystem.MiningStationProductionBonusJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref MiningStationProductionBonusSystem.MiningStationProductionBonusJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref MiningStationProductionBonusSystem.MiningStationProductionBonusJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref MiningStationProductionBonusSystem.MiningStationProductionBonusJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## MiningStationProductionBonusSystem.MiningStationProductionBonusJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct MiningStationProductionBonusSystem.MiningStationProductionBonusJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## MiningStationStatsApplierSystem
 

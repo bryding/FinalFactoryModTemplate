@@ -26,68 +26,6 @@ public struct ChunkTrackerDeletionSystem.ChunkTrackerDeletionJob : IJobEntity, I
 | `public NativeParallelMultiHashMap<int2, Entity> ChunkMap` |  |
 | `public int ChunkSize` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## ChunkTrackerDeletionSystem.ChunkTrackerDeletionJob.InternalCompiler
-
-```csharp
-public struct ChunkTrackerDeletionSystem.ChunkTrackerDeletionJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## ChunkTrackerDeletionSystem.ChunkTrackerDeletionJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct ChunkTrackerDeletionSystem.ChunkTrackerDeletionJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref ChunkTrackerDeletionSystem.ChunkTrackerDeletionJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref ChunkTrackerDeletionSystem.ChunkTrackerDeletionJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref ChunkTrackerDeletionSystem.ChunkTrackerDeletionJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref ChunkTrackerDeletionSystem.ChunkTrackerDeletionJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref ChunkTrackerDeletionSystem.ChunkTrackerDeletionJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref ChunkTrackerDeletionSystem.ChunkTrackerDeletionJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## ChunkTrackerDeletionSystem.ChunkTrackerDeletionJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct ChunkTrackerDeletionSystem.ChunkTrackerDeletionJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## ChunkTrackerEnemyDeletionSystem
 
@@ -112,68 +50,6 @@ public struct ChunkTrackerEnemyDeletionSystem.ChunkTrackerDeletionJob : IJobEnti
 |---|---|
 | `public NativeParallelMultiHashMap<int2, Entity> ChunkMap` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## ChunkTrackerEnemyDeletionSystem.ChunkTrackerDeletionJob.InternalCompiler
-
-```csharp
-public struct ChunkTrackerEnemyDeletionSystem.ChunkTrackerDeletionJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## ChunkTrackerEnemyDeletionSystem.ChunkTrackerDeletionJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct ChunkTrackerEnemyDeletionSystem.ChunkTrackerDeletionJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref ChunkTrackerEnemyDeletionSystem.ChunkTrackerDeletionJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref ChunkTrackerEnemyDeletionSystem.ChunkTrackerDeletionJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref ChunkTrackerEnemyDeletionSystem.ChunkTrackerDeletionJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref ChunkTrackerEnemyDeletionSystem.ChunkTrackerDeletionJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref ChunkTrackerEnemyDeletionSystem.ChunkTrackerDeletionJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref ChunkTrackerEnemyDeletionSystem.ChunkTrackerDeletionJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## ChunkTrackerEnemyDeletionSystem.ChunkTrackerDeletionJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct ChunkTrackerEnemyDeletionSystem.ChunkTrackerDeletionJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## DebugEntityNamer
 
@@ -287,68 +163,6 @@ public struct PowerTransferStationDeletionSystem.PowerTransmitterDeletionJob : I
 | `public ComponentLookup<OutOfPlay> OutOfPlays` |  |
 | `public ComponentLookup<PowerTransmitter> TransmitterLookup` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## PowerTransferStationDeletionSystem.PowerTransmitterDeletionJob.InternalCompiler
-
-```csharp
-public struct PowerTransferStationDeletionSystem.PowerTransmitterDeletionJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## PowerTransferStationDeletionSystem.PowerTransmitterDeletionJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct PowerTransferStationDeletionSystem.PowerTransmitterDeletionJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref PowerTransferStationDeletionSystem.PowerTransmitterDeletionJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref PowerTransferStationDeletionSystem.PowerTransmitterDeletionJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref PowerTransferStationDeletionSystem.PowerTransmitterDeletionJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref PowerTransferStationDeletionSystem.PowerTransmitterDeletionJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref PowerTransferStationDeletionSystem.PowerTransmitterDeletionJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref PowerTransferStationDeletionSystem.PowerTransmitterDeletionJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## PowerTransferStationDeletionSystem.PowerTransmitterDeletionJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct PowerTransferStationDeletionSystem.PowerTransmitterDeletionJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## ProjectileDeletionSystem
 

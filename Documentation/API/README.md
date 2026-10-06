@@ -42,7 +42,10 @@ by `Tools/ApiReference/api-reference.json`:
   terms allow for modding.
 - **Only mod-facing assemblies and namespaces.** `FFCore`, `FFComponents`, `FFSystems` and `FFTechnology`, minus
   networking, platform, telemetry, diagnostics, test and cheat namespaces, which a mod should not call. From
-  `FFSpaghetti` (the game's UI and glue assembly) only the four types mods use to send player actions.
+  `FFSpaghetti` (the game's UI and glue assembly) only the four types mods use to send player actions. Plus the
+  open-source fixed-point maths package (`Unity.Mathematics.FixedPoint`: `fp`, `fp2`, `fp3`, `fpmath`). Code the
+  Entities source generator adds to every job and system (`InternalCompiler*`, the jobs' `Schedule`/`Run`) is
+  left out.
 - **Summaries, not design notes.** The doc comments are the game's own, cut to their first paragraph, with
   internal references removed (source file paths, task and feature numbers, people's names, dates, TODOs).
 

@@ -133,68 +133,6 @@ public struct InserterPlacementValidatorSystem.InserterPlacementValidatorJob : I
 | `public NativeArray<PlaceableConfig> PlaceableConfigs` |  |
 | `public ComponentLookup<Placeable> PlaceableLookup` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## InserterPlacementValidatorSystem.InserterPlacementValidatorJob.InternalCompiler
-
-```csharp
-public struct InserterPlacementValidatorSystem.InserterPlacementValidatorJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## InserterPlacementValidatorSystem.InserterPlacementValidatorJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct InserterPlacementValidatorSystem.InserterPlacementValidatorJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref InserterPlacementValidatorSystem.InserterPlacementValidatorJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref InserterPlacementValidatorSystem.InserterPlacementValidatorJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref InserterPlacementValidatorSystem.InserterPlacementValidatorJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref InserterPlacementValidatorSystem.InserterPlacementValidatorJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref InserterPlacementValidatorSystem.InserterPlacementValidatorJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref InserterPlacementValidatorSystem.InserterPlacementValidatorJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## InserterPlacementValidatorSystem.InserterPlacementValidatorJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct InserterPlacementValidatorSystem.InserterPlacementValidatorJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## InserterRenderSystem
 

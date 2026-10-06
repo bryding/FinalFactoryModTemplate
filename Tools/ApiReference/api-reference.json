@@ -8,6 +8,8 @@
     { "name": "FFComponents" },
     { "name": "FFSystems" },
     { "name": "FFTechnology" },
+    // The fixed-point maths package (fp, fp2, fp3, fpmath): open source, used by every simulation system.
+    { "name": "Unity.Mathematics.FixedPoint", "includeNamespaces": [ "Unity.Mathematics.FixedPoint" ] },
     {
       // Only the route mods use for player actions (network operations); see CLAUDE.md, "Player actions".
       "name": "FFSpaghetti",

@@ -118,68 +118,6 @@ public struct PowerTransmitterAoeEndpointFinderSystem.PowerTransmitterAOEEndpoin
 | `public EntityArchetype TeslaArcArchetype` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
 | `public static fp GetAoePowerToSend(AsteroItem asteroItem, int count, NativeArray<PowerConfig> powerConfigs)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## PowerTransmitterAoeEndpointFinderSystem.PowerTransmitterAOEEndpointFinderJob.InternalCompiler
-
-```csharp
-public struct PowerTransmitterAoeEndpointFinderSystem.PowerTransmitterAOEEndpointFinderJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## PowerTransmitterAoeEndpointFinderSystem.PowerTransmitterAOEEndpointFinderJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct PowerTransmitterAoeEndpointFinderSystem.PowerTransmitterAOEEndpointFinderJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref PowerTransmitterAoeEndpointFinderSystem.PowerTransmitterAOEEndpointFinderJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref PowerTransmitterAoeEndpointFinderSystem.PowerTransmitterAOEEndpointFinderJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref PowerTransmitterAoeEndpointFinderSystem.PowerTransmitterAOEEndpointFinderJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref PowerTransmitterAoeEndpointFinderSystem.PowerTransmitterAOEEndpointFinderJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref PowerTransmitterAoeEndpointFinderSystem.PowerTransmitterAOEEndpointFinderJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref PowerTransmitterAoeEndpointFinderSystem.PowerTransmitterAOEEndpointFinderJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## PowerTransmitterAoeEndpointFinderSystem.PowerTransmitterAOEEndpointFinderJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct PowerTransmitterAoeEndpointFinderSystem.PowerTransmitterAOEEndpointFinderJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## PowerTransmitterBehaviorSystem
 
@@ -278,68 +216,6 @@ public struct PowerTransmitterEndpointFinderSystem.PowerTransmitterEndpointFinde
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
 | `public static Entity FindReceiver(Entity transmitterEntity, ComponentLookup<PowerReceiver> powerReceivers, ComponentLookup<Placeable> placeables, NativeArray<PowerConfig> powerConfigs, ComponentLookup<Health> healthLookup, ComponentLookup<OutOfPlay> outOfPlayLookup, ComponentLookup<DeletionMarker> deletionMarkerLookup, NativeParallelHashMap<int3, Entity> entityMap, ref PowerTransmitter powerTransmitter, AsteroItem asteroItem)` | Scans the line in front of the transmitter for the first in-play structure and sets the transmitter's alignment and hit position. Returns that structure when it is an aligned receiver of the same module type, Entity.Null otherwise. Writes nothing but the transmitter. |
 | `public static void PerformPowerTransmissionEndpointFinder(Entity transmitterEntity, ref ComponentLookup<PowerTransferEdge> powerTransferEdges, ref ComponentLookup<StationGridPowerProvider> powerProviders, ref ComponentLookup<HeatProducer> heatProducers, ref ComponentLookup<PowerReceiver> powerReceivers, ComponentLookup<Placeable> placeables, NativeArray<PowerConfig> powerConfigs, ComponentLookup<Health> healthLookup, ComponentLookup<OutOfPlay> outOfPlayLookup, ComponentLookup<DeletionMarker> deletionMarkerLookup, NativeParallelHashMap<int3, Entity> entityMap, ref PowerTransmitter powerTransmitter, AsteroItem asteroItem)` | The single-threaded form, for callers that re-aim one transmitter at a time (MobileStationUndockingSystem, RotateInPlaceControllerSystem): scan, then apply the link change in place through `PowerTransferLinks`. |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## PowerTransmitterEndpointFinderSystem.PowerTransmitterEndpointFinderJob.InternalCompiler
-
-```csharp
-public struct PowerTransmitterEndpointFinderSystem.PowerTransmitterEndpointFinderJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## PowerTransmitterEndpointFinderSystem.PowerTransmitterEndpointFinderJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct PowerTransmitterEndpointFinderSystem.PowerTransmitterEndpointFinderJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref PowerTransmitterEndpointFinderSystem.PowerTransmitterEndpointFinderJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref PowerTransmitterEndpointFinderSystem.PowerTransmitterEndpointFinderJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref PowerTransmitterEndpointFinderSystem.PowerTransmitterEndpointFinderJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref PowerTransmitterEndpointFinderSystem.PowerTransmitterEndpointFinderJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref PowerTransmitterEndpointFinderSystem.PowerTransmitterEndpointFinderJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref PowerTransmitterEndpointFinderSystem.PowerTransmitterEndpointFinderJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## PowerTransmitterEndpointFinderSystem.PowerTransmitterEndpointFinderJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct PowerTransmitterEndpointFinderSystem.PowerTransmitterEndpointFinderJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## PowerTransmitterPowerDistributionSystem
 

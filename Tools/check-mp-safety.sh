@@ -13,14 +13,16 @@ dir="${1:-$root/Assets/Scripts}"
 
 find "$dir" -name '*.cs' -not -path '*/Editor/*' | sort | while IFS= read -r file; do
   awk -v file="${file#$root/}" '
+    # A "// mp-safe: <reason>" comment on the line, or on the line before, silences it: say why it is safe.
     function report(level, msg) {
+      if ($0 ~ /mp-safe:/ || prev ~ /mp-safe:/) return
       printf "%-5s %s:%d  %s\n", level, file, FNR, msg
     }
     # Track what kind of code we are in: the most recent [UpdateInGroup] or MonoBehaviour declaration.
     /UpdateInGroup\(typeof\(FFFixed/      { mode = "fixed" }
     /UpdateInGroup\(typeof\(FFController/ { mode = "controller"; report("WARN", "Controller group: runs every rendered frame. Presentation only (UI, rings, colours); never change simulation state here.") }
     /class [A-Za-z0-9_]+[[:space:]]*:[[:space:]]*MonoBehaviour/ { mode = "mono" }
-    /^[[:space:]]*(\/\/|\*|\/\/\/)/ { next }
+    /^[[:space:]]*(\/\/|\*|\/\/\/)/ { prev = $0; next }
 
     /GetRandomForEntity/ { report("ERROR", "RandomSystem.GetRandomForEntity seeds from the Entity handle, which differs between peers. Seed from a tile or a stable id (GetRandomForTileAndSimulationTime, GetRandomForStableHashAndSimulationTime).") }
     /\.DestroyEntity\(/ { report("ERROR", "Delete by adding DeletionMarker, never DestroyEntity.") }
@@ -38,6 +40,8 @@ find "$dir" -name '*.cs' -not -path '*/Editor/*' | sort | while IFS= read -r fil
     mode == "controller" && /(^|[^A-Za-z])Input\./ { report("WARN", "Input in a per-frame system: fine for presentation or for sending a player action, never for changing simulation state.") }
 
     mode == "mono" && /(Ecs|EntityManager)\.(SetComponent|SetComponentData|AddComponent|AddAndSetComponent|RemoveComponent|SetSingleton|DestroyEntity)/ { report("WARN", "A MonoBehaviour writing the world: in multiplayer that change exists on this machine only. UI should read state and send a player action.") }
+
+    { prev = $0 }
   ' "$file"
 done > "${TMPDIR:-/tmp}/check-mp-safety.$$"
 

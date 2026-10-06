@@ -78,68 +78,6 @@ public struct ConnectorGroupCalculatorSystem.ConnectorGroupCalculatorJob : IJobE
 | `public BufferLookup<ModuleOutputConnection> OutputBuffers` |  |
 | `public NativeHashSet<Entity> ProcessedConnectors` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## ConnectorGroupCalculatorSystem.ConnectorGroupCalculatorJob.InternalCompiler
-
-```csharp
-public struct ConnectorGroupCalculatorSystem.ConnectorGroupCalculatorJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## ConnectorGroupCalculatorSystem.ConnectorGroupCalculatorJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct ConnectorGroupCalculatorSystem.ConnectorGroupCalculatorJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref ConnectorGroupCalculatorSystem.ConnectorGroupCalculatorJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref ConnectorGroupCalculatorSystem.ConnectorGroupCalculatorJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref ConnectorGroupCalculatorSystem.ConnectorGroupCalculatorJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref ConnectorGroupCalculatorSystem.ConnectorGroupCalculatorJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref ConnectorGroupCalculatorSystem.ConnectorGroupCalculatorJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref ConnectorGroupCalculatorSystem.ConnectorGroupCalculatorJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## ConnectorGroupCalculatorSystem.ConnectorGroupCalculatorJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct ConnectorGroupCalculatorSystem.ConnectorGroupCalculatorJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## ConnectorGroupDeletionSystem
 
@@ -175,68 +113,6 @@ public struct ConnectorGroupDeletionSystem.ConnectorGroupDeletionJob : IJobEntit
 | `public NativeParallelHashMap<int3, Entity> EntityGrid` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
 | `public void RedistributeGroupItems(Entity entity)` | Redistributes ONE dying group's items to the rebuilt groups its connectors now reference. Public and per-donor-callable so the 033 merge tests can drive both donor processing orders explicitly (EntityQuery iteration order is not a contract — research R5 rev2). |
-| `public void Run()` |  |
-| `public void Run(EntityQuery query)` |  |
-| `public void RunByRef()` |  |
-| `public void RunByRef(EntityQuery query)` |  |
-| `public JobHandle Schedule(JobHandle dependsOn)` |  |
-| `public JobHandle Schedule(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void Schedule()` |  |
-| `public void Schedule(EntityQuery query)` |  |
-| `public JobHandle ScheduleByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public void ScheduleByRef()` |  |
-| `public void ScheduleByRef(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallel(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallel(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallel()` |  |
-| `public void ScheduleParallel(EntityQuery query)` |  |
-| `public JobHandle ScheduleParallelByRef(JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn)` |  |
-| `public JobHandle ScheduleParallelByRef(EntityQuery query, JobHandle dependsOn, NativeArray<int> chunkBaseEntityIndices)` |  |
-| `public void ScheduleParallelByRef()` |  |
-| `public void ScheduleParallelByRef(EntityQuery query)` |  |
-
-## ConnectorGroupDeletionSystem.ConnectorGroupDeletionJob.InternalCompiler
-
-```csharp
-public struct ConnectorGroupDeletionSystem.ConnectorGroupDeletionJob.InternalCompiler
-```
-
-| Member | Summary |
-|---|---|
-| `public static void CheckForErrors(int scheduleType)` |  |
-
-## ConnectorGroupDeletionSystem.ConnectorGroupDeletionJob.InternalCompilerQueryAndHandleData
-
-```csharp
-public struct ConnectorGroupDeletionSystem.ConnectorGroupDeletionJob.InternalCompilerQueryAndHandleData
-```
-
-| Member | Summary |
-|---|---|
-| `public EntityQuery DefaultQuery` |  |
-| `public static void AddRequiredComponentTypes(ref Span<ComponentType> components)` |  |
-| `public void AssignEntityManager(ref ConnectorGroupDeletionSystem.ConnectorGroupDeletionJob job, EntityManager entityManager)` |  |
-| `public static int GetRequiredComponentTypeCount()` |  |
-| `public void Init(ref SystemState state, bool assignDefaultQuery)` |  |
-| `public static bool QueryHasRequiredComponentsForExecuteMethodToRun(ref EntityQuery userDefinedQuery, ref Span<ComponentType> components)` |  |
-| `public void Run(ref ConnectorGroupDeletionSystem.ConnectorGroupDeletionJob job, EntityQuery query)` |  |
-| `public JobHandle Schedule(ref ConnectorGroupDeletionSystem.ConnectorGroupDeletionJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public JobHandle ScheduleParallel(ref ConnectorGroupDeletionSystem.ConnectorGroupDeletionJob job, EntityQuery query, JobHandle dependency)` |  |
-| `public void UpdateBaseEntityIndexArray(ref ConnectorGroupDeletionSystem.ConnectorGroupDeletionJob job, EntityQuery query, ref SystemState state)` |  |
-| `public JobHandle UpdateBaseEntityIndexArray(ref ConnectorGroupDeletionSystem.ConnectorGroupDeletionJob job, EntityQuery query, JobHandle dependency, ref SystemState state)` |  |
-
-## ConnectorGroupDeletionSystem.ConnectorGroupDeletionJob.InternalCompilerQueryAndHandleData.TypeHandle
-
-```csharp
-public struct ConnectorGroupDeletionSystem.ConnectorGroupDeletionJob.InternalCompilerQueryAndHandleData.TypeHandle
-```
-
-| Member | Summary |
-|---|---|
-| `public void Update(ref SystemState state)` |  |
 
 ## ConnectorGroupDeletionSystem.DroppedConnectorItem
 
