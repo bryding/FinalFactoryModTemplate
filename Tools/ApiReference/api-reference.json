@@ -1,0 +1,51 @@
+// What Tools/generate-api-reference publishes into Documentation/API. Only public types and their public
+// (or, on unsealed classes, protected) members are ever emitted: never private or internal code, never method
+// bodies. Within that, this file narrows the set to what a mod uses. See Documentation/API/README.md for why.
+{
+  "summaryMaxChars": 400,
+  "assemblies": [
+    { "name": "FFCore" },
+    { "name": "FFComponents" },
+    { "name": "FFSystems" },
+    { "name": "FFTechnology" },
+    {
+      // Only the route mods use for player actions (network operations); see CLAUDE.md, "Player actions".
+      "name": "FFSpaghetti",
+      "onlyTypes": [
+        "NetworkOperations.Settings.StructureSettingAppliers",
+        "NetworkOperations.Settings.StructureSettingApplier",
+        "NetworkOperations.Settings.StructureSettingsDispatch",
+        "NetworkOperations.Settings.StructureSettingKind"
+      ]
+    }
+  ],
+  // Engine plumbing, networking, platform and tooling internals: nothing a mod should call, and some of it
+  // (lobbies, relay, telemetry, crash reporting) is not something to document publicly.
+  "excludeNamespaces": [
+    "FFCore.Network",
+    "FFCore.Multiplayer",
+    "FFCore.Steam",
+    "FFCore.Telemetry",
+    "FFCore.Diagnostics",
+    "FFCore.Debugging",
+    "FFCore.Automation",
+    "FFCore.Testing",
+    "FFCore.Cheats",
+    "FFSystems.Multiplayer",
+    "FFSystems.Diagnostics",
+    "FFSystems.Debugging",
+    "FFSystems.Automation",
+    "FFSystems.Testing",
+    "FFSystems.Cheats",
+    "FFComponents.Multiplayer",
+    "FFComponents.Debugging",
+    "FFComponents.Automation",
+    "Unity",
+    "Microsoft",
+    "System",
+    "AOT",
+    "Coffee",
+    "UnityEngine"
+  ],
+  "excludeTypes": []
+}

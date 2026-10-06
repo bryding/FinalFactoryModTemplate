@@ -116,3 +116,6 @@ finalfactory.properties
 # Generated IDE/solution files
 *.slnx
 /.vscode/
+
+# Tools/ scripts' build output and downloads (compile-check, generate-api-reference)
+/Tools/.cache/
