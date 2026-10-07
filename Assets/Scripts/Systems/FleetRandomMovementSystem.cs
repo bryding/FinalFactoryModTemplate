@@ -1,45 +1,56 @@
-﻿using FFComponents.Combat;
+using FFComponents.Combat;
 using FFComponents.Knn;
 using FFComponents.UnitStates.Combat;
-using FFCore.Extensions;
 using FFCore.Systems;
 using FFSystems.Core;
 using FFSystems.UnitStateMachine;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
-using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Mathematics.FixedPoint;
 using Unity.Transforms;
 
 namespace Systems
 {
-  [UpdateInGroup(typeof(FFControllerPreTransformGroup))]
+  /// <summary>
+  ///   Example of a simulation tweak: now and then, an idle ship of a player's fleet jumps to a random spot
+  ///   near the player.
+  ///   <para>
+  ///     It moves ships, which is simulation, so it is written to stay identical on every peer of a
+  ///     multiplayer game:
+  ///     - it runs on the heartbeat (a Fixed group), after the game's FleetIdleSystem so the game does not
+  ///       overwrite the move;
+  ///     - its time is the simulation clock (SimulationElapsedTime), never wall-clock or frame time;
+  ///     - its randomness is seeded from the world seed, the simulation time and the ship's
+  ///       DeterministicCombatObjectId, which is the same on every peer. Never seed from an Entity: entity
+  ///       handles differ between peers. (RandomSystem.GetRandomForEntity does exactly that, so do not use
+  ///       it for simulation.)
+  ///   </para>
+  /// </summary>
+  [UpdateInGroup(typeof(FFFixedPreTransformGroup))]
+  [UpdateAfter(typeof(FleetIdleSystem))]
   public partial class FleetRandomMovementSystem : FinalFactorySystemBase
   {
     protected override void OnCreate()
     {
       base.OnCreate();
       SetSystemQueryForInPlayEntities(new EntityQueryBuilder(Allocator.Temp)
-        .WithAll<FleetIdleMarker, FleetShip>()
+        .WithAllRW<LocalTransform>()
+        .WithAll<FleetIdleMarker, FleetShip, DeterministicCombatObjectId>()
         .WithNone<DisableKnnMarker, AbilityMarker>());
     }
 
     protected override void PerformSystemUpdate()
     {
-      // Tip: if you want proof your system is running, a Debug.Log here is the easy way to see it —
-      // but logging every update is very slow, so be sure to remove it before releasing your mod.
-      var job = new FleetRandomMovementJob
+      // Tip: a Debug.Log here proves the system runs, but logging every heartbeat is slow; remove it before
+      // you release.
+      Dependency = new FleetRandomMovementJob
       {
         AllCommanders = SystemAPI.GetComponentLookup<FleetCommander>(true),
-        Elapsed = ElapsedGameTime,
+        SimulationTime = SimulationElapsedTime,
         Seed = MasterSeed
-      };
-      Dependency = job.Schedule(CachedEntityQuery, 
-      // //Make sure this system runs after FleetIdleSystem has finished running.  If not, FleetIdleSystem will override
-      // //each ship's movement and make the FleetIdleSystem's movement changes have no effect.
-      JobHandle.CombineDependencies(Dependency, World.Unmanaged.GetExistingSystemState<FleetIdleSystem>().Dependency));
+      }.Schedule(CachedEntityQuery, Dependency);
     }
 
     [BurstCompile]
@@ -47,23 +58,27 @@ namespace Systems
     {
       [ReadOnly] public ComponentLookup<FleetCommander> AllCommanders;
 
-      public fp Elapsed;
+      public fp SimulationTime;
       public uint Seed;
 
-      public void Execute(Entity entity, ref LocalTransform localTransform, in FleetShip fleetShip)
+      private void Execute(ref LocalTransform localTransform, in FleetShip fleetShip, in DeterministicCombatObjectId id)
       {
-        if (!AllCommanders.TryGetComponent(fleetShip.OwnerEntity, out var commander))
+        if (id.Value == 0 || !AllCommanders.TryGetComponent(fleetShip.OwnerEntity, out var commander))
         {
           return;
         }
 
-        var nextRandom = RandomSystem.GetRandomForEntity(Seed, Elapsed, entity);
-        if (nextRandom.NextFloat() < 0.95f) return;
+        var identity = math.hash(new uint2((uint)id.Value, (uint)(id.Value >> 32)));
+        var random = RandomSystem.GetRandomForStableHashAndSimulationTime(Seed, identity, SimulationTime);
+        // About once every 20 heartbeats per ship (16 heartbeats a second).
+        if (random.NextInt(20) != 0)
+        {
+          return;
+        }
 
-        var commanderPosition = commander.FleetPosition;
-        var random = nextRandom.UnitCircle() * 50;
-
-        localTransform.Position = commanderPosition + new float3(random.x, 0, random.y);
+        // Whole-unit offsets from integer draws: no sin/cos, whose float results can differ between CPUs.
+        var offset = new float3(random.NextInt(-50, 51), 0f, random.NextInt(-50, 51));
+        localTransform.Position = commander.FleetPosition + offset;
       }
     }
   }

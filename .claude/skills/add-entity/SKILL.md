@@ -21,11 +21,13 @@ templates. Pick the closest one and adapt:
 2. **EntityConfig** in `DefineEntityConfigs()`, added to the returned list. Craft
    recipe `ItemName`s and tech `Requirements` must be EXACT existing game item/tech
    names — a typo surfaces as a load error in the game, not a compile error here.
-3. **Icon**: either drop a PNG in `Assets/Resources/Icons/` named exactly like the
-   entity and set `IconAssetName` to it, or reuse a game icon by name.
+3. **Icon**: drop a PNG in `Assets/Resources/Icons/` and set `IconAssetName` to its name.
+   It must be an icon of THIS mod (or reuse one of its icons): the game looks icons up
+   only in the mod's own icon bundle, so a game icon's name does not work.
 4. **Model**: either a prefab in `Assets/Resources/ItemEntities/` (see `Loth Bat`) with
-   `RenderingData.ModelPath` naming it, or reuse a game model by name
-   (`ModelPath = "Assembler"`).
+   `RenderingData.ModelPath` naming it, or the name of an existing game item
+   (`ModelPath = "Assembler"`). The second makes your item a copy of that game item's
+   whole entity (its components and behaviour too), with your configs applied on top.
 5. **Unlock**: add a `TechnologyConfig` in `AddTechnologies()` with the new entity in
    `ItemsUnlocked`, requirements on existing techs, and a research cost — or, for a
    from-the-start item, add it to an existing tech / leave it always unlocked.
@@ -36,10 +38,15 @@ templates. Pick the closest one and adapt:
 
 Any numeric gameplay field that the simulation consumes should be integer or `fp` —
 follow the existing configs' field types exactly (`BaseCraftTimeFP`, `HeatRateFP`,
-`ValueFp` are `fp` for a reason). Never introduce `float` gameplay state.
+`ValueFp` are `fp` for a reason). Never introduce `float` gameplay state. Config and prefab
+edits belong in `DefineEntityConfigs` / `PostInitializationHook`, which run on every peer at
+startup; never change configs from a running game. If the entity needs behaviour or a
+player-facing switch, see `RepairBeacon` and the `add-player-action` skill. Look up config
+types and fields with the `api-lookup` skill rather than guessing.
 
 ## Verify
 
+0. `Tools/compile-check.sh` (seconds, no editor) and `Tools/check-mp-safety.sh`.
 1. Compile-verify through the MCP bridge (CLAUDE.md ritual): `refresh_unity` → fresh
    domain reload → `read_console` zero `error CS`.
 2. Run the `build-mod` skill (build + install).

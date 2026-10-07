@@ -7,14 +7,16 @@ identical `AGENTS.md`). Keep exactly one canonical document — `AGENTS.md` is a
 
 This is the **Final Factory Mod Template** — a Unity 6000.3 project used to build mods
 for Final Factory. It is not the game: the game ships as prebuilt DLLs (`FFCore`,
-`FFSystems`, `FFComponents`, `FFTechnology`, `FFNetcode`) that get copied into
-`Assets/FinalFactoryDlls/` and referenced by the mod assemblies.
+`FFSystems`, `FFComponents`, `FFTechnology`, `FFNetcode`, `FFSpaghetti`) that get copied into
+`Assets/FinalFactoryDlls/` and referenced by the mod assemblies. You do not have the game's
+source, and you do not need it: `Documentation/API/` is the reference for everything a mod can
+use (see "Finding your way in the game's API").
 
 Read `README.md` first (setup, build, install, workshop). `DOCUMENTATION.md` is the
 modding reference: system groups and timing, determinism rules, entity lifecycle, the
 mod load pipeline, and testing.
 
-Three facts that shape every task here:
+Four facts that shape every task here:
 
 1. **The DLL copy must happen before the editor is first opened.** The project
    references those assemblies; without them the first open produces a cascade of
@@ -31,7 +33,27 @@ Three facts that shape every task here:
    assembly, Unity packages (netcode, shadergraph, burst) fail with hundreds of
    `CS0576` alias-conflict errors. The mod assemblies reference the DLLs explicitly via
    `precompiledReferences` in `FFMod.asmdef` / `FFMod.Editor.asmdef` — a new game DLL
-   (e.g. a sixth assembly) must be added there, with a matching Auto-Reference-off meta.
+   must be added there, with a matching Auto-Reference-off meta (and, like
+   `FFSpaghetti.dll.meta`, `validateReferences: 0` if its own dependencies are not in this project).
+4. **Final Factory multiplayer is deterministic lockstep.** Every peer runs the whole
+   simulation, and a mod's systems run on every peer that has the mod. Code that changes the
+   game world must give the same result on every peer, and a player's action must reach the
+   world as a network operation, never as a direct write. The rules are below; break them and
+   the mod desyncs every multiplayer game it is in.
+
+## Fast checks without the editor
+
+Three scripts give an agent a quick loop with no editor open (Unity 6000.3.19f1 must be installed,
+the game DLLs copied, and `finalfactory.properties` set; on Windows run them from Git Bash):
+
+| Script | What it does |
+|---|---|
+| `Tools/compile-check.sh` | Compiles `Assets/` (all but Editor folders) with Unity's own C# compiler and the Entities source generators, against the game DLLs and the package assemblies `FFMod.asmdef` references. "OK" or the compiler errors, in seconds. Run it after every edit. |
+| `Tools/check-mp-safety.sh` | Scans `Assets/Scripts` for code that breaks multiplayer determinism (input or frame time in simulation, per-peer randomness, `DestroyEntity`, UI writing the world, ...). ERROR = almost certainly a desync. |
+| `Tools/generate-api-reference.sh` | Regenerates `Documentation/API/` from your copied DLLs after a game update. |
+
+They prove compilation and catch common mistakes. They do not prove behaviour, Burst compilation
+or the asset bundle: build in Unity and test in the game for those (below).
 
 ## The mod API (what a mod is)
 
@@ -39,29 +61,173 @@ Three facts that shape every task here:
   underscores — no spaces; it's the folder + workshop identity), `FullName`,
   `Description`, `Author`, `EmailContact`, `Website`, `Dependencies` (other mod IDs),
   `ModVersion` (`FFVersion`).
-- Optionally one `IUserModLoader` (`Assets/Scripts/UserModLoader.cs`):
-  `DefineEntityConfigs()` (new items/ships/buildings), `AddTechnologies()`,
-  `PostInitializationHook()` (edit any existing config), `OnGameStart(Canvas)`.
+- Optionally one `IUserModLoader` (`Assets/Scripts/UserModLoader.cs`). The game calls, in order:
+  `DefineEntityConfigs()` (new items/ships/buildings) → `AddTechnologies()` →
+  `PostInitializationHook()` (once at startup, on every peer: edit any config or prefab, register
+  player actions) → `OnGameStart(Canvas)` (each new or loaded game: build UI).
 - ECS systems in the mod assembly are auto-discovered at load — no registration.
+- `SpaghettiApi.Instance` gives the UI's `SelectedEntity` and `HoveredEntity`.
 - Icons live in `Assets/Resources/Icons/`, entity prefabs in
   `Assets/Resources/ItemEntities/`; the build packs them into the mod's AssetBundle.
-  Referencing an existing game model/icon by name (e.g. `ModelPath = "Assembler"`)
-  reuses the game's asset instead.
+  - `IconAssetName` must name an icon in YOUR bundle: the game looks icons up only in the
+    mod's own icon bundle.
+  - `RenderingData.ModelPath` naming one of your prefabs uses its model. Naming an existing game
+    item instead (e.g. `"Connector"`) makes your item a copy of that item's whole entity, its
+    behaviour components included, not just its look.
 
-## Constraints mod code must respect
+## Finding your way in the game's API
 
-- **Determinism** (multiplayer is deterministic lockstep; a mod that breaks it desyncs
-  every session it's in — full rules in `DOCUMENTATION.md`):
-  - `fp` (`Unity.Mathematics.FixedPoint`) for simulation state, never `float`.
-  - Simulation state changes only in **Fixed** groups (`FFFixedPreTransformGroup` is
-    the default home). Controller groups are render-rate → presentation only.
-  - No wall-clock, frame-rate, or `UnityEngine.Random` inputs to simulation. Use
-    `RandomSystem.GetRandomForEntity(...)` as `FleetRandomMovementSystem.cs` does.
-- **Deletion**: add `DeletionMarker`, never `DestroyEntity`; queries generally exclude
-  marked entities with `.WithNone<DeletionMarker>()`.
-- **Ordering**: `UpdateBefore`/`UpdateAfter` are fine; `OrderFirst`/`OrderLast` are
-  forbidden for mod systems.
-- **Burst**: keep systems `[BurstCompile]`-compatible (unmanaged types in jobs).
+`Documentation/API/` is generated from the game's assemblies: every public type a mod can use, with
+C# signatures and the first paragraph of the game's own doc comments.
+
+- `Documentation/API/all-members.txt` has one line per member (`Namespace.Type :: signature`).
+  Grep it first: `grep -i "ItemConfig ::" Documentation/API/all-members.txt`,
+  `grep "FFCore.Extensions.Ecs ::"`, `grep -i "health"`.
+- `Documentation/API/INDEX.md` lists the namespaces; each `<Namespace>.md` has its types with members
+  and summaries. Components (`IComponentData`) are mostly in `FFComponents.*`, configs in
+  `FFCore.Config*`, systems (for `UpdateBefore`/`UpdateAfter`) in `FFSystems.*`.
+- Never guess an API: a wrong name is a compile error at best and a silent mistake at worst. If the
+  reference does not have it, it is not public, and a mod cannot call it.
+- After a game update, run `Tools/generate-api-reference.sh` so the reference matches your DLLs.
+
+## Multiplayer and determinism
+
+Every peer runs the simulation and must reach bit-identical state on every heartbeat (16 per second,
+in single player too). A mod's systems run inside that simulation on every peer. In this list,
+"simulation" means anything that changes the game world: positions, health, inventories, research,
+components the game reads.
+
+1. **Simulation runs on the heartbeat.** Put it in a Fixed group (`FFFixedPreTransformGroup` is the
+   usual home; `FFFixedEarlyGroup`, `FFFixedPostTransformGroup`, ...). Controller groups
+   (`FFController*Group`) run every rendered frame, at a different rate on every machine:
+   presentation only (UI, range rings, colours, effects).
+2. **Time is the heartbeat's.** `SystemAPI.GetSingleton<FFTimeData>().deltaTime` (fixed point) and
+   `SimulationElapsedTime` (on `FinalFactorySystemBase`). Never `SystemAPI.Time`, `World.Time`,
+   `UnityEngine.Time`, or `ElapsedGameTime` / `WallClockElapsedTime` (wall clock) in simulation.
+3. **No local inputs in simulation.** No `Input`, mouse, camera, hover or selection, and no
+   `MePlayer` (a different player on every peer). Player actions go through network operations
+   (next section).
+4. **Decide in fixed point.** Ranges, nearest-target picks, damage, cooldowns, rates: `fp` and
+   `fpmath` (`Unity.Mathematics.FixedPoint`). Motion may stay float where the game's own motion is
+   float (`LocalTransform`, `LinearMotion`); avoid `sin`/`cos`/`log` on floats, whose results can
+   differ between CPUs. `fpmath.log10` is not implemented (it is `[Obsolete]`): use
+   `fpmath.log2(x) / fpmath.log2((fp)10)`.
+5. **Randomness from stable keys.** `RandomSystem.GetRandomForTileAndSimulationTime(seed, tile, time)`
+   for buildings, `GetRandomForStableHashAndSimulationTime(seed, hash, time)` with a ship's or
+   player's `DeterministicCombatObjectId`. Never `RandomSystem.GetRandomForEntity` (it seeds from the
+   Entity handle, which differs between peers), never `UnityEngine.Random`.
+6. **Never let query order decide.** Chunk order differs between peers. When first, nearest or the
+   last writer matters, sort by a key every peer agrees on (a building's `Placeable.CenterTile`) and
+   break ties with it. Use `Schedule`, not `ScheduleParallel`, for jobs that add into shared totals.
+7. **Read simulation positions.** In Fixed systems use `LocalTransform` or the building's tile
+   (`Placeable.CenterTile`, `FpWorldPositionBasedOnGridTile`), never `LocalToWorld`.
+8. **Delete with `DeletionMarker`**, never `DestroyEntity`.
+9. **Know what is saved; a join is a save load.** A player who joins gets the host's save. Only
+   buildings, ships, players and a few other root entities are saved, and on them only `[Save]`
+   components; everything else comes back from the prefab when the save loads. So:
+   - running state the simulation depends on must be `[Save]` on a saved entity;
+   - a value the game does not save but derives (KNN vision ranges, for one) must be recomputed every
+     heartbeat from saved state, early enough that the first heartbeat after a load or join agrees;
+   - never change the fields of a `[Save]` struct once the mod has shipped: the game refuses the
+     whole save. Marking a type `[Save]` for the first time is safe (old saves load it with the
+     prefab's value).
+10. **Don't change which game components an entity carries outside the heartbeat.** The game compares
+    the set of game component types (namespaces `FF*`) of every entity across peers. Adding or
+    removing a game component (`RotationParameters`, markers, ...) belongs in a Fixed group, and never
+    on unsaved child entities (meshes), which a joining client rebuilds from the prefab. Components in
+    your mod's own namespace are not compared.
+11. **Ordering**: `UpdateBefore`/`UpdateAfter` are fine. Avoid `OrderFirst`/`OrderLast`; the one
+    exception is running before a game system that is itself `OrderFirst` (the game's `KnnSystem` in
+    `FFFixedEarlyGroup` refreshes vision first thing on the heartbeat), and then say why in a comment.
+12. **Burst**: keep systems `[BurstCompile]`-compatible (unmanaged types in jobs).
+
+`Tools/check-mp-safety.sh` catches the common breaks; it is no substitute for reading this list.
+
+## Player actions (network operations)
+
+A click must not change the world directly: send it as a network operation, which the host checks and
+every peer applies on the same heartbeat (single player goes through the same path). The game has no
+dedicated mod API for this yet; the route that works today is its `SetStructureSetting` operation with a
+setting kind of your own. `Assets/Scripts/Examples/RepairBeacon/RepairBeaconActions.cs` is the
+worked example:
+
+- In `PostInitializationHook` (runs on every peer), register an applier:
+  `StructureSettingAppliers.Register((StructureSettingKind)N, new StructureSettingApplier { Validate, Apply })`.
+- From UI, send: `StructureSettingsDispatch.DispatchSetting(kind, buildingEntity, payload)`. The payload
+  is any `[Serializable]` class (it travels as JSON).
+- `Validate` and `Apply` run on every peer and must be deterministic (read only the target's components
+  and the payload) and must never throw. The target is found by grid tile, so it must be a building
+  (`Placeable`); `Apply` may also change other entities, deterministically.
+- The UI only reads; it shows the new state about one heartbeat after the click.
+- Pick a kind block of your own: the game's kinds are small numbers (0-16 today); the example uses
+  47001. Known mod blocks: 48200-48499 (Gherik's mods).
+- These types live in `FFSpaghetti.dll`, which is outside the documented mod API: a game update can
+  change them. `Documentation/API/NetworkOperations.Settings.md` has their signatures.
+- The applier is not told which player sent the action, so per-player state is not possible this way.
+
+Note: the game currently turns multiplayer off while any mod is enabled. Following these rules is what
+lets a mod work in multiplayer once the game allows mods there; it also keeps single player correct (the
+simulation runs at 16 heartbeats a second regardless of frame rate).
+
+## Starting your own mod from this template
+
+1. `Assets/Scripts/UserMod.cs`: your `ID` (letters, digits, underscores), name, author, version.
+2. Keep the examples until you have built your first feature: the skills point at them as models
+   (`lothPrinter`, `RepairBeacon`, ...). Then remove what you do not need: the entity configs and
+   technologies in `UserModLoader.cs` and the matching lines in `PostInitializationHook`/`OnGameStart`,
+   `Assets/Scripts/Examples/`, `Assets/Scripts/Systems/FleetRandomMovementSystem.cs`, and the
+   `.meta` file next to each deleted file or folder. Icons and prefabs in `Assets/Resources/` you no
+   longer use can stay (they only make the asset bundle bigger); if you delete the `Loth Bat` prefab,
+   also remove it from the list in `Assets/Scenes/ModScene/ModSubScene.unity` in the editor. That
+   scene only exists so the build can compile a player for the Burst DLL; your entity prefabs load
+   from the asset bundle (`Assets/Resources/ItemEntities`), not from it.
+3. Run `Tools/compile-check.sh` and `Tools/check-mp-safety.sh` after each step.
+
+## Recipes for common tasks
+
+- **Check names before the game does.** Recipe items, technology names and research types must be
+  the game's exact English names. They are the `Key` column of
+  `<Final Factory>/Localization/LocalizationMasterTable_en.csv`; grep it
+  (`grep -c '"Asteroid Science"' .../LocalizationMasterTable_en.csv`). A wrong name is a load error
+  in the game, not a compile error here. Your mod's own names and descriptions are shown as you write
+  them (there is no localization route for mod text).
+- **Positions and units.** World positions are in world units; one grid tile is 10 world units.
+  `LocalTransform.Position` (float, world units) is the simulation position of ships, drops and
+  players. A building's position is its grid tile: `Placeable.CenterTile` (tiles, `int3`), or
+  `Placeable.FpWorldPositionBasedOnGridTile` / `WorldPositionBasedOnGridTile` (its centre in world
+  units). `MathHelper.worldDistance(tileA.xz, tileB.xz)` is the fixed-point world distance between
+  two tiles; for a world position, convert with `new fp2((fp)p.x, (fp)p.z)` and use
+  `fpmath.distance`. The `fp` types are in `Documentation/API/Unity.Mathematics.FixedPoint.md`.
+- **Items lying on the ground ("drops").** An entity with `Pickupable` (its `VacuumRange`) and
+  `AsteroItem`, plus one of `DirectItemDrop` (`ItemId`, `Count`: an item stack, such as mined
+  ore), `ResearchDrop` (research points) or `LuminOrbDrop`. The item's category is
+  `ItemConfig.AsteroItemLookup[itemId].ItemCategory`. The game's own vacuum, which pulls drops to
+  players, runs in `FFFixedEarlyGroup` and marks what it picks up with `DeletionMarker` (applied
+  before `FFFixedPreTransformGroup` runs), so a system in `FFFixedPreTransformGroup` that queries `.WithNone<DeletionMarker>()`
+  never takes an item a player already took.
+- **Putting items into a building.** The building needs an inventory: give its `EntityConfig` an
+  `InventoryMetaDataConfig`, and check in `PostInitializationHook` that its prefab has
+  `InventoryMetaData` and the `InventorySlot`, `InventoryFilter` and `InventoryUpdateNotifier`
+  buffers. Then, in a simulation system,
+  `InventoryHelper.AddItems(itemId, count, stackSizeLimit, metaData, slots, notifiers, filters, InventoryType.Primary, 2, true)`
+  returns how many it added (0 when full); the stack limit is
+  `itemConfig.AsteroItemLookup[itemId].GetStackSizeLimit(gameplaySettings.StackSizeModifier)`.
+  Using `InventorySlot` and friends needs the `Unity.Netcode.Runtime` reference in `FFMod.asmdef`
+  (the template has it; `compile-check` prints a hint on the CS0012 error otherwise).
+- **Package assemblies.** `FFMod.asmdef` references Unity packages by GUID; when a game type you use
+  comes from a package it does not list, compiling fails with CS0012 naming the assembly. Add its
+  GUID from `Tools/lib/package-assemblies.tsv` to `"references"`.
+- **Player-action kinds.** Choose a block of 100 that no other mod uses, well away from the game's
+  own small numbers (for example a random block between 40000 and 99999), and write it in your
+  README so other modders can avoid it. Known blocks: 47000-47099 (this template's example),
+  48200-48499 (Gherik's mods). A kind of your own reaches a structure while it is flying, but not a
+  construction ghost (the game applies only its own listed kinds to ghosts).
+- **Range rings and other looks.** Presentation only: a Controller-group system (or the game's
+  own systems) may read `HoverSelectionState` and the world and set rendering-only values. See the
+  multiplayer rules for what must never happen there.
+
+The game install also has an `AgentKit/` folder: that is for AI agents that PLAY the game, not for
+modding.
 
 ## Unity Editor Interaction
 
@@ -114,8 +280,9 @@ Three facts that shape every task here:
 > entries — never treat "0 log entries" as proof a Log marker didn't fire; use an
 > `execute_code` state probe instead.
 
-**Headless alternative** (no editor open, e.g. CI or a fresh clone): a batchmode
-import compiles everything —
+**Headless alternatives** (no editor open, e.g. CI or a fresh clone): `Tools/compile-check.sh`
+(seconds; see "Fast checks without the editor"), or a full batchmode import, which also
+compiles the Editor assembly —
 `<Unity editor binary> -batchmode -quit -projectPath <repo> -logFile <log>`; exit code
 0 and zero `error CS` lines in the log = the project compiles.
 
@@ -136,8 +303,18 @@ The build requires a `Preview.png` or `Preview.gif` (< 1 MB) in the project root
 fails with a descriptive error otherwise. Workshop upload happens in-game (Mod Menu →
 blue `^` icon), not from Unity.
 
-`.claude/skills/` contains ready-made workflows: `build-mod` (build + install + verify
-through the bridge) and `add-entity` (add a new item/building/ship end-to-end).
+`.claude/skills/` contains ready-made workflows:
+
+| Skill | Use it to |
+|---|---|
+| `build-mod` | build + install + verify through the bridge |
+| `add-entity` | add a new item, building or ship end-to-end |
+| `add-player-action` | let players change something through a network operation, with its UI |
+| `check-mp-safety` | review code for multiplayer determinism before you call it done |
+| `api-lookup` | find the right game type or method in `Documentation/API` |
+
+On Windows the `Tools/` scripts run from Git Bash. `check-mp-safety` silences a line you have checked
+when it or the line before carries a `// mp-safe: <reason>` comment.
 
 ## Architecture
 
@@ -147,6 +324,9 @@ through the bridge) and `add-entity` (add a new item/building/ship end-to-end).
 | `Assets/Scripts/UserMod.cs` | `IUserMod` — mod identity |
 | `Assets/Scripts/UserModLoader.cs` | `IUserModLoader` — entity configs, tech, config edits |
 | `Assets/Scripts/Systems/` | DOTS systems added by the mod |
+| `Assets/Scripts/Examples/RepairBeacon/` | The multiplayer-safe example: a `[Save]` component, a heartbeat system, a player action, a code-built UI panel |
+| `Documentation/API/` | Generated reference of the game's public mod-facing API (`README.md` there explains it) |
+| `Tools/` | `compile-check.sh`, `check-mp-safety.sh`, `generate-api-reference.sh` and the generator's source |
 | `Assets/Editor/` | Editor tooling — the `FFMod.Editor` assembly (build menu, MCP autostart) |
 | `Assets/FinalFactoryDlls/` | Game DLLs (gitignored) + tracked Auto-Reference-off `.meta`s |
 | `Assets/Resources/Icons`, `.../ItemEntities` | Mod icons and entity prefabs → AssetBundle |
@@ -161,3 +341,20 @@ Notable packages (see `Packages/manifest.json`): `com.unity.entities` (+graphics
 **Package versions must match the game build being targeted** — a mod compiled against
 a different Entities version than the game ships is rejected at load. The template
 tracks the game's released versions; do not bump packages independently.
+
+## Pitfalls that have bitten mods
+
+- A system in a Controller group that changes the world (inventories, health, positions, spawning):
+  it runs at frame rate on each machine. Move it to a Fixed group.
+- UI code (`MonoBehaviour.Update`) calling `Ecs.SetComponent` on a building: the change exists on
+  that machine only. Send a player action.
+- Rewarding `MePlayer`: a different player on every peer. Research from buildings goes to the
+  `HostPlayer` in the game; lumin orbs go to every player.
+- Doubling a value once (a vision range) that the game does not save: after a load or join it is
+  back to normal. Recompute derived values every heartbeat.
+- `entity != null` on an `Entity` (a struct): always true. Compare with `Entity.Null`.
+- `GetComponentLookup<T>(true)` (read-only) and then writing through it: throws when Unity's safety
+  checks are on.
+- `RangeIndicatorData` (range rings) is retired by the game; nothing sets it. Size your ring
+  yourself in a presentation system (`HoverSelectionState` says what the player hovers or selects).
+- Naming a game icon in `IconAssetName`: icons come only from your own bundle.

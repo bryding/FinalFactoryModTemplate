@@ -33,7 +33,7 @@ fi
 dest="$root/Assets/FinalFactoryDlls"
 mkdir -p "$dest"
 
-dlls=(FFCore.dll FFSystems.dll FFComponents.dll FFTechnology.dll FFNetcode.dll)
+dlls=(FFCore.dll FFSystems.dll FFComponents.dll FFTechnology.dll FFNetcode.dll FFSpaghetti.dll)
 for dll in "${dlls[@]}"; do
   if [[ ! -f "$managed/$dll" ]]; then
     echo "Missing '$dll' in '$managed'" >&2

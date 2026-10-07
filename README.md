@@ -14,12 +14,12 @@ Questions? Ask in the [Final Factory Discord](https://discord.gg/finalfactory) `
 1. **Clone the repo** (use `git clone` — downloading the zip does not work because of Git LFS).
 2. **Copy the game DLLs into the project — before opening it in Unity.** The project references the game's assemblies, so they must exist the first time the editor opens:
    * Rename `finalfactory.properties.template` to `finalfactory.properties`, then edit it and set `FinalFactoryDir` to your Final Factory install folder (the one containing `finalfactory_Data`). Use forward slashes; they work on Windows too.
-     * Steam example: `FinalFactoryDir=C:/Program Files (x86)/Steam/steamapps/common/Final Factory`
+     * Steam example: `FinalFactoryDir=C:/Program Files (x86)/Steam/steamapps/common/FinalFactory`
      * If you build the game locally, point it at your build output instead.
    * Run the copy script from the project root:
      * Windows: `copy-finalfactory-dlls.cmd` (double-click it, or run it from a terminal)
      * Mac / Linux: `./copy-finalfactory-dlls.sh`
-   * This copies `FFCore.dll`, `FFSystems.dll`, `FFComponents.dll`, `FFTechnology.dll`, and `FFNetcode.dll` into `Assets/FinalFactoryDlls/`. Your `finalfactory.properties` is gitignored, so your local path stays out of git. **When the game updates, re-run the script** and rebuild your mod.
+   * This copies `FFCore.dll`, `FFSystems.dll`, `FFComponents.dll`, `FFTechnology.dll`, `FFNetcode.dll` and `FFSpaghetti.dll` into `Assets/FinalFactoryDlls/`. Your `finalfactory.properties` is gitignored, so your local path stays out of git. **When the game updates, re-run the script** and rebuild your mod.
 3. **Open the project** with Unity Hub (it will prompt to install the exact editor version if you don't have it).
 4. **Add a Steam Workshop preview image**: put a `Preview.png` or `Preview.gif` (under 1 MB — Steam's limit) in the project root. The build fails with a clear error if it's missing or too big.
 
@@ -76,7 +76,8 @@ void OnGameStart(Canvas inGameUiCanvas);  // when a new/loaded game starts: hook
 |---|---|
 | `Assets/Scripts/UserMod.cs` | The identity boilerplate |
 | `Assets/Scripts/UserModLoader.cs` | New ship/assembler/printer configs with recipes; cloning an existing entity (the Gherik Connector); editing existing item, terrain, and global config; adding technologies |
-| `Assets/Scripts/Systems/FleetRandomMovementSystem.cs` | A Burst-compiled ECS system with a job, correct system-group placement, and deterministic per-entity randomness |
+| `Assets/Scripts/Systems/FleetRandomMovementSystem.cs` | A Burst-compiled ECS system with a job that changes the simulation safely for multiplayer: on the heartbeat, ordered after the game's own system, with randomness every peer agrees on |
+| `Assets/Scripts/Examples/RepairBeacon/` | A complete multiplayer-safe feature: a saved component on the Loth Printer, a heartbeat system that repairs nearby buildings, a player action (network operation) that switches it on and off, and a UI panel built in code |
 | `Assets/Scripts/Utils/ConfigUtils.cs` | A small helper for editing accepted-ship lists |
 | `Assets/Resources/` | How icons (`Icons/`) and entity prefabs (`ItemEntities/`) get into your mod's AssetBundle |
 
@@ -86,10 +87,13 @@ New systems you write are auto-detected when the game loads your mod — no regi
 
 Final Factory multiplayer runs the simulation in deterministic lockstep on every peer. A mod system that touches factory/simulation state must follow the same rules the game's own systems do, or it will desync multiplayer sessions:
 
-* Use `fp` fixed-point math (`Unity.Mathematics.FixedPoint`) for simulation state — never `float`.
-* Put simulation logic in **Fixed** groups (`FFFixedPreTransformGroup` is the usual home); Controller groups are for presentation only.
-* Never derive simulation state from wall-clock time, frame rate, or `UnityEngine.Random` — use the per-entity `RandomSystem` helper (see `FleetRandomMovementSystem.cs`).
-* Delete entities by adding `DeletionMarker`, never `DestroyEntity` (details in `DOCUMENTATION.md`).
+* Put simulation logic in **Fixed** groups (`FFFixedPreTransformGroup` is the usual home), with the heartbeat's time (`FFTimeData.deltaTime`); Controller groups are for presentation only.
+* Make decisions in `fp` fixed-point math (`Unity.Mathematics.FixedPoint`), and never let the order entities come out of a query decide anything.
+* Never let input, the local player, wall-clock time, frame rate or `UnityEngine.Random` reach simulation state. Seed randomness from stable keys (see `FleetRandomMovementSystem.cs`).
+* Send player actions as network operations; UI only reads (see `Assets/Scripts/Examples/RepairBeacon/`).
+* Delete entities by adding `DeletionMarker`, never `DestroyEntity`.
+
+`CLAUDE.md` has the full rules with the reasons, and `Tools/check-mp-safety.sh` scans your code for the common breaks. The game currently turns multiplayer off while any mod is enabled; following these rules is what lets your mod work there once it doesn't, and keeps single player correct meanwhile.
 
 ## Troubleshooting
 
@@ -103,13 +107,18 @@ Final Factory multiplayer runs the simulation in deterministic lockstep on every
 | Hundreds of `CS0576`/`Debug` errors in a Unity package | The game DLLs got re-imported with **Auto Reference** enabled. The tracked `.meta` files under `Assets/FinalFactoryDlls/` pin it off — don't delete or regenerate them. |
 | Game update broke your mod | Re-run the DLL copy script, fix compile errors, rebuild, reinstall. |
 
-## Modding with an AI agent
+## Modding with AI tools
 
-This repo is set up for agentic coding tools (Claude Code, Codex, etc.):
+You don't have the game's source code, and an AI coding agent (Claude Code, Codex, Cursor, ...) doesn't either. This template gives it the subset it needs:
 
-* `CLAUDE.md` / `AGENTS.md` carry the project rules, the compile-verification ritual, and the determinism constraints, so an agent can work reliably out of the box.
-* `.claude/skills/` includes workflows for building + installing the mod and for adding a new item end-to-end.
-* The project ships the [MCP for Unity](https://github.com/CoplayDev/unity-mcp) bridge, which lets an agent drive the Unity editor directly (compile checks, menu items, console reading). Point your agent at this repo and ask it to "build and install the mod" to see the loop.
+* **`CLAUDE.md`** (also read as `AGENTS.md`): how to build, check and test a mod, the mod API, and the multiplayer rules, written for an agent to follow.
+* **`Documentation/API/`**: a reference of the game's public, mod-facing API (types, members, signatures and the game's own doc comments), generated from the game's DLLs. `all-members.txt` is one line per member, made for grep. Regenerate it after a game update with `Tools/generate-api-reference.sh`.
+* **Checks without opening Unity**: `Tools/compile-check.sh` compiles your mod in seconds with Unity's own compiler, and `Tools/check-mp-safety.sh` flags code that would break multiplayer. An agent can run both after every edit (on Windows, from Git Bash).
+* **Worked examples** that compile: new items, a building and a ship (`UserModLoader.cs`), a multiplayer-safe simulation system, and a complete feature with a player action and a UI panel (`Examples/RepairBeacon/`).
+* **Skills** in `.claude/skills/`: `build-mod`, `add-entity`, `add-player-action`, `check-mp-safety`, `api-lookup`.
+* The [MCP for Unity](https://github.com/CoplayDev/unity-mcp) bridge, so an agent can drive the editor (compile, run the build menu, read the console).
+
+A good first prompt: *"Read CLAUDE.md. Add a new building that ... ; run Tools/compile-check.sh and Tools/check-mp-safety.sh until both pass, then build and install the mod."* What an agent cannot check for you is how the mod plays: start Final Factory and try it.
 
 ## Learning DOTS
 

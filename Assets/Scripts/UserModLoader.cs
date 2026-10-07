@@ -11,6 +11,7 @@ using FFCore.GlobalConfig;
 using FFCore.Inventory;
 using FFCore.Items;
 using FFCore.Modding;
+using Examples.RepairBeacon;
 using Unity.Mathematics.FixedPoint;
 using UnityEngine;
 using Utils;
@@ -128,7 +129,7 @@ public class UserModLoader : IUserModLoader
       RenderingData = new RenderingData
       {
         ModelPath =
-          "Assembler" // Since this is the name of an existing model from the game, the mod loader will assign that model to this new entity.
+          "Assembler" // The name of an existing game item: the mod loader makes this item a copy of the game's Assembler entity (its components too), then applies the configs above.
       },
       CraftRecipe = new List<RecipeItemDataRaw>
       {
@@ -209,7 +210,7 @@ public class UserModLoader : IUserModLoader
       RenderingData = new RenderingData
       {
         ModelPath =
-          LothPrinter // Since this is the name of an existing model from the game, the mod loader will assign that model to this new entity.
+          LothPrinter // Not a game item, so the mod loader builds the entity from this mod's own prefab of that name (Assets/Resources/ItemEntities/Loth Printer.prefab).
       },
       CraftRecipe = new List<RecipeItemDataRaw>
       {
@@ -241,7 +242,8 @@ public class UserModLoader : IUserModLoader
       },
       RenderingData = new RenderingData
       {
-        // The name of an existing model from the game, so the mod loader reuses that model.
+        // The name of an existing game item: the mod loader makes this item a copy of that item's whole
+        // entity (its behaviour components too, not only the model).
         ModelPath = "Connector"
       },
       PlaceableConfig = new PlaceableConfig
@@ -250,9 +252,10 @@ public class UserModLoader : IUserModLoader
         Width = 1,
         Height = 1
       },
-      // Same reuse trick as ModelPath: name an existing game icon. If you want your own look,
-      // drop a PNG in Assets/Resources/Icons and use its file name here instead.
-      IconAssetName = "Connector"
+      // Icons come only from this mod's own icon bundle (Assets/Resources/Icons): the game looks
+      // IconAssetName up there and nowhere else, so a game icon's name ("Connector") does not work.
+      // This reuses the Loth Assembler's icon; drop your own PNG in Assets/Resources/Icons for a new look.
+      IconAssetName = LothAssembler
     };
 
     return new List<EntityConfig>
@@ -266,6 +269,18 @@ public class UserModLoader : IUserModLoader
 
   public void PostInitializationHook()
   {
+    // Multiplayer-safe example (Assets/Scripts/Examples/RepairBeacon): the Loth Printer also works as a
+    // repair beacon. The component goes on the PREFAB here, so every printer built has it, on every peer.
+    // The player action that switches it is registered here too: PostInitializationHook runs once at startup
+    // on every peer, before any game starts, which is what a network action's applier needs.
+    Ecs.GetSingleton<ItemConfig>().GetPrefabForName(LothPrinter).AddAndSetComponent(new RepairBeacon
+    {
+      Enabled = true,
+      Range = 300,
+      HealPerSecond = 5
+    });
+    RepairBeaconActions.Register();
+
     // Update a single item's config example
     var itemConfig = Ecs.GetSingleton<ItemConfig>();
     var terrainConfigs = itemConfig.TerrainConfigs;
@@ -324,9 +339,17 @@ public class UserModLoader : IUserModLoader
     itemConfig.PowerConfigLookup[gherikId] = gherikPower;
   }
 
+  private static RepairBeaconPanel _repairBeaconPanel;
+
   public void OnGameStart(Canvas inGameUiCanvas)
   {
-
+    // Called for every new or loaded game. Build the example's UI panel once per canvas.
+    if (_repairBeaconPanel == null || _repairBeaconPanel.transform.parent != inGameUiCanvas.transform)
+    {
+      _repairBeaconPanel = RepairBeaconPanel.Create(inGameUiCanvas);
+      var driver = new GameObject("RepairBeaconPanelDriver").AddComponent<RepairBeaconPanelDriver>();
+      driver.Panel = _repairBeaconPanel;
+    }
   }
 
   public List<TechnologyConfig> AddTechnologies()

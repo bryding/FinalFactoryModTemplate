@@ -22,6 +22,9 @@ bridge is down, stop and tell the user (CLAUDE.md, "Unity Editor Interaction").
 
 ## 2. Compile-verify (after any code change)
 
+Fast first pass, no editor needed: `Tools/compile-check.sh` (OK, or the compiler's errors) and
+`Tools/check-mp-safety.sh` (no ERROR). Then, in the editor, before building:
+
 `refresh_unity` → poll `editor/state` until `compilation.is_compiling` is false and the
 domain reload is newer than the edit → `read_console` filtered for `error CS`. Zero
 errors = compiled. Fix errors before building.

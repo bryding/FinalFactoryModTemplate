@@ -43,7 +43,7 @@ set "DEST=%ROOT%Assets\FinalFactoryDlls"
 if not exist "%DEST%" mkdir "%DEST%"
 
 set "COUNT=0"
-for %%D in (FFCore.dll FFSystems.dll FFComponents.dll FFTechnology.dll FFNetcode.dll) do (
+for %%D in (FFCore.dll FFSystems.dll FFComponents.dll FFTechnology.dll FFNetcode.dll FFSpaghetti.dll) do (
   if not exist "%MANAGED%\%%D" (
     echo Missing "%%D" in "%MANAGED%"
     exit /b 1
