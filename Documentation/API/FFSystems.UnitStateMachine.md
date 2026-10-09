@@ -11,6 +11,7 @@ public struct ChaseSystem : ISystem, ISystemCompilerGenerated
 
 | Member | Summary |
 |---|---|
+| `public const float PlayerFleetLeash = 200` | How far a player's fleet ship may chase from its player, in world units, before the leash sends it home in a passive spell (`FleetIdleMarker.TempPassive`). `TargetingSystem` ends the spell once the ship is back within half of it. |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnDestroy(ref SystemState systemState)` |  |
@@ -141,16 +142,21 @@ public struct FleetIdleSystem : ISystem, ISystemCompilerGenerated
 | `public const float FormationCatchUpSpeed = 25` | Cap (u/s) on the slot pull ON TOP of the commander's velocity. Uncapped, the proportional pull chases a formation target that steps ~30 u (FleetIdleOffset) the moment the commander moves, slingshotting settled ships ~100 u/s past the player. 25 u/s reads as a glide, and it never binds during settling (inside the calm band the pull is at most gain x 8 = 16 u/s). |
 | `public const float FormationFarDistance = 60` | Distance scale for the cubic far-catch-up boost: negligible inside the formation but grows cubically beyond it, so ships stranded far away (post-combat regroup) still rush back like the legacy farPull. |
 | `public const float FormationGoldenAngle = 2.3999631` | Golden angle in radians — uniform, organic-looking spiral packing. |
+| `public const float FormationMinGlideDistance = 40` | The least `FormationGlideDistance`, u. |
+| `public const float FormationReturnSpeedRatio = 2` | How much faster than its moving commander a returning player-fleet ship may close, as a multiple of the commander's speed (`PlayerFleetMaxSpeed`). |
 | `public const float FormationSettleDecayPerSecond = 8` | Exponential rest-decay rate (1/s) for residual velocity inside the settle radius. |
 | `public const float FormationSettleRadius = 0.5` | Inside this radius of its own slot a ship is settled and comes to rest. |
 | `public const float FormationSlotSpacing = 5` | every player-fleet ship idles at its OWN formation slot instead of the single shared FleetPosition — one shared target for ~100 ships is a structural limit cycle against `UnitOverlapPreventionSystem`'s inverse-square repel. |
 | `public const float PlayerFleetSpeedBonus = 100` | How much faster than its commander a player's fleet may fly to hold formation. Named and shared because `FFSystems.Fleet.FleetCommanderSystem` bounds the derived commander velocity by the same ceiling — a bound the formation could not exceed anyway, so two copies of a bare `100` would only be able to drift apart. |
+| `public static float FormationGlideDistance(float fleetIdleOffset)` | How far from its slot a ship of this lead offset only glides toward it, at `FormationCatchUpSpeed`, while the commander moves: twice the lead (`FleetConfig.FleetIdleOffset`), the most a turn or a reversal moves a settled ship's slot, and at least `FormationMinGlideDistance`. |
 | `public static float3 GetFormationSlotOffset(int formationIndex)` |  |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
 | `public static bool PerformMovement(ref LinearMotion linearMotion, LocalTransform localTransform, float3 fleetPosition, int fleetSize, float3 commanderVelocity, fp dt, float distanceTolerance, float maxSpeed)` |  |
-| `public static bool PerformSlotMovement(ref LinearMotion linearMotion, LocalTransform localTransform, float3 slotPosition, float3 commanderVelocity, fp dt, float maxSpeed)` |  |
+| `public static bool PerformSlotMovement(ref LinearMotion linearMotion, LocalTransform localTransform, float3 slotPosition, float3 commanderVelocity, fp dt, float maxSpeed, float glideDistance)` |  |
+| `public static float PlayerFleetMaxSpeed(float baseMoveSpeed, float commanderSpeed)` | The fastest a player-fleet ship flies: its commander's speed plus a closing speed of `FormationReturnSpeedRatio` times it (at least `PlayerFleetSpeedBonus`), and never below the old `BaseMoveSpeed + PlayerFleetSpeedBonus`. It was that fixed ceiling alone so a player faster than it left the fleet behind until they slowed down. |
+| `public static float3 PlayerFormationSlot(float3 fleetPosition, float3 commanderVelocity, float baseMoveSpeed, float fleetIdleOffset, int formationIndex)` | A player-fleet ship's formation target: the commander's fleet position, led forward along its velocity by `fleetIdleOffset`, plus the ship's own slot. |
 
 ## FleetIdleSystem.FleetIdleJob
 
@@ -193,9 +199,12 @@ System that handles showing/hiding the player's fleet of ships. This system has 
 | `public const float ReturnCatchUpPerSecond = 3.2` | Closing speed per unit of distance to the owner (u/s per u): 480 u/s at 150 u. |
 | `public const float ReturnMaximumClosingSpeed = 480` | Fastest a returning ship closes on its owner (u/s), on top of the owner's own speed. |
 | `public const float ReturnMinimumClosingSpeed = 90` | Slowest a returning ship closes on its owner (u/s), so it always arrives. |
+| `public const float ReturnStowDistance = 6` | Within this distance of its owner a hidden ship flying home goes in (u). |
+| `public static bool IsStowedAfterStep(float distance, float stepDistance)` | Whether a hidden ship `distance` from its owner is in once it has flown `stepDistance` toward it this heartbeat: judged after the step, against the owner's position of this heartbeat, so a moving owner does not leave it one heartbeat behind for good. |
 | `public void OnCreate(ref SystemState systemState)` | Sets up the system's entity queries and requirements. |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` | Updates the system each heartbeat, handling visibility of fleet ships based on settings and auto-hide rules. |
+| `public static float OwnerSpeed(bool isPlayerOwner, in Player owner, bool hasCommander, in FleetCommander commander)` | The owner's speed a hidden ship flying home adds to its closing speed (0 for a non-player owner), so it outruns a moving owner instead of trailing it (see ReturnStepDistance). |
 | `public static float ReturnStepDistance(float distance, float ownerSpeed, float deltaTime)` | How far a hidden ship flies toward its owner this heartbeat: the owner's own speed plus a closing speed that grows smoothly with the distance, never past the owner. |
 
 ## ReturnSystem

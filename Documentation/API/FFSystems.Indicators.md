@@ -12,6 +12,7 @@ public struct ActiveItemDisplaySystem : ISystem, ISystemCompilerGenerated
 | Member | Summary |
 |---|---|
 | `public static bool ShowActiveItemDisplays { get; set; }` |  |
+| `public static LocalTransform IconPose(in ActiveItemDisplay display, quaternion parentRotation)` | The icon's pose under its structure: `ActiveItemDisplay.YOffset` above it, and turned so it faces the camera's way whatever way the structure faces. |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |

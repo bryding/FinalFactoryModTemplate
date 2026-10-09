@@ -45,7 +45,7 @@ public enum StructureSettingKind
 
 Identifies which structure setting a `StructureSettingPayload` carries and therefore which applier mutates the target (see `StructureSettingAppliers`). Values are explicit and WIRE-STABLE: they travel in serialized payloads between peers, so never renumber or reuse a value. Adding a setting = new member here + payload class + applier + EditMode test — never a new `NetworkGameOperationType` member.
 
-Values: `FilterConfig = 0`, `SplitterPriority = 1`, `RequesterConfig = 2`, `RequesterItems = 3`, `RequesterCargoHold = 4`, `SpawnerChestItem = 5`, `InventorySlotsDisabled = 6`, `ExplorationCenterConfig = 7`, `MassDriverTarget = 8`, `PowerDistributorTarget = 9`, `StructureName = 10`, `HaulerEnabled = 11`, `DefensePlatformRange = 12`, `InserterRange = 13`, `LightConfig = 14`, `MassDriverConfig = 15`, `FollowTarget = 16`
+Values: `FilterConfig = 0`, `SplitterPriority = 1`, `RequesterConfig = 2`, `RequesterItems = 3`, `RequesterCargoHold = 4`, `SpawnerChestItem = 5`, `InventorySlotsDisabled = 6`, `ExplorationCenterConfig = 7`, `MassDriverTarget = 8`, `PowerDistributorTarget = 9`, `StructureName = 10`, `HaulerEnabled = 11`, `DefensePlatformRange = 12`, `InserterRange = 13`, `LightConfig = 14`, `MassDriverConfig = 15`, `FollowTarget = 16`, `JunctionSideLevels = 17`
 
 ## StructureSettingsDispatch
 

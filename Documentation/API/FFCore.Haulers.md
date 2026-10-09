@@ -18,6 +18,16 @@ public enum InQueueStateType
 
 Values: `EnRoute = 0`, `InPosition = 1`
 
+## ItemCountComparison
+
+```csharp
+public enum ItemCountComparison : byte
+```
+
+how an item-count condition compares the cargo holds' count of its item with its number. Zero is "more than", what an item-count condition meant.
+
+Values: `GreaterThan = 0`, `LessThan = 1`, `GreaterOrEqual = 2`, `LessOrEqual = 3`, `Equal = 4`, `NotEqual = 5`
+
 ## OutOfSyncResult
 
 ```csharp
@@ -25,6 +35,46 @@ public enum OutOfSyncResult
 ```
 
 Values: `InSync = 0`, `StopEntityDeletedFromWorld = 1`, `StopDeletedFromHaulerList = 2`, `HaulerOrphaned = 3`
+
+## StopConditionJoin
+
+```csharp
+public enum StopConditionJoin : byte
+```
+
+how a stop's wait condition joins the one above it. The first condition's join is ignored.
+
+Values: `Or = 0`, `And = 1`
+
+## StopConditionRules
+
+```csharp
+public static class StopConditionRules
+```
+
+the rules every peer and the stop panel apply to a stop's wait conditions.
+
+| Member | Summary |
+|---|---|
+| `public const int ComparisonCount = 6` |  |
+| `public const int MaxConditionsPerStop = 8` | The most wait conditions one stop can hold. The stop panel stops offering "Add Condition" there and the host refuses a longer list. Its `Utils.SmallBuffer{T}` holds 15. |
+| `public static bool Compare(int have, ItemCountComparison comparison, int target)` |  |
+| `public static bool IsValidComparison(int comparison)` |  |
+| `public static bool IsValidJoin(int join)` |  |
+| `public static bool IsValidStopType(int stopType)` |  |
+
+## StopConditionVerdict
+
+```csharp
+public struct StopConditionVerdict
+```
+
+folds a stop's conditions, top to bottom, into whether the station leaves: an OR of AND groups. Add every condition, including those after one already met, so the caller's per-condition work (a timer ticking) does not depend on the order. No condition at all is not met; the station system leaves a stop with no conditions on its own.
+
+| Member | Summary |
+|---|---|
+| `public readonly bool Met { get; }` |  |
+| `public void Add(StopConditionJoin join, bool met)` |  |
 
 ## StopType
 

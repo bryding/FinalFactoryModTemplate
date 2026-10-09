@@ -11,9 +11,11 @@ public static class BiomeGeneration
 | Member | Summary |
 |---|---|
 | `public const int GridBiomeSize = 256` |  |
+| `public const int HavenRadiusTiles = 90` | The Haven (starter) biome's radius in tiles: a biome block whose coordinate (see `Config.MapGenerationData.AdjustToBlock`) lies closer than this to the origin is Haven. `IsHavenBlock` is the integer form of the same test. |
 | `public static int2 GetBiomeGridMax(int2 cell)` |  |
 | `public static int2 GetBiomeGridMin(int2 cell)` |  |
 | `public static FixedString32Bytes GetBiomeType(int2 coord, uint seed)` |  |
+| `public static bool IsHavenBlock(int2 block)` | Whether a block coordinate (already passed through `Config.MapGenerationData.AdjustToBlock`) is in the Haven biome. Exactly `GetBiomeType`'s Haven test in integer math, so simulation code can ask it without float or the biome map. |
 
 ## BiomeMetadata
 
@@ -68,6 +70,28 @@ public struct BlittableWorldObjectBiomeData
 | `public int MaxCountInBiome` |  |
 | `public int ObjectId` |  |
 | `public float Value` |  |
+
+## EnemyDamageZone
+
+```csharp
+public enum EnemyDamageZone : byte
+```
+
+Values: `Haven = 0`, `OutsideHaven = 1`, `DeepSpace = 2`
+
+## EnemyDamageZones
+
+```csharp
+public static class EnemyDamageZones
+```
+
+the zone a player ship is in for enemy damage, and the multiplier that zone applies. Simulation code: fp and integer math only, fed the player's simulation position (`Player.SimulationPosition`), never a presentation transform. Haven is the Haven biome exactly as the map and minimap label it.
+
+| Member | Summary |
+|---|---|
+| `public static fp GetMultiplier(EnemyDamageZone zone, in EnemyDamageZoneSettings settings)` |  |
+| `public static fp GetMultiplier(fp3 position, in EnemyDamageZoneSettings settings)` |  |
+| `public static EnemyDamageZone GetZone(fp3 position, fp deepSpaceRadius)` |  |
 
 ## WorldObjectBiomeDistribution
 

@@ -10,7 +10,7 @@
 # and defines native_path (a path the Windows dotnet understands, when running under Git Bash).
 #
 # Override the editor with UNITY_EDITOR_DATA=/path/to/Editor/Data (Windows, Linux) or
-# /path/to/Unity.app/Contents (macOS).
+# /path/to/Unity.app/Contents/Resources/Scripting (macOS; Unity 6 keeps DotNetSdkRoslyn/ there).
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
@@ -25,12 +25,13 @@ for candidate in \
   "${UNITY_EDITOR_DATA:-}" \
   "/c/Program Files/Unity/Hub/Editor/$unity_version/Editor/Data" \
   "/Applications/Unity/Hub/Editor/$unity_version/Unity.app/Contents" \
+  "/Applications/Unity/Hub/Editor/$unity_version/Unity.app/Contents/Resources/Scripting" \
   "$HOME/Unity/Hub/Editor/$unity_version/Editor/Data"; do
   if [[ -n "$candidate" && -f "$candidate/DotNetSdkRoslyn/csc.dll" ]]; then UNITY_DATA="$candidate"; break; fi
 done
 if [[ -z "$UNITY_DATA" ]]; then
   echo "Could not find Unity $unity_version (looked for DotNetSdkRoslyn/csc.dll under the usual Unity Hub folders)." >&2
-  echo "Install it with Unity Hub, or set UNITY_EDITOR_DATA to its Editor/Data (Windows, Linux) or Unity.app/Contents (macOS) folder." >&2
+  echo "Install it with Unity Hub, or set UNITY_EDITOR_DATA to its Editor/Data (Windows, Linux) or Unity.app/Contents/Resources/Scripting (macOS) folder." >&2
   exit 1
 fi
 

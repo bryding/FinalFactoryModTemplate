@@ -81,6 +81,26 @@ public class EntityGridPersistenceSystem.SaveData
 | `public EntityGridPersistenceSystem.OccupantBlock[] Occupants` | Null = not carried (a payload that predates this system); empty = an empty grid. |
 | `public SaveData()` |  |
 
+## GasGiantSwap
+
+```csharp
+public struct GasGiantSwap
+```
+
+biome generation picks one in three of the Terra Worlds it scatters to become Gas Giants. Only `WorldObjectGeneratorJob` applies it; the Terra World every new game places near the start (`MapGeneratorSystem.GenerateStartArea`) never goes through it and stays a Terra World.
+
+| Member | Summary |
+|---|---|
+| `public int GasGiantId` |  |
+| `public const string GasGiantName = "Gas Giant"` |  |
+| `public const uint OneIn = 3` | One Terra World in this many becomes a Gas Giant. |
+| `public int TerraWorldId` |  |
+| `public const string TerraWorldName = "Terra World"` |  |
+| `public bool IsActive { get; }` | False when either item, or the gas giant's world-object config, is not loaded (test fixtures, mods). |
+| `public int Apply(int itemId, uint masterSeed, int2 cell)` | The item biome generation actually places for `itemId` at `cell`. |
+| `public static GasGiantSwap Resolve(in ItemConfig itemConfig)` |  |
+| `public static bool Swaps(uint masterSeed, int2 cell)` | Whether a Terra World generated at `cell` becomes a Gas Giant. |
+
 ## MapGeneratorSystem
 
 ```csharp
@@ -92,7 +112,8 @@ This system is responsible for generating the start area of the map and placing?
 
 | Member | Summary |
 |---|---|
-| `public static readonly Vector3 FirstEnemySpawnerPos` |  |
+| `public static readonly Vector3 FirstEnemySpawnerPos` | Where the tutorial's Urso camp spawns: on the diagonal between two of GenerateStartArea's start squares, just outside the three starting asteroids. |
+| `public static readonly Vector3 LegacyFirstEnemySpawnerPos` | The tutorial camp's spot before 2026-10-07, where a save made during the camp step still has it. |
 | `public byte CurrentVersion { get; }` | v2 appends `MapGeneratorSystemData.WorldObjectTiles`: the occupied-tile set the world-object generator produced on the peer that SAVED. `GenerateMapFromSaveFile` regenerates it on every load from the loading world's entity grid, so a joining client (whose grid is not yet the host's) derived a different set — and `EnemyCampBuilderSystem` then grew camps where the host was blocked. |
 | `public MapGeneratorSystem()` |  |
 | `public void Deserialize(object serialized, Dictionary<int, int> finalizedIdToIdMap)` |  |
@@ -162,6 +183,23 @@ public struct MapItemGridding
 | `public static MapItemGridding ForPrefab(EntityManager em, Entity mailbox, Entity prefab)` | The single-prefab, main-thread form: resolves the gridding decision eagerly with `EntityManager.HasComponent` and yields a struct whose mailbox is live only when the prefab really is a gridded structure. |
 | `public void QueueAddIfGridded(EntityCommandBuffer cb, Entity prefab, in Placeable prefabPlaceable, Entity spawned)` |  |
 
+## TutorialCampSpot
+
+```csharp
+public static class TutorialCampSpot
+```
+
+Where the tutorial's Urso camp goes. `MapGeneratorSystem.FirstEnemySpawnerPos` is the first choice, but by the camp step a player may have built there (or anything else may stand there), so the camp takes the first spot whose footprint and a `Clearance`-tile margin are empty at every grid height and hold no world object.
+
+| Member | Summary |
+|---|---|
+| `public const int CampFootprint = 3` | The camp's footprint in tiles (StingerSpawner, 3x3), for callers that have no prefab to ask. |
+| `public static readonly int2[] Candidates` | World x/z of every spot, in the order they are tried. |
+| `public const int Clearance = 2` | Empty tiles kept around the camp's footprint, so it is not jammed against whatever is beside it. |
+| `public static float3 Find(float3 preferred, int width, int length, NativeParallelHashMap<int3, Entity> entityMap, NativeParallelHashMap<int2, bool> worldObjectTiles)` | `preferred` if a `width` x `length` camp fits there, else the first of `Candidates` that is clear, at `preferred`'s height. When none is clear the camp goes to `preferred` anyway: the step must still have a camp to destroy. An uncreated map (a test world without the grid) counts as empty. |
+| `public static bool IsCampSpot(float3 position)` | Whether a spawner at `position` is the tutorial camp: it stands on one of its spots. |
+| `public static bool IsClear(int2 centreTile, int width, int length, NativeParallelHashMap<int3, Entity> entityMap, NativeParallelHashMap<int2, bool> worldObjectTiles)` | Whether a camp centred on `centreTile` and its margin touch nothing: no entity at any grid height, no world object. |
+
 ## WorldObjectGeneratorJob
 
 ```csharp
@@ -182,6 +220,7 @@ This is the job that's called by MapGeneratorSystemV2 to generate the world obje
 | `public MapGenerationData MapGenerationData` |  |
 | `public NativeArray<PlaceableConfig> PlaceableConfigLookup` |  |
 | `public ComponentLookup<Placeable> PlaceableLookup` |  |
+| `public GasGiantSwap PlanetSwap` | which generated Terra Worlds become Gas Giants. |
 | `public uint Seed` |  |
 | `public NativeParallelHashMap<int, WorldObjectConfigDataBlittable> WorldObjectConfigDataLookup` |  |
 | `public void Execute()` |  |

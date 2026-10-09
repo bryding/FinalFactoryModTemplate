@@ -409,6 +409,51 @@ public class JunctionBaker : Baker<JunctionAuthoring>
 | `public JunctionBaker()` |  |
 | `public override void Bake(JunctionAuthoring authoring)` |  |
 
+## JunctionSidePriority
+
+```csharp
+[Save]
+public struct JunctionSidePriority : IComponentData, IQueryTypeParameter
+```
+
+a priority level for each side of a junction, set by the player (Reteoteigam's request: "west input 1, north input 2, east output 1, south output 1"). A side's role follows its belt: a belt running into the junction makes it an input, one running away an output, so one level per side covers both.
+
+| Member | Summary |
+|---|---|
+| `public uint InputTurns` | Per level (byte 0 = no level, 1..3): `None` or 1 + the input side served last. |
+| `public uint Levels` | One byte per base-frame side slot 0..3, low byte first: `None` or 1..3. |
+| `public const byte MaxLevel = 3` |  |
+| `public const byte None = 0` |  |
+| `public uint OutputTurns` | Per level (byte 0 = no level, 1..3): `None` or 1 + the output side served last. |
+| `public const int SideCount = 4` |  |
+| `public const byte SlotFilledWithoutLevel = 4` | A `SlotLevels` value: filled by an input with no level. |
+| `public uint SlotLevels` | Per inventory slot 0..3: the best level of the inputs that put the items it holds there, 1..3, or `SlotFilledWithoutLevel`. `None` is not known yet: the slot's items came before the levels were set (setting them clears this), or it has emptied since. Such items go out first (`SlotRank`), so the slot's own input refills it and records its level. |
+| `public bool HasLevels { get; }` |  |
+| `public static byte GetByte(uint packed, int index)` |  |
+| `public static bool IsValid(uint levels)` | Whether `levels` holds a level of 0..3 in each of the four side bytes. |
+| `public byte LevelOf(int side)` |  |
+| `public static int LevelRank(byte level)` | Where a level stands in line: 1, 2, 3, then no level. |
+| `public static int Rank(uint levels, uint turns, int side)` | Where a side stands in line among the candidates this heartbeat: by level first (1, 2, 3, then no level), then, within a level, the side after the one that level served last goes first and the rest follow round the junction; with no history, slot order. Lower goes first; every peer computes it from saved state. |
+| `public static uint Served(uint levels, uint turns, int side)` | Records that `side` was served, as its level's turn. |
+| `public static uint SetByte(uint packed, int index, byte value)` |  |
+| `public static int SlotRank(byte recorded)` | Where an item slot stands in line by its `SlotLevels` value: not known yet first, then 1, 2, 3, then filled without a level. |
+| `public static byte SlotValue(byte level)` | The `SlotLevels` value an input at `level` records. |
+
+## JunctionTurns
+
+```csharp
+[Save]
+public struct JunctionTurns : IComponentData, IQueryTypeParameter
+```
+
+whose turn it is at a junction, so it merges fairly. Before this a junction always took from the input whose belt starts at the smallest tile and always pushed its trailing slot first, so of two full belts one took 100% (two item types: the other sat in slot 0 for good). Each field is `None` or 1 + the value it records; a save from before it existed loads with the prefab's all-`None` value.
+
+| Member | Summary |
+|---|---|
+| `public byte LastInputSide` | 1 + the travel direction of the input belt that last put an item in. |
+| `public byte LastInventorySlot` | 1 + the inventory slot an item was last pushed from. |
+| `public const byte None = 0` |  |
+
 ## LogisticsBay
 
 ```csharp

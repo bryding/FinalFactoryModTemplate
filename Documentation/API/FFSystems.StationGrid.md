@@ -182,6 +182,21 @@ Processes each StationGrid and distributes power to connected modules
 | `public void OnUpdate(ref SystemState systemState)` |  |
 | `public static bool WereCalculatedGridsUpdatedLastUpdate(long heartbeat)` |  |
 
+## StationGridPostResetAdmissionSystem
+
+```csharp
+[UpdateInGroup(typeof(FFFixedInitializationGroup))] [UpdateBefore(typeof(StationGridMembershipSystem))]
+public struct StationGridPostResetAdmissionSystem : ISystem, ISystemCompilerGenerated
+```
+
+On the first fixed tick after a heartbeat reset, queues a station-grid Add for every structure the load-time regrid would grid that has no grid on this peer, so a live peer starts the new session with the grids a peer that loaded the same world has.
+
+| Member | Summary |
+|---|---|
+| `public void OnCreate(ref SystemState state)` |  |
+| `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnUpdate(ref SystemState state)` |  |
+
 ## StationGridPostResetRecalcSystem
 
 ```csharp
