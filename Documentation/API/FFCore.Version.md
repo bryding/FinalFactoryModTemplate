@@ -13,7 +13,7 @@ public readonly struct FFVersion : IEquatable<FFVersion>
 | `public static readonly FFVersion Empty` |  |
 | `public static FFVersion FinalFactoryVersion` |  |
 | `public static readonly FFVersion MinimumSaveVersion` | The oldest save this build will load. Saves below it are refused outright rather than migrated forward. |
-| `public const string ReleasedUtc = "2026-10-05T18:18:28Z"` | When this version was released, in UTC (ISO 8601): the moment its release bump was made. The main menu shows it beside the version. The bump writes it together with the line above (scripts/trigger-ci-release.sh, and BuildCommand2's UpdateMinorVersion), so every player, platform and edition of a release shows the same time whatever its clock and time zone. |
+| `public const string ReleasedUtc = "2026-10-09T10:54:13Z"` | When this version was released, in UTC (ISO 8601): the moment its release bump was made. The main menu shows it beside the version. The bump writes it together with the line above (scripts/trigger-ci-release.sh, and BuildCommand2's UpdateMinorVersion), so every player, platform and edition of a release shows the same time whatever its clock and time zone. |
 | `public int Major { get; }` |  |
 | `public int Minor { get; }` |  |
 | `public int Patch { get; }` |  |

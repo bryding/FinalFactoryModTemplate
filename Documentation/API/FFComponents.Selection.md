@@ -113,6 +113,7 @@ Applied to the actual selection marker entity itself NOT the entity being select
 |---|---|
 | `public float3 FinalPosition` |  |
 | `public int Length` |  |
+| `public Entity Target` | The structure (or other entity) this marker is on, or `Entity.Null`. Presentation only: `SelectionMarkerLookSystem` draws the marker where this entity is DRAWN this frame (interpolated, and moved by the pilot's prediction on a flying station), not at its simulation pose. |
 | `public int Width` |  |
 
 ## SelectionMarkerAuthoring

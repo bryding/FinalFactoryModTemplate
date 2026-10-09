@@ -177,6 +177,37 @@ What hand driving did to a station on the most recent heartbeat it moved it: the
 | `public float3 Translation` |  |
 | `public float TurnRadians` |  |
 
+## ImpactHull
+
+```csharp
+public struct ImpactHull
+```
+
+What a unit looks like to a shot, seen from above as the camera sees it: its drawn parts' outline on the ground plane of its own frame (the unit's root position and rotation as drawn, without its scale), as a grid of `Cells` x `Cells` cells, a bit per cell. Measured by `ImpactHullCacheSystem` on the frame the unit is shot at, so it is the pose drawn. Presentation only.
+
+| Member | Summary |
+|---|---|
+| `public float2 Cell` | One cell's size along x and z. |
+| `public const int Cells = 48` |  |
+| `public float2 Centre` | The middle of the grid (x, z) and the radius of a circle around it. |
+| `public float2 Min` | The grid's corner (x, z) in the unit's frame. |
+| `public float Radius` |  |
+| `public FixedList512Bytes<ulong> Rows` | One row per cell along z; bit x set where the outline covers cell (x, z). |
+| `public int Tick` | The `ImpactHullCacheSystem` update it was measured on. |
+| `public float Top` | The height of the unit's highest drawn point, in its frame. |
+
+## ImpactHullCache
+
+```csharp
+public struct ImpactHullCache : IComponentData, IQueryTypeParameter
+```
+
+The measured hulls, by `VfxImpactSurfaceStep.HullKey`. Presentation only: written by `ImpactHullCacheSystem` on the main thread, read by the impact and beam presentation jobs. Not saved, not read by any simulation system.
+
+| Member | Summary |
+|---|---|
+| `public NativeParallelHashMap<long, ImpactHull> Hulls` |  |
+
 ## LocalPlayerMotionOutcome
 
 ```csharp
@@ -554,9 +585,15 @@ Draws an impact effect on its target as DRAWN. A hit is resolved at simulation p
 
 | Member | Summary |
 |---|---|
+| `public float3 Direction` | the way the shot was flying when it hit, unit length (zero: unknown). |
+| `public float3 HitPoint` | where the projectile was when the simulation ended it, before the KNN push forward. The effect is drawn where the shot's line through this point first meets the target's drawn hull. |
+| `public long HullKey` | the target's own outline in `ImpactHullCache` (0: none). |
+| `public long KindKey` | its ship kind's outline, for a ship the hit killed before it was drawn (0: not a ship). |
 | `public float3 Offset` | Where the target is drawn minus where it is simulated, on the effect's first drawn frame. |
 | `public byte State` | `VfxImpactDrawnAnchorState` as a byte. |
 | `public Entity Target` | What the projectile hit. |
+| `public float3 TargetPosition` | the target's simulated pose at the hit, for a target the hit killed before it was drawn. |
+| `public quaternion TargetRotation` |  |
 
 ## VfxImpactDrawnAnchorState
 

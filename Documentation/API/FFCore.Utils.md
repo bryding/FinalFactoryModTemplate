@@ -299,6 +299,19 @@ public struct IntWrapper : INonExistable
 | `public static IntWrapper From(int value)` |  |
 | `public void MakeNonExistent()` |  |
 
+## InterceptAim
+
+```csharp
+public static class InterceptAim
+```
+
+first-order intercept aiming in fixed point. A straight shot at `projectileSpeed` meets a target moving at a constant velocity after the smallest positive t with |toTarget + velocity·t| = speed·t.
+
+| Member | Summary |
+|---|---|
+| `public static fp3 AimPoint(fp3 shooter, fp3 target, fp3 targetVelocity, fp projectileSpeed, fp leadFraction)` | Where to aim: the target's position moved along its velocity for `leadFraction` of the intercept time (1 = a full intercept, 0 = straight at it). With no intercept solution it aims straight at the target. |
+| `public static bool TryInterceptTime(fp3 toTarget, fp3 targetVelocity, fp projectileSpeed, out fp time)` | The time until a straight shot from the shooter meets the target, or false when it never can (the target outruns the shot, or the speed is not positive). A stationary target gives distance / speed. |
+
 ## LinkedEntityGroupHygiene
 
 ```csharp

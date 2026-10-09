@@ -149,6 +149,7 @@ Feeds the procedural combat VFX shaders (Assets/Art/Shaders/Vfx/) once per rende
 |---|---|
 | `public void OnCreate(ref SystemState state)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnDestroy(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState state)` |  |
 
 ## CometVfxInstance
@@ -453,6 +454,21 @@ How big an expiring Guardian shield is DRAWN: it shrinks out over its last `Seco
 | `public static float DrawnFactor(float secondsToRemoval, float secondsSinceHeartbeat)` | The factor the shield's drawn scale is multiplied by: 1 until the last `Seconds`, then an eased shrink to `MinFactor` at the moment it is removed. |
 | `public static float SecondsToRemoval(long releaseRaw, long simulationTimeRaw, long heartbeatRaw, float heartbeatSeconds)` | Seconds from the last heartbeat to the heartbeat that deletes the shield: the first heartbeat whose simulation time reaches the release. Zero once the release is due (the shield is on its way out). |
 
+## HiddenCargoBarges
+
+```csharp
+public static class HiddenCargoBarges
+```
+
+while this player hides cargo barges (F5, `LocalViewSettings.HideCargoDrones`), their selection tools leave the barges alone: no hover, click, box, deconstruct, cut, copy or swap picks one up, so a player reorganising a base under hidden barges cannot delete them by accident.
+
+| Member | Summary |
+|---|---|
+| `public static bool AreHidden()` | Whether this player has hidden cargo barges. |
+| `public static bool IsHideableBarge(Entity entity, in ComponentLookup<Inserter> inserters, in ComponentLookup<OutOfPlay> outOfPlay)` | Whether `entity` is a barge F5 hides (whatever the setting is now). |
+| `public static bool IsHideableBarge(Entity entity, EntityManager entityManager)` |  |
+| `public static void RemoveFrom(NativeParallelHashSet<Entity> entities, EntityManager entityManager)` | Takes every hidden barge out of `entities`; does nothing while barges are shown. |
+
 ## HoverFieldVfxInstance
 
 ```csharp
@@ -495,6 +511,27 @@ Marks every flying mobile station with a hover field: faint downwash ripples spr
 | `protected override void OnCreateForCompiler()` |  |
 | `protected override void OnDestroy()` |  |
 | `protected override void OnUpdate()` |  |
+
+## ImpactHullCacheSystem
+
+```csharp
+[UpdateInGroup(typeof(PresentationSystemGroup))] [UpdateAfter(typeof(WorldEntityInterpolationRenderSystem))] [UpdateAfter(typeof(PilotedStationPredictionRenderSystem))] [UpdateAfter(typeof(StationRiderPresentationSystem))] [UpdateBefore(typeof(CombatVfxPresentationSystem))] [UpdateBefore(typeof(ScalableLaserPresentationSystem))]
+public class ImpactHullCacheSystem : SystemBase
+```
+
+Measures the hull of each unit a shot hits or a beam plays on, on the frame it does, for `VfxImpactSurfaceStep`: its drawn parts' outline seen from above, in its own frame (`ImpactHull`), kept in `ImpactHullCache` under the unit's key and, for a ship, under its kind's key too, for a ship the hit killed before its effect was drawn.
+
+| Member | Summary |
+|---|---|
+| `public const int MaxHulls = 4096` | Past this many hulls the cache starts again (units come and go). |
+| `public const int MaxTrianglesPerFrame = 30000` | Triangles measured per frame at most; a unit past the budget keeps its last outline until a later frame. At least one unit is measured every frame. |
+| `public ImpactHullCacheSystem()` |  |
+| `public static void Collect(EntityManager em, Entity entity, int mapObjectsLayer, NativeList<float3> triangles)` | The triangles of a unit's drawn hull parts in its drawn frame: each part's mesh when the mesh can be read on the CPU (its model imports with Read/Write), else the part's render bounds box. |
+| `protected override void OnCreate()` |  |
+| `protected override void OnCreateForCompiler()` |  |
+| `protected override void OnDestroy()` |  |
+| `protected override void OnUpdate()` |  |
+| `public static bool TryMeasure(EntityManager em, Entity entity, int mapObjectsLayer, out ImpactHull hull)` | A unit's hull in its drawn frame (its `LocalToWorld`'s position and rotation) as it is drawn now, measured on the main thread (`Collect`): for tools and diagnostics. False when it draws none. |
 
 ## LagFollowProbeSystem
 
@@ -1198,6 +1235,7 @@ Spec 057 (P5) — re-anchors a firing beam's drawn endpoints onto the PRESENTATI
 |---|---|
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnDestroy(ref SystemState systemState)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
 
 ## ScaleOverTimePresentationStep
@@ -1240,6 +1278,22 @@ Draws the belt items of a moving station on the belt as it is drawn. The station
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
 
+## StationCompanionPresentationSystem
+
+```csharp
+[UpdateInGroup(typeof(PresentationSystemGroup))] [UpdateAfter(typeof(WorldEntityInterpolationRenderSystem))] [UpdateAfter(typeof(PilotedStationPredictionRenderSystem))] [UpdateBefore(typeof(EntitiesGraphicsSystem))]
+public class StationCompanionPresentationSystem : SystemBase
+```
+
+draws the managed companion objects of a station's buildings (the Hydro Power Plant's waterfalls, the Artifact Assembler's, Antimatter Nexus's and Celestral Oracle's effects: every ParticleSystem and VisualEffect) where the building is DRAWN, every rendered frame. Ben: "for the hydro power plants, the 'water' effect inside of it will actually lag behind a mobile station as you move".
+
+| Member | Summary |
+|---|---|
+| `public const string DisableFlag = "-ffNoStationCompanionSmoothing"` | Measurement only: leave a station's companions where Unity's copier put them, (the "before" arm of the comparison clips). |
+| `public StationCompanionPresentationSystem()` |  |
+| `protected override void OnCreate()` |  |
+| `protected override void OnUpdate()` |  |
+
 ## StationFollowerStep
 
 ```csharp
@@ -1274,6 +1328,39 @@ public struct StationFollowerStep.Frame
 | `public float DrawnYaw` |  |
 | `public float3 TimelyPosition` | The reference structure's simulation pose blended between its last two heartbeats. |
 | `public float TimelyYaw` |  |
+
+## StationGhostRiderPresentationSystem
+
+```csharp
+[UpdateInGroup(typeof(PresentationSystemGroup))] [UpdateAfter(typeof(PilotedStationPredictionRenderSystem))] [UpdateBefore(typeof(EntitiesGraphicsSystem))]
+public struct StationGhostRiderPresentationSystem : ISystem, ISystemCompilerGenerated
+```
+
+Draws the unbuilt ghosts riding a flying station where they are on it: at their simulated place against the Command Core, carried by the core's DRAWN pose this frame.
+
+| Member | Summary |
+|---|---|
+| `public void OnCreate(ref SystemState state)` |  |
+| `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnUpdate(ref SystemState state)` |  |
+
+## StationMotionGateSystem
+
+```csharp
+[UpdateInGroup(typeof(PresentationSystemGroup), OrderFirst = true)]
+public class StationMotionGateSystem : SystemBase
+```
+
+whether any station is drawn off its simulation pose this frame: a station building blended between heartbeats (its `WorldEntityPresentationInterpolation` is enabled only while its station moves, `MobileStationPresentationInterpolation`), or the piloted station moved by the pilot's prediction (`PilotedStationPrediction.Applies`, which can lead the first simulated step).
+
+| Member | Summary |
+|---|---|
+| `public bool AnyStationDrawnOffPose { get; }` | True while a station building is drawn between heartbeats or a piloted station is predicted. |
+| `public StationMotionGateSystem()` |  |
+| `public static bool AnyStationDrawnOffPoseIn(World world)` | Whether the systems that follow drawn stations have anything to do this frame. True in a world without this gate (a test world that did not make it), so they behave as before it existed. |
+| `protected override void OnCreate()` |  |
+| `protected override void OnCreateForCompiler()` |  |
+| `protected override void OnUpdate()` |  |
 
 ## StationRiderPresentationSystem
 
@@ -1312,6 +1399,29 @@ The pure rules of `VfxImpactDrawnAnchor`: which entity a projectile's impact is 
 | `public static bool LaunchedEnabled { get; }` | False when the game was launched with `DisableFlag`. Managed code only. |
 | `public static void Nearest(in SmallBuffer<VisionElement> vision, float3 origin, ref Entity target, ref float bestDistanceSq)` | The entry of a projectile's hit-range neighbours nearest to it: what `KnnProjectileCollisionSystem` hit, up to its tie-break between two targets at the same distance, which does not matter for where an effect is drawn. Keeps `target` when no entry is nearer than `bestDistanceSq`. |
 | `public static bool TryOffset(float3 targetDrawn, float3 targetSimulated, out float3 offset)` | The shift for an effect whose target is drawn at `targetDrawn` and simulated at `targetSimulated`; false (no shift) when the two coincide, or are too far apart to be the same motion (`MaxOffset`). |
+
+## VfxImpactSurfaceStep
+
+```csharp
+public static class VfxImpactSurfaceStep
+```
+
+The pure rules of where a shot meets the hull the player sees. The simulation ends a shot where it decides the hit, and that point is not on the hull: a KNN hit fires when the bolt comes within the weapon's size of the target's CENTRE (10-15 u, from any side), and a beam ends at the centre.
+
+| Member | Summary |
+|---|---|
+| `public const string DisableFlag = "-ffNoImpactSurface"` | Measurement only (`-ffNoImpactSurface`): draw impacts and beam ends where drew them (the simulated hit carried onto the drawn target, a beam at the target's centre), for A/B. |
+| `public const float MaxShift = 60` | A surface point further than this from the hit was not this hit's (a wrong target, a stale hull): the effect stays where put it. The largest units shot at are spawners and Razors, about 40 u across. |
+| `public const float MinSize = 0.5` | An outline smaller than this across is not a hull being drawn: a stowed fleet ship is drawn at scale 0 inside its owner (measured), and a hit on it keeps 's placement. |
+| `public const float StandOff = 1` | The effect is drawn this far out of the outline, toward the shooter: its quad is depth-tested, and a quad centred exactly on the edge is partly hidden by the hull around it. |
+| `public static bool LaunchedEnabled { get; }` | False when the game was launched with `DisableFlag`. Managed code only. |
+| `public static void AppendBox(NativeList<float3> triangles, in float4x4 partInHull, float3 centre, float3 extents)` | Appends the twelve triangles of a box (render bounds) under a part's matrix in the hull's frame. |
+| `public static bool Covered(in ImpactHull hull, float2 point)` | Whether the outline covers the ground-plane point `point`. |
+| `public static long KindKey(int configIndex)` | The cache key of a ship kind's outline: the last one measured of any ship of that kind (they are the same model at the same scale), for a ship the hit killed before its effect was drawn. |
+| `public static bool TryBuild(NativeArray<float3> triangles, out ImpactHull hull)` | The outline of `triangles` (three points each, in the hull's frame) seen from above: every cell whose middle a triangle covers, or that one of its edges crosses, on a grid with a cell of margin around it. False when there are none, or they cover less than `MinSize`. |
+| `public static bool TryEntry(in ImpactHull hull, float2 origin, float2 heading, float reach, out float entry)` | The distance along the ray (`origin`, unit `heading`, in the hull's ground plane) to where it first enters a covered cell, refined to the cell's edge; false when it meets none within `reach`. |
+| `public static bool TrySurfacePoint(in ImpactHull hull, RigidTransform root, float3 hit, float3 direction, out float3 surface)` | Where the shot through `hit` flying along `direction` first crosses `hull`'s outline, drawn with its frame at `root`: on the edge, at the hull's top, pulled `StandOff` back toward the shooter. A line that misses the outline (a grazing KNN hit) takes the outline's point nearest it. False when the shot has no direction across the ground or the hull is empty. |
+| `public static long UnitKey(Entity target)` | The cache key of one unit's own outline, measured afresh on each frame it is shot at. |
 
 ## VisualEpisodePresentationProbeSystem
 
@@ -1380,7 +1490,7 @@ Spec 057 US2 (research R1/R4) — the OVERWRITE half of the render bracket: ever
 | Member | Summary |
 |---|---|
 | `public const float HiddenShipAnchorRange = 180` | Within this simulated distance of its owner a returning hidden ship is re-anchored on the drawn local ship (none of the shift at this range, all of it at the pickup distance). The formation's own range (`PickupDrawnAnchorStep.FleetAnchorZeroRange`): a hiding ship closes at up to 640 u/s, and from 60 u it took the whole shift (57 u on a client at half speed) in its last five frames. |
-| `public const int MaxBrushDepth = 3` | Levels of children below the tagged root that the brush recomposes. |
+| `public const int MaxBrushDepth = 4` | Levels of children below the tagged root that the brush recomposes. |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnDestroy(ref SystemState systemState)` |  |

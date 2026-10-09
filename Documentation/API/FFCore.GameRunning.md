@@ -11,6 +11,9 @@ public struct AttackData : IComponentData, IQueryTypeParameter
 | Member | Summary |
 |---|---|
 | `public int NumAttacks` |  |
+| `public fp RaidClockStartTime` | the simulation time the countdown started. Raids may launch once `MinElapsedTimeBeforeAttacks` minutes have passed since it. |
+| `public byte RaidClockState` | where the raid countdown stands, one of the `RaidClock` states. Saved through `AttackPriorityCalculatorSystem`'s payload (v2); 0 (`RaidClock.Unresolved`) is a new game or a pre-v2 save, resolved on the scheduler's first run. |
+| `public byte RaidClockTrigger` | which trigger started the countdown (`RaidClock` `Trigger*`); 0 until then. |
 | `public int WarningsIssued` |  |
 
 ## CosmicObjectTourismData
@@ -161,6 +164,34 @@ public struct PersistentEntitiesContainer : IComponentData, IQueryTypeParameter
 | Member | Summary |
 |---|---|
 | `public Entity SingularityInventoryEntity` |  |
+
+## RaidClock
+
+```csharp
+public static class RaidClock
+```
+
+the raid countdown. Raids (signal-funded attack waves from enemy camps) may launch only `CombatSettings.MinElapsedTimeBeforeAttacks` minutes after the countdown starts, and it starts at the first of three triggers, for the whole session: any player's Ship Assembler is built, the tutorial's combat steps are done, or Asteroid Science is researched.
+
+| Member | Summary |
+|---|---|
+| `public const string AsteroidScienceTechName = "Asteroid Science"` | The `Technology.Name` of Asteroid Science (`Resources/Technologies/AsteroidScience.asset`). |
+| `public const byte Started = 2` | A trigger fired at `AttackData.RaidClockStartTime`. |
+| `public const byte TriggerAsteroidScience = 3` |  |
+| `public const byte TriggerFixture = 5` | Started by a test or automation fixture. |
+| `public const byte TriggerLegacySave = 4` | A save that already had raids, or was past the old countdown from game start. |
+| `public const byte TriggerNone = 0` |  |
+| `public const byte TriggerShipAssembler = 1` |  |
+| `public const byte TriggerTutorialCombat = 2` |  |
+| `public const byte Unresolved = 0` | A new game, or a save written: resolved on the scheduler's first run. |
+| `public const byte Waiting = 1` | No trigger yet: no raid launches, however long the game has run. |
+| `public static bool CountdownElapsed(in AttackData data, fp simulationElapsedTime, int countdownMinutes)` | True once the countdown has started and run its full length. |
+| `public static fp CountdownSeconds(int countdownMinutes)` |  |
+| `public static string Describe(in AttackData data)` |  |
+| `public static bool IsStarted(in AttackData data)` |  |
+| `public static bool TryResolve(ref AttackData data, fp simulationElapsedTime, int countdownMinutes)` | Settles `Unresolved`. A save that already raided, or whose game is past the old countdown (which ran from game start), keeps raiding: its countdown is already over. Anything else waits for a trigger, a new game included. With a countdown of 0 minutes (test configs) every game counts as past it, so it starts at once. |
+| `public static bool TryStart(ref AttackData data, fp now, byte trigger)` | Starts the countdown at `now`; false when it already started. |
+| `public static bool TryStartNow(byte trigger)` | Starts the countdown now, from an operation's apply leg on every peer (the tutorial's combat steps). A no-op before the game's singletons exist or once it has started. |
 
 ## SerializableLootBoxChunkData
 

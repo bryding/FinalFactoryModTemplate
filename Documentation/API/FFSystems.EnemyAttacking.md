@@ -60,7 +60,7 @@ Converts each camp's saved signal bank into funded attack events on deterministi
 |---|---|
 | `public NativeReference<int> AttackCountOverride` |  |
 | `public Action OnAttack` |  |
-| `public byte CurrentVersion { get; }` |  |
+| `public byte CurrentVersion { get; }` | v2 adds the raid clock; a v1 payload reads as `RaidClock.Unresolved`. |
 | `public bool IsAttackIncomingForDiagnostics { get; }` | Desync-report read of the attack-incoming flag; complete the schedule job first. |
 | `public fp LastAttack { get; }` | Deterministic simulation time of the most recently authored attack. This replaces the former wall-clock timestamp; it is debug/presentation state only. |
 | `public AttackPriorityCalculatorSystem()` |  |
@@ -139,6 +139,9 @@ public class AttackPriorityCalculatorSystem.SerializedAttackSystemData
 
 | Member | Summary |
 |---|---|
+| `public fp RaidClockStartTime` |  |
+| `public byte RaidClockState` |  |
+| `public byte RaidClockTrigger` |  |
 | `public int TotalNumAttacks` |  |
 | `public int WarningsIssued` |  |
 | `public SerializedAttackSystemData()` |  |

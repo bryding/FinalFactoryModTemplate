@@ -101,6 +101,7 @@ public struct ConnectorVisualData : IComponentData, IQueryTypeParameter
 | Member | Summary |
 |---|---|
 | `public Entity Beam` |  |
+| `public Entity CurveAdapterEnd` |  |
 | `public Entity CurvedBeam` |  |
 | `public Entity InputEnd` |  |
 | `public Entity LeftCurve` |  |
@@ -178,4 +179,20 @@ One-heartbeat connector-group handoff emitted by `ConnectorItemMovementCalculato
 ```csharp
 public struct PerpendicularConnectorItemTransferMarker : IComponentData, IQueryTypeParameter
 ```
+
+## SideLoadTurn
+
+```csharp
+[Save]
+public struct SideLoadTurn : IComponentData, IQueryTypeParameter
+```
+
+which side last put an item onto this connector side-on, so belts feeding it from both sides take turns instead of the side whose travel direction sorts first taking every gap. `PerpendicularConnectorTransferSystem` reads it to order contenders and writes it on every side-on insertion.
+
+| Member | Summary |
+|---|---|
+| `public byte LastSide` | `None`, or 1 + the travel `Direction` of the last side-on insertion. |
+| `public const byte None = 0` |  |
+| `public static byte Encode(Direction direction)` |  |
+| `public static int Rank(byte lastSide, Direction direction)` | Where an item travelling `direction` stands in line: the side after the one served last goes first (0), then round the compass. With no history, plain direction order. |
 

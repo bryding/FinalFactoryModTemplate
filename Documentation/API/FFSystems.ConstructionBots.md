@@ -82,7 +82,7 @@ public struct ConstructionBotTaskSystem : ISystem, ISystemCompilerGenerated
 
 | Member | Summary |
 |---|---|
-| `public static void FinishConstruction(Entity constructionTaskEntity, Placeable placeable, EntityCommandBuffer cb, ActiveItemDisplay activeItemDisplay, bool hasActiveItemDisplay, Crafter crafter, bool hasCrafter, RenderMeshChildren renderMeshChildren, DynamicBuffer<LinkedEntityGroup> linkedEntityGroup, ref LocalTransform mainMeshLocalTransform, NativeArray<DynamicConfig> dynamicConfigs)` |  |
+| `public static void FinishConstruction(Entity constructionTaskEntity, Placeable placeable, EntityCommandBuffer cb, Crafter crafter, bool hasCrafter, RenderMeshChildren renderMeshChildren, DynamicBuffer<LinkedEntityGroup> linkedEntityGroup, ref LocalTransform mainMeshLocalTransform, NativeArray<DynamicConfig> dynamicConfigs)` |  |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
@@ -216,9 +216,11 @@ THE canonical definition of which player-configured settings survive a structure
 | `public ComponentLookup<DefensePlatformMarker> DefensePlatformMarkers` |  |
 | `public ComponentLookup<Filter> Filters` |  |
 | `public NativeArray<FleetConfig> FleetConfigs` |  |
+| `public ComponentLookup<HaulerReference> HaulerReferences` |  |
 | `public ComponentLookup<Inserter> Inserters` |  |
 | `public InventoryHelper.InventoryNativeContainers InventoryContainers` |  |
 | `public NativeArray<InventoryMetaDataConfig> InventoryMetaDataConfigs` |  |
+| `public ComponentLookup<JunctionSidePriority> JunctionSidePriorities` |  |
 | `public ComponentLookup<LightStructure> LightStructures` |  |
 | `public BufferLookup<LogisticsRequestItem> LogisticsRequestItems` |  |
 | `public ComponentLookup<LogisticsRequester> LogisticsRequesters` |  |
@@ -232,6 +234,7 @@ THE canonical definition of which player-configured settings survive a structure
 | `public ComponentLookup<RequesterCargoHold> RequesterCargoHolds` |  |
 | `public ComponentLookup<RoundRobinOutputToConnector> RoundRobins` |  |
 | `public ComponentLookup<SpawnerChest> SpawnerChests` |  |
+| `public ComponentLookup<StationLock> StationLocks` |  |
 | `public ComponentLookup<TargetStructureMemory> TargetStructureMemories` |  |
 | `public static void CarrySlotStates(DynamicBuffer<InventorySlot> slots, int oldCount, int newCount)` | Fits the replaced structure's slots (already copied into `slots`) to the replacement's `newCount`. Contents and per-slot filters stay on their index; empty slots past the new count are dropped, occupied ones are kept so no item is lost. |
 | `public void Copy(Entity source, Entity target, Entity prefab, Placeable newPlaceable, EntityCommandBuffer cb)` | Copies every preserved setting from the structure being replaced onto its replacement. |

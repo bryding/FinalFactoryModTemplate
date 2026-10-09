@@ -28,6 +28,9 @@ Publishes each fleet commander's position and velocity into `FleetCommander`, wh
 
 | Member | Summary |
 |---|---|
+| `public const float PlayerJumpSpeedFactor = 6` | Past this many times its `BaseMoveSpeed` (and past `StationShipCarrySystem.StructureMaxSpeed`, for a player riding a station) a player's step in one heartbeat is a jump, not motion. The afterburner flies at 4x (`AfterburnerConfig.asset` Speed). |
+| `public const float PlayerUnevenSampleFactor = 4` | How many times the jump speed (`PlayerJumpSpeedFactor`) a step may read and still be fast motion sampled unevenly, not a jump. A client's simulation position is the latest report the host holds when it builds the heartbeat, so the time it was taken wanders around the heartbeat's due time by both peers' frame times and the network's jitter, and the host's own player reads the same way while it ride… |
+| `public static float3 DerivePlayerCommanderVelocity(float3 simulationPosition, float3 lastSimulationPosition, float dt, float baseMoveSpeed)` | A player commander's velocity: the heartbeat delta of its replicated simulation position (see the type summary). It is the player's real velocity, a station's included when the player rides one (`Player.SimulationVelocity` is the ship's own input velocity, about zero while riding), so the formation can keep up at any speed. |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
