@@ -1,5 +1,5 @@
 #   1. Set FinalFactoryDir below to your own Final Factory install folder
-#      (the one containing "finalfactory_Data").
+#      (the one containing "finalfactory_Data" on Windows, or "finalfactory.app" on macOS).
 #   2. Run copy-finalfactory-dlls.cmd (Windows) or copy-finalfactory-dlls.sh (Mac/Linux).
 #
 # Once the project opens in Unity you can also update this path via the
