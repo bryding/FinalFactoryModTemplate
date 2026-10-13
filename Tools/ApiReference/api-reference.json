@@ -17,7 +17,9 @@
         "NetworkOperations.Settings.StructureSettingAppliers",
         "NetworkOperations.Settings.StructureSettingApplier",
         "NetworkOperations.Settings.StructureSettingsDispatch",
-        "NetworkOperations.Settings.StructureSettingKind"
+        "NetworkOperations.Settings.StructureSettingKind",
+        // Examples/ChangeTechnology edits the game's loaded technologies from PostInitializationHook.
+        "Behaviours.Research.TechnologyLoader"
       ]
     }
   ],

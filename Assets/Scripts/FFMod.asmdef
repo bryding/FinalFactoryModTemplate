@@ -25,6 +25,7 @@
         "FFNetcode.dll",
         "FFSpaghetti.dll",
         "FFInput.dll",
+        "QFSW.QC.dll",
         "FFConfiguration.dll",
         "System.Collections.Immutable.dll",
         "System.Reflection.Metadata.dll",

@@ -78,6 +78,7 @@ void OnGameStart(Canvas inGameUiCanvas);  // when a new/loaded game starts: hook
 | `Assets/Scripts/UserMod.cs` | The identity boilerplate |
 | `Assets/Scripts/UserModLoader.cs` | New ship/assembler/printer configs with recipes; cloning an existing entity (the Gherik Connector); editing existing item, terrain, and global config; adding technologies |
 | `Assets/Scripts/Systems/FleetRandomMovementSystem.cs` | A Burst-compiled ECS system with a job that changes the simulation safely for multiplayer: on the heartbeat, ordered after the game's own system, with randomness every peer agrees on |
+| `Assets/Scripts/Examples/ConsoleCommands/`, `ChangeTechnology/`, `ChildEntities/` | Three small examples: a developer-console command, changing a technology the game already has, and finding the children of a custom entity's prefab |
 | `Assets/Scripts/Examples/RepairBeacon/` | A complete multiplayer-safe feature: a saved component on the Loth Printer, a heartbeat system that repairs nearby buildings, a player action (network operation) that switches it on and off, and a UI panel built in code |
 | `Assets/Scripts/Utils/ConfigUtils.cs` | A small helper for editing accepted-ship lists |
 | `Assets/Resources/` | How icons (`Icons/`) and entity prefabs (`ItemEntities/`) get into your mod's AssetBundle |

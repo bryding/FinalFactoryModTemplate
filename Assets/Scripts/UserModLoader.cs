@@ -11,6 +11,8 @@ using FFCore.GlobalConfig;
 using FFCore.Inventory;
 using FFCore.Items;
 using FFCore.Modding;
+using Examples.ChangeTechnology;
+using Examples.ChildEntities;
 using Examples.RepairBeacon;
 using Unity.Mathematics.FixedPoint;
 using UnityEngine;
@@ -280,6 +282,13 @@ public class UserModLoader : IUserModLoader
       HealPerSecond = 5
     });
     RepairBeaconActions.Register();
+
+    // Change an existing technology (Examples/ChangeTechnology, template issue #6): Automation costs 20% less.
+    ChangeTechnology.ReduceCost("Automation", 20);
+
+    // Find the children of one of your entities (Examples/ChildEntities, template issue #8): log what the Loth Printer's
+    // prefab is made of, then use ChildEntities.ChildrenWith<T>(prefab) with a component only the child you want has.
+    ChildEntities.LogChildren(LothPrinter, Ecs.GetSingleton<ItemConfig>().GetPrefabForName(LothPrinter));
 
     // Update a single item's config example
     var itemConfig = Ecs.GetSingleton<ItemConfig>();

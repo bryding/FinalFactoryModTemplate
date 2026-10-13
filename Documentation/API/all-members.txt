@@ -8,6 +8,18 @@ Debug :: public static void LogTrace(ComponentSystemBase system, string message)
 Debug :: public static bool TraceEnabled<T>(in T _) where T : struct
 Debug :: public static bool TraceEnabled<T>() where T : struct
 Debug :: public static bool TraceEnabled(ComponentSystemBase system)
+Behaviours.Research.TechnologyLoader :: public class TechnologyLoader : SingletonMono<TechnologyLoader>
+Behaviours.Research.TechnologyLoader :: public const string MiningLogisticsTechName = "Mining Logistics"
+Behaviours.Research.TechnologyLoader :: public IReadOnlyDictionary<string, List<Sprite>> _moddedTechIcons
+Behaviours.Research.TechnologyLoader :: public Technology _startTech
+Behaviours.Research.TechnologyLoader :: public List<Technology> _techsForNewGameNoObjectives
+Behaviours.Research.TechnologyLoader :: public static TechnologyLoader Instance { get; }
+Behaviours.Research.TechnologyLoader :: public string StartTechValue { get; }
+Behaviours.Research.TechnologyLoader :: public IReadOnlyList<TechnologyConfig> TechnologyConfigs { get; }
+Behaviours.Research.TechnologyLoader :: public TechnologyLoader()
+Behaviours.Research.TechnologyLoader :: public void Initialize(IReadOnlyDictionary<string, List<Sprite>> moddedTechIcons)
+Behaviours.Research.TechnologyLoader :: public static List<Technology> LoadTechnologies()
+Behaviours.Research.TechnologyLoader :: public void ResetForNewGame(bool objectivesOn)
 FFComponents.Abduction.AbductionMachine :: public struct AbductionMachine : IComponentData, IQueryTypeParameter
 FFComponents.Abduction.AbductionMachineAuthoring :: public class AbductionMachineAuthoring : MonoBehaviour
 FFComponents.Abduction.AbductionMachineAuthoring :: public AbductionMachineAuthoring()
