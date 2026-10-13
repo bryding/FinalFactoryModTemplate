@@ -1,0 +1,196 @@
+## API changes 0.50.0.91 to 0.50.0.103
+
+20 removed, 12 changed, 1066 added (public mod-facing members, from the template's all-members.txt).
+A mod built against the old API may fail to load or run without being rebuilt.
+
+### Removed (20)
+
+- `FFComponents.Haulers.LandingZoneShipCopy` :: `public static Placeable TurnedAbout(Placeable building, in Placeable zone, int quarterTurns)`
+- `FFSystems.Combat.DefensePlatformDefenseSystem.DefensePlatformDefenseJob` :: `public CollisionWorld CollisionWorld`
+- `FFSystems.Combat.ExecuteShipSpawnCommandSystem.ExecuteShipSpawnCommandJob` :: `public CollisionWorld CollisionWorld`
+- `FFSystems.Combat.TargetingSystem.TargeterJob` :: `public CollisionWorld CollisionWorld`
+- `FFSystems.Comets.CometLane` :: `public const float DefaultVisionRange = 55`
+- `FFSystems.Core.LinearMotionSystem.LinearMotionJob` :: `public CollisionWorld CollisionWorld`
+- `FFSystems.EnemyAttacking.AttackPriorityCalculatorSystem.AttackScheduleJob` :: `public static void BuildGreedyComposition(NativeList<AttackPriorityCalculatorSystem.AttackScheduleJob.UnitSignalCost> sortedUnits, fp availableBank, int unitLimit, out SmallBuffer<UnitCountData> composition, out fp spent)`
+- `FFSystems.Knn.KnnSystem` :: `protected override void OnCreate()`
+- `FFSystems.Knn.KnnSystem` :: `protected override void OnDestroy()`
+- `FFSystems.Knn.KnnSystem` :: `protected override void OnStartRunning()`
+- `FFSystems.Knn.KnnSystem` :: `protected override void PerformSystemUpdate()`
+- `FFSystems.Knn.KnnSystem` :: `public bool TryGetBuildWitness(bool enemyFamily, out NativeArray<KnnSystem.KnnSourceEntry> sources, out int sourceCount, out NativeArray<KnnVisionWitness> witness, out int visionCount)`
+- `FFSystems.Knn.KnnSystem.KnnSourceEntry` :: `public Entity Entity`
+- `FFSystems.Knn.KnnSystem.KnnSourceEntry` :: `public KnnSourceOrderKey Key`
+- `FFSystems.Knn.KnnSystem.KnnSourceEntry` :: `public float3 Position`
+- `FFSystems.Knn.KnnSystem.KnnSourceEntry` :: `public int CompareTo(KnnSystem.KnnSourceEntry other)`
+- `FFSystems.Knn.KnnSystem.KnnSourceEntry` :: `public struct KnnSystem.KnnSourceEntry : IComparable<KnnSourceEntry>`
+- `FFSystems.Logistics.TerrainExtractorBeamGeometry` :: `public static TerrainExtractorBeamGeometry FromQuery(EntityQuery query, CollisionFilter filter)`
+- `FFSystems.Presentation.BeltCornerPath` :: `public const float Radius = 5`
+- `FFSystems.Presentation.PilotedStationPredictionSystem` :: `public const float CommandGiveUpSeconds = 120`
+
+### Changed (12)
+
+- `FFCore.Systems.PhysicsWorldRateManager`: `public PhysicsWorldRateManager(float timestep, EntityQuery heartbeatQuery)` became `public PhysicsWorldRateManager(float timestep, EntityQuery heartbeatQuery, bool periodicWithHeartbeats = false)`
+- `FFCore.Version.FFVersion`: `public const string ReleasedUtc = "2026-10-09T10:54:13Z"` became `public const string ReleasedUtc = "2026-10-13T09:54:00Z"`
+- `FFSystems.Combat.AggroSystem`: `[UpdateInGroup(typeof(FFFixedPreTransformGroup))] public struct AggroSystem : ISystem, ISystemCompilerGenerated` became `[UpdateInGroup(typeof(FFFixedLateGroup))] [UpdateAfter(typeof(KnnTransientHitVisionSystem))] public struct AggroSystem : ISystem, ISystemCompilerGenerated`
+- `FFSystems.Combat.Aoe.AoeImpactDamageSystem`: `[UpdateInGroup(typeof(FFFixedPreTransformGroup))] public struct AoeImpactDamageSystem : ISystem, ISystemCompilerGenerated` became `[UpdateInGroup(typeof(FFFixedLateGroup))] [UpdateAfter(typeof(KnnTransientHitVisionSystem))] public struct AoeImpactDamageSystem : ISystem, ISystemCompilerGenerated`
+- `FFSystems.Combat.Projectiles.KnnProjectileCollisionSystem`: `public static Entity CreateAoeImpactEntity(Entity source, float3 position, fp damage, EntityArchetype aoeImpactArchetype, float range, bool isEnemy, EntityCommandBufferWrapper cb, Entity excludedTarget = default(Entity), bool validTargetsOnly = false)` became `public static Entity CreateAoeImpactEntity(Entity source, float3 position, fp damage, EntityArchetype aoeImpactArchetype, float range, bool isEnemy, EntityCommandBufferWrapper cb, Entity excludedTarget = default(Entity), bool validTargetsOnly = false, fp buildingDamageMultiplier = default(fp))`
+- `FFSystems.Comets.CometLane`: `public const int MaxTicks = 4096` became `public const int MaxTicks = 2048`
+- `FFSystems.Comets.CometLane`: `public static bool Extent(CometLane.Tick[] ticks, int count, float radius, float height, out float min, out float max)` became `public static bool Extent(CometLane.Tick[] ticks, int count, out float min, out float max)`
+- `FFSystems.Comets.CometLane`: `public static bool IsInDanger(CometLane.Tick[] ticks, int count, float radius, float forward, float lateral, float height)` became `public static bool IsInDanger(CometLane.Tick[] ticks, int count, float forward, float lateral, float grow = 0)`
+- `FFSystems.Comets.CometLane`: `public static float HalfWidth(CometLane.Tick[] ticks, int count, float radius, float forward, float height)` became `public static float HalfWidth(CometLane.Tick[] ticks, int count, float forward)`
+- `FFSystems.Core.LinearMotionStep`: `public static void Move(Entity entity, ref LinearMotion linearMotion, ref LocalTransform localTransform, bool isPlayer, float dt, in CollisionWorld collisionWorld, in CollisionFilter linearMotionCollisionFilter, in ComponentLookup<LocalToWorld> allLocalToWorlds, in ComponentLookup<Player> players, in ComponentLookup<ColliderParent> colliderParents, in ComponentLookup<FleetIgnoreColliderMarker> allFleetIgnoreCollisionMarkers, bool resolvePlayerHitsToSimulation)` became `public static void Move(Entity entity, ref LinearMotion linearMotion, ref LocalTransform localTransform, bool isPlayer, float dt, in SimCollisionWorld collisionWorld, in CollisionFilter linearMotionCollisionFilter, in ComponentLookup<LocalToWorld> allLocalToWorlds, in ComponentLookup<Player> players, in ComponentLookup<ColliderParent> colliderParents, in ComponentLookup<FleetIgnoreColliderMarker> allFleetIgnoreCollisionMarkers, bool resolvePlayerHitsToSimulation)`
+- `FFSystems.Exploration.BlackHoleDeathSystem`: `public const int KillRadius = 86` became `public const int KillRadius = 150`
+- `FFSystems.Knn.KnnSystem`: `[UpdateInGroup(typeof(FFFixedEarlyGroup), OrderFirst = true)] [UpdateAfter(typeof(SimulationClockSystem))] public class KnnSystem : FinalFactorySystemBase` became `[UpdateInGroup(typeof(FFFixedEarlyGroup), OrderFirst = true)] [UpdateAfter(typeof(SimulationClockSystem))] public class KnnSystem : KnnVisionRefresh`
+
+### Added (1066)
+
+- `FFComponents.Armor.ArmorBlockMarker` :: `public struct ArmorBlockMarker : IComponentData, IQueryTypeParameter`
+- `FFComponents.Armor.ArmorColor` :: `[Save] public struct ArmorColor : IComponentData, IQueryTypeParameter`
+- `FFComponents.Armor.ArmorColor` :: `public uint Value`
+- `FFComponents.Armor.ArmorColorAuthoring` :: `public ArmorColorAuthoring()`
+- `FFComponents.Armor.ArmorColorAuthoring` :: `public class ArmorColorAuthoring : MonoBehaviour`
+- `FFComponents.Armor.ArmorColorBaker` :: `public ArmorColorBaker()`
+- `FFComponents.Armor.ArmorColorBaker` :: `public class ArmorColorBaker : Baker<ArmorColorAuthoring>`
+- `FFComponents.Armor.ArmorColorBaker` :: `public override void Bake(ArmorColorAuthoring authoring)`
+- `FFComponents.Armor.ArmorColors` :: `public const uint Default = 0`
+- `FFComponents.Armor.ArmorColors` :: `public const uint DefaultDisplayRgb = 11842740`
+- `FFComponents.Armor.ArmorColors` :: `public static bool IsChosen(uint value)`
+- `FFComponents.Armor.ArmorColors` :: `public static bool IsValid(uint value)`
+- `FFComponents.Armor.ArmorColors` :: `public static class ArmorColors`
+- `FFComponents.Armor.ArmorColors` :: `public static readonly float3 BaseRegionColorsSrgb`
+- `FFComponents.Armor.ArmorColors` :: `public static uint DisplayRgb(uint value)`
+- `FFComponents.Armor.ArmorColors` :: `public static void RegionColorsLinear(uint value, out float3 ar, out float3 ag, out float3 ab)`
+- `FFComponents.Armor.ArmorRegionColorAB` :: `[MaterialProperty("_ColorAB", -1)] public struct ArmorRegionColorAB : IComponentData, IQueryTypeParameter`
+- `FFComponents.Armor.ArmorRegionColorAB` :: `public float4 Value`
+- `FFComponents.Armor.ArmorRegionColorAG` :: `[MaterialProperty("_ColorAG", -1)] public struct ArmorRegionColorAG : IComponentData, IQueryTypeParameter`
+- `FFComponents.Armor.ArmorRegionColorAG` :: `public float4 Value`
+- `FFComponents.Armor.ArmorRegionColorAR` :: `[MaterialProperty("_ColorAR", -1)] public struct ArmorRegionColorAR : IComponentData, IQueryTypeParameter`
+- `FFComponents.Armor.ArmorRegionColorAR` :: `public float4 Value`
+- `FFComponents.Artifacts.SharedMiningHolder` :: `[Save] public struct SharedMiningHolder : IBufferElementData`
+- `FFComponents.Artifacts.SharedMiningHolder` :: `public FixedString128Bytes Guid`
+- `FFComponents.Artifacts.SharedMiningProgress` :: `[Save] public struct SharedMiningProgress : IComponentData, IQueryTypeParameter`
+- `FFComponents.Artifacts.SharedMiningProgress` :: `public fp EffortSeconds`
+- `FFComponents.Artifacts.SharedMiningProgress` :: `public static float Fraction(fp effortSeconds)`
+- `FFComponents.Artifacts.SharedMiningProgress` :: `public static readonly fp SoloMiningSeconds`
+- `FFComponents.Blueprints.ConstructionTaskRequester` :: `[Save] public struct ConstructionTaskRequester : IComponentData, IQueryTypeParameter`
+- `FFComponents.Blueprints.ConstructionTaskRequester` :: `public Entity Player`
+- `FFComponents.Circuits.CircuitCondition` :: `[Save] [InternalBufferCapacity(0)] public struct CircuitCondition : IBufferElementData`
+- `FFComponents.Circuits.CircuitCondition` :: `public Entity Target`
+- `FFComponents.Circuits.CircuitCondition` :: `public byte Comparison`
+- `FFComponents.Circuits.CircuitCondition` :: `public byte Join`
+- `FFComponents.Circuits.CircuitCondition` :: `public byte Kind`
+- `FFComponents.Circuits.CircuitCondition` :: `public byte Reserved`
+- `FFComponents.Circuits.CircuitCondition` :: `public fp Value`
+- `FFComponents.Circuits.CircuitCondition` :: `public int Item`
+- `FFComponents.Circuits.CircuitCondition` :: `public readonly CircuitConditionKind ConditionKind { get; }`
+- `FFComponents.Circuits.CircuitControl` :: `public static bool IsControllable(EntityManager entityManager, Entity structure)`
+- `FFComponents.Circuits.CircuitControl` :: `public static class CircuitControl`
+- `FFComponents.Circuits.CircuitModuleMarker` :: `public struct CircuitModuleMarker : IComponentData, IQueryTypeParameter`
+- `FFComponents.Circuits.CircuitModuleMarkerAuthoring` :: `public CircuitModuleMarkerAuthoring()`
+- `FFComponents.Circuits.CircuitModuleMarkerAuthoring` :: `public class CircuitModuleMarkerAuthoring : MonoBehaviour`
+- `FFComponents.Circuits.CircuitModuleMarkerBaker` :: `public CircuitModuleMarkerBaker()`
+- `FFComponents.Circuits.CircuitModuleMarkerBaker` :: `public class CircuitModuleMarkerBaker : Baker<CircuitModuleMarkerAuthoring>`
+- `FFComponents.Circuits.CircuitModuleMarkerBaker` :: `public override void Bake(CircuitModuleMarkerAuthoring authoring)`
+- `FFComponents.Circuits.CircuitReads` :: `public BufferLookup<InventorySlot> InventorySlots`
+- `FFComponents.Circuits.CircuitReads` :: `public ComponentLookup<CircuitState> States`
+- `FFComponents.Circuits.CircuitReads` :: `public ComponentLookup<Crafter> Crafters`
+- `FFComponents.Circuits.CircuitReads` :: `public ComponentLookup<DeletionMarker> Deleted`
+- `FFComponents.Circuits.CircuitReads` :: `public ComponentLookup<HeatProducer> HeatProducers`
+- `FFComponents.Circuits.CircuitReads` :: `public ComponentLookup<InventoryMetaData> InventoryMeta`
+- `FFComponents.Circuits.CircuitReads` :: `public ComponentLookup<LightStructure> Lights`
+- `FFComponents.Circuits.CircuitReads` :: `public ComponentLookup<Placeable> Placeables`
+- `FFComponents.Circuits.CircuitReads` :: `public ComponentLookup<StationGridPowerProvider> PowerProviders`
+- `FFComponents.Circuits.CircuitReads` :: `public NativeArray<AsteroItemConfigData> ItemConfigs`
+- `FFComponents.Circuits.CircuitReads` :: `public int StackSizeModifier`
+- `FFComponents.Circuits.CircuitReads` :: `public readonly bool Evaluate(in CircuitCondition condition)`
+- `FFComponents.Circuits.CircuitReads` :: `public readonly bool IsCircuitOff(Entity target)`
+- `FFComponents.Circuits.CircuitReads` :: `public readonly bool IsCrafting(Entity target)`
+- `FFComponents.Circuits.CircuitReads` :: `public readonly bool IsMainInventoryEmpty(Entity target)`
+- `FFComponents.Circuits.CircuitReads` :: `public readonly bool IsMainInventoryFull(Entity target)`
+- `FFComponents.Circuits.CircuitReads` :: `public readonly bool IsOn(Entity target)`
+- `FFComponents.Circuits.CircuitReads` :: `public readonly bool IsPresent(Entity target)`
+- `FFComponents.Circuits.CircuitReads` :: `public readonly bool Verdict(DynamicBuffer<CircuitCondition> conditions)`
+- `FFComponents.Circuits.CircuitReads` :: `public readonly fp HeatOutput(Entity target)`
+- `FFComponents.Circuits.CircuitReads` :: `public readonly fp ItemCount(Entity target, int item, InventoryType inventoryType)`
+- `FFComponents.Circuits.CircuitReads` :: `public readonly fp PowerOutput(Entity target)`
+- `FFComponents.Circuits.CircuitReads` :: `public static CircuitReads Create(ref SystemState state, NativeArray<AsteroItemConfigData> itemConfigs, int stackSizeModifier)`
+- `FFComponents.Circuits.CircuitReads` :: `public struct CircuitReads`
+- `FFComponents.Circuits.CircuitReads` :: `public void Update(ref SystemState state, NativeArray<AsteroItemConfigData> itemConfigs, int stackSizeModifier)`
+- `FFComponents.Circuits.CircuitState` :: `[Save] public struct CircuitState : IComponentData, IQueryTypeParameter`
+- `FFComponents.Circuits.CircuitState` :: `public byte Action`
+- `FFComponents.Circuits.CircuitState` :: `public byte Enabled`
+- `FFComponents.Circuits.CircuitState` :: `public byte IsOff`
+- `FFComponents.Circuits.CircuitState` :: `public byte Verdict`
+- `FFComponents.Circuits.CircuitState` :: `public readonly bool SwitchedOff { get; }`
+- `FFComponents.Combat.AoeImpactDamage` :: `public fp BuildingDamageMultiplier`
+- `FFComponents.Combat.Source` :: `LandingBlocked = 12`
+- `FFComponents.Core.NetworkedProviderIndex` :: `public bool Find(int item, int2 originGridTile, in NetworkedItemsCache cache, ComponentLookup<Placeable> placeables, ComponentLookup<UnderConstructionTag> underConstruction, out Entity foundEntity, out int itemCount, out int entryIndex)`
+- `FFComponents.Core.NetworkedProviderIndex` :: `public bool IsCreated { get; }`
+- `FFComponents.Core.NetworkedProviderIndex` :: `public static NetworkedProviderIndex Create(Allocator allocator)`
+- `FFComponents.Core.NetworkedProviderIndex` :: `public static int2 ChunkOf(int x, int z)`
+- `FFComponents.Core.NetworkedProviderIndex` :: `public struct NetworkedProviderIndex`
+- `FFComponents.Core.NetworkedProviderIndex` :: `public void Clear()`
+- `FFComponents.Core.NetworkedProviderIndex` :: `public void Dispose()`
+- `FFComponents.Core.NetworkedProviderIndex` :: `public void Take(int entryIndex, int amount)`
+- `FFComponents.Core.NetworkedProviderIndex.Entry` :: `public Entity Container`
+- `FFComponents.Core.NetworkedProviderIndex.Entry` :: `public Placeable Placeable`
+- `FFComponents.Core.NetworkedProviderIndex.Entry` :: `public int Available`
+- `FFComponents.Core.NetworkedProviderIndex.Entry` :: `public struct NetworkedProviderIndex.Entry`
+- `FFComponents.Haulers.PastedStationBlueprint` :: `[Save] public struct PastedStationBlueprint : IComponentData, IQueryTypeParameter`
+- `FFComponents.Haulers.PastedStationBlueprint` :: `public ulong Key`
+- `FFComponents.Haulers.PastedStationCopyFormat` :: `[Save] public struct PastedStationCopyFormat : IComponentData, IQueryTypeParameter`
+- `FFComponents.Haulers.PastedStationCopyFormat` :: `public FixedString64Bytes Name`
+- `FFComponents.Haulers.PastedStationCopyFormat` :: `public FixedString64Bytes Numbered`
+- `FFComponents.Haulers.PastedStationName` :: `[Save] public struct PastedStationName : IComponentData, IQueryTypeParameter`
+- `FFComponents.Haulers.PastedStationName` :: `public FixedString32Bytes Value`
+- `FFComponents.Haulers.PastedStationOptions` :: `[Save] public struct PastedStationOptions : IComponentData, IQueryTypeParameter`
+- `FFComponents.Haulers.PastedStationOptions` :: `public int Options`
+- `FFComponents.Haulers.PastedStationStop` :: `[Save] [InternalBufferCapacity(0)] public struct PastedStationStop : IBufferElementData`
+- `FFComponents.Haulers.PastedStationStop` :: `public HaulerStop Stop`
+- `FFComponents.Haulers.States.LandingBlock` :: `public static bool IsBlocked(in DockingState docking, in HaulerFlightRails rails)`
+- `FFComponents.Haulers.States.LandingBlock` :: `public static class LandingBlock`
+- `FFComponents.Haulers.StationBlueprintLink` :: `[Save] public struct StationBlueprintLink : IComponentData, IQueryTypeParameter`
+- `FFComponents.Haulers.StationBlueprintLink` :: `public bool UpdateBlueprint`
+- `FFComponents.Haulers.StationBlueprintLink` :: `public ulong Key`
+- `FFComponents.Helpers.InventoryHelper` :: `public static int GetFinalCraftingCost(int baseCount, int craftingModifier, bool scalesWithOutput)`
+- `FFComponents.Helpers.InventoryHelper.InventoryOrigin` :: `public bool HasSlotIndex`
+- `FFComponents.Helpers.InventoryHelper.InventoryOrigin` :: `public int SlotIndex`
+- `FFComponents.Initialization.FfItemEntityPrefabVariant` :: `public Entity ConnectorPrefab`
+- `FFComponents.Initialization.FfItemEntityPrefabVariant` :: `public Entity Prefab`
+- `FFComponents.Initialization.FfItemEntityPrefabVariant` :: `public int ItemId`
+- `FFComponents.Initialization.FfItemEntityPrefabVariant` :: `public int Variant`
+- `FFComponents.Initialization.FfItemEntityPrefabVariant` :: `public struct FfItemEntityPrefabVariant : IBufferElementData`
+- `FFComponents.Loot.ArchiveShardDrop` :: `public struct ArchiveShardDrop : IComponentData, IQueryTypeParameter`
+- `FFComponents.Loot.ArchiveShardDropAuthoring` :: `public ArchiveShardDropAuthoring()`
+- `FFComponents.Loot.ArchiveShardDropAuthoring` :: `public class ArchiveShardDropAuthoring : MonoBehaviour`
+- `FFComponents.Loot.ArchiveShardDropBaker` :: `public ArchiveShardDropBaker()`
+- `FFComponents.Loot.ArchiveShardDropBaker` :: `public class ArchiveShardDropBaker : Baker<ArchiveShardDropAuthoring>`
+- `FFComponents.Loot.ArchiveShardDropBaker` :: `public override void Bake(ArchiveShardDropAuthoring authoring)`
+- `FFComponents.PersonalLogistics.PersonalLogisticsRequest` :: `[Save] [InternalBufferCapacity(0)] public struct PersonalLogisticsRequest : IBufferElementData`
+- `FFComponents.PersonalLogistics.PersonalLogisticsRequest` :: `public int Item`
+- `FFComponents.PersonalLogistics.PersonalLogisticsRequest` :: `public int Max`
+- `FFComponents.PersonalLogistics.PersonalLogisticsRequest` :: `public int Min`
+- `FFComponents.PersonalLogistics.PersonalLogisticsRequest` :: `public int Shortfall`
+- `FFComponents.PersonalLogistics.PersonalLogisticsRequest` :: `public readonly bool HasMax { get; }`
+- `FFComponents.PersonalLogistics.PersonalLogisticsState` :: `[Save] public struct PersonalLogisticsState : IComponentData, IQueryTypeParameter`
+- `FFComponents.PersonalLogistics.PersonalLogisticsState` :: `public byte Flags`
+- `FFComponents.PersonalLogistics.PersonalLogisticsState` :: `public byte Reserved0`
+- `FFComponents.PersonalLogistics.PersonalLogisticsState` :: `public byte Reserved1`
+- `FFComponents.PersonalLogistics.PersonalLogisticsState` :: `public byte Reserved2`
+- `FFComponents.PersonalLogistics.PersonalLogisticsState` :: `public readonly bool AutoTrashPaused { get; }`
+- `FFComponents.PersonalLogistics.PersonalLogisticsState` :: `public readonly bool Enabled { get; }`
+- `FFComponents.PersonalLogistics.PersonalLogisticsState` :: `public readonly bool TrashUnrequested { get; }`
+- `FFComponents.PersonalLogistics.PersonalLogisticsTrip` :: `[Save] public struct PersonalLogisticsTrip : IComponentData, IQueryTypeParameter`
+- `FFComponents.PersonalLogistics.PersonalLogisticsTrip` :: `public Entity Player`
+- `FFComponents.PersonalLogistics.PersonalLogisticsTrip` :: `public byte Kind`
+- `FFComponents.PersonalLogistics.PersonalLogisticsTrip` :: `public byte Reserved0`
+- `FFComponents.PersonalLogistics.PersonalLogisticsTrip` :: `public byte Reserved1`
+- `FFComponents.PersonalLogistics.PersonalLogisticsTrip` :: `public byte TrashSlot`
+- `FFComponents.PersonalLogistics.PersonalLogisticsTrip` :: `public int Amount`
+- `FFComponents.PersonalLogistics.PersonalLogisticsTrip` :: `public int Item`
+- `FFComponents.PersonalLogistics.PersonalLogisticsTrip` :: `public readonly PersonalTripKind TripKind { get; }`
+- `FFComponents.PersonalLogistics.PersonalTrash` :: `public static class PersonalTrash`
+- `FFComponents.PersonalLogistics.PersonalTrash` :: `public static int Add(DynamicBuffer<PersonalTrashSlot> slots, int item, int count, int stackSize)`
+- `FFComponents.PersonalLogistics.PersonalTrash` :: `public static int Room(DynamicBuffer<PersonalTrashSlot> slots, int item, int stackSize)`
+- `FFComponents.PersonalLogistics.PersonalTrash` :: `public static int TakeFromSlot(DynamicBuffer<PersonalTrashSlot> slots, int index, int item, int count)`
+- `FFComponents.PersonalLogistics.PersonalTrash` :: `public static void EnsureSlots(DynamicBuffer<PersonalTrashSlot> slots)`
+- ... and 916 more

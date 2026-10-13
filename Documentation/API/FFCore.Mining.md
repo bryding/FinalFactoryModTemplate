@@ -10,3 +10,17 @@ public enum OrePatchType
 
 Values: `Iron = 0`, `Bauxite = 1`, `Silica = 2`
 
+## PlayerLaserYield
+
+```csharp
+public static class PlayerLaserYield
+```
+
+| Member | Summary |
+|---|---|
+| `public const int NeutralPercent = 100` |  |
+| `public const int RollRange = 100` |  |
+| `public static int Apply(int extracted, int percent, int roll)` |  |
+| `public static bool Changes(int percent)` |  |
+| `public static int Normalize(int percent)` |  |
+

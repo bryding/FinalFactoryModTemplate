@@ -82,6 +82,16 @@ public struct LogisticsRequesterPlacementSystem : ISystem, ISystemCompilerGenera
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
 
+## LogisticsRouteDisplayGeometry
+
+```csharp
+public static class LogisticsRouteDisplayGeometry
+```
+
+| Member | Summary |
+|---|---|
+| `public static void Apply(in ArrowDisplayMetaData metaData, in LogisticsDisplayReferences displayReferences, ref ComponentLookup<LocalTransform> allLocalTransforms, ref ComponentLookup<ArrowAngleMaterialProperty> allAngleMaterials, ref ComponentLookup<ArrowOffsetMaterialProperty> allOffsetMaterials, ref ComponentLookup<PostTransformMatrix> postTransformLookup)` |  |
+
 ## LogisticsRouteDisplaySystem
 
 ```csharp
@@ -147,9 +157,24 @@ Physics may refine the visible beam end, never the research flight pose.
 
 | Member | Summary |
 |---|---|
+| `public static EntityQuery CreateFixedPointQuery(ref SystemState state)` |  |
 | `public static EntityQuery CreateQuery(ref SystemState state)` |  |
-| `public static TerrainExtractorBeamGeometry FromQuery(EntityQuery query, CollisionFilter filter)` |  |
+| `public static TerrainExtractorBeamGeometry FromQueries(EntityQuery physicsQuery, EntityQuery fixedPointQuery, CollisionFilter filter, SimCollisionFallback fallback)` |  |
 | `public void PublishEnd(ref ScalableLaserOwner beam, float3 targetPosition)` |  |
+
+## TerrainExtractorGhostRouteSystem
+
+```csharp
+[UpdateInGroup(typeof(FFControllerPreTransformGroup))]
+public struct TerrainExtractorGhostRouteSystem : ISystem, ISystemCompilerGenerated
+```
+
+| Member | Summary |
+|---|---|
+| `public static void GetRouteTiles(float3 ghostPosition, float range, bool targetUsable, float3 targetPosition, out int3 start, out int3 end)` |  |
+| `public void OnCreate(ref SystemState state)` |  |
+| `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnUpdate(ref SystemState state)` |  |
 
 ## TerrainExtractorPositionFinderSystem
 
@@ -162,6 +187,7 @@ public struct TerrainExtractorPositionFinderSystem : ISystem, ISystemCompilerGen
 |---|---|
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnDestroy(ref SystemState systemState)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
 
 ## TerrainExtractorResearchStateSystem
@@ -189,6 +215,7 @@ public struct TerrainExtractorTerrainItemFinderSystem : ISystem, ISystemCompiler
 |---|---|
 | `public void OnCreate(ref SystemState state)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnDestroy(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState state)` |  |
 
 ## WorkingLifetimeSystem

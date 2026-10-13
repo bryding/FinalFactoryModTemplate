@@ -20,7 +20,7 @@ Questions? Ask in the [Final Factory Discord](https://discord.gg/finalfactory) `
    * Run the copy script from the project root:
      * Windows: `copy-finalfactory-dlls.cmd` (double-click it, or run it from a terminal)
      * Mac / Linux: `./copy-finalfactory-dlls.sh`
-   * This copies `FFCore.dll`, `FFSystems.dll`, `FFComponents.dll`, `FFTechnology.dll`, `FFNetcode.dll` and `FFSpaghetti.dll` into `Assets/FinalFactoryDlls/`. Your `finalfactory.properties` is gitignored, so your local path stays out of git. **When the game updates, re-run the script** and rebuild your mod.
+   * This copies `FFCore.dll`, `FFSystems.dll`, `FFComponents.dll`, `FFTechnology.dll`, `FFNetcode.dll` and `FFSpaghetti.dll` into `Assets/FinalFactoryDlls/`, plus the assemblies those load (`FFInput.dll`, `FFConfiguration.dll`, the game's UI plugins and the .NET metadata reader; the script lists them). Your `finalfactory.properties` is gitignored, so your local path stays out of git. **When the game updates, re-run the script** and rebuild your mod.
 3. **Open the project** with Unity Hub (it will prompt to install the exact editor version if you don't have it).
 4. **Add a Steam Workshop preview image**: put a `Preview.png` or `Preview.gif` (under 1 MB — Steam's limit) in the project root. The build fails with a clear error if it's missing or too big.
 

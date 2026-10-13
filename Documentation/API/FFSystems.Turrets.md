@@ -47,3 +47,49 @@ public struct LaserTurretFiringSystem : ISystem, ISystemCompilerGenerated
 public struct LaserTurretHeatingSystem
 ```
 
+## RailgunAnimationSystem
+
+```csharp
+[UpdateInGroup(typeof(FFFixedPreTransformGroup))] [UpdateAfter(typeof(RailgunSystem))]
+public struct RailgunAnimationSystem : ISystem, ISystemCompilerGenerated
+```
+
+| Member | Summary |
+|---|---|
+| `public const int BarrelIndex = 2` |  |
+| `public const int BaseIndex = 0` |  |
+| `public const int CarriageIndex = 1` |  |
+| `public const int GlowFirstIndex = 3` |  |
+| `public const int GlowSections = 3` |  |
+| `public const int PartCount = 7` |  |
+| `public const float RecoilDistance = 3.2` |  |
+| `public const float RecoilSeconds = 0.9` |  |
+| `public const int TailGlowIndex = 6` |  |
+| `public void OnCreate(ref SystemState state)` |  |
+| `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnUpdate(ref SystemState state)` |  |
+| `public static float RecoilOffset(float seconds)` |  |
+| `public static float SectionGlow(int section, bool ready, float fraction, float sinceShot)` |  |
+| `public static float TailGlow(bool ready, float fraction, float sinceShot)` |  |
+
+## RailgunSystem
+
+```csharp
+[UpdateInGroup(typeof(FFFixedPreTransformGroup))] [UpdateAfter(typeof(GridEnergySettlementSystem))]
+public struct RailgunSystem : ISystem, ISystemCompilerGenerated
+```
+
+| Member | Summary |
+|---|---|
+| `public const string AmmoItemName = "Railgun Slug"` |  |
+| `public const int ChamberSlotIndex = 0` |  |
+| `public const float MuzzleForward = 19.5` |  |
+| `public const float MuzzleHeight = 14` |  |
+| `public const float PivotForward = 5` |  |
+| `public const string WeaponName = "RailgunSlug"` |  |
+| `public static bool HasAmmo(in DynamicBuffer<InventorySlot> slots, int ammoItem)` |  |
+| `public void OnCreate(ref SystemState state)` |  |
+| `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnUpdate(ref SystemState state)` |  |
+| `public static float3 Pivot(in EntityWorldPose poses, Entity entity)` |  |
+

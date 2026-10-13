@@ -170,6 +170,37 @@ public struct FleetIdleSystem.FleetIdleJob : IJobEntity, IJobChunk
 | `public ComponentLookup<Player> AllPlayers` |  |
 | `public fp Dt` |  |
 | `public NativeArray<FleetConfig> FleetConfigs` |  |
+| `public NativeParallelHashMap<Entity, int> Slots` |  |
+| `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
+
+## FleetIdleSystem.FormationMember
+
+```csharp
+public struct FleetIdleSystem.FormationMember : IComparable<FormationMember>
+```
+
+| Member | Summary |
+|---|---|
+| `public int BufferOrder` |  |
+| `public int FormationIndex` |  |
+| `public int Group` |  |
+| `public ulong ObjectId` |  |
+| `public Entity Ship` |  |
+| `public int CompareTo(FleetIdleSystem.FormationMember other)` |  |
+
+## FleetIdleSystem.PlayerFormationSlotJob
+
+```csharp
+public struct FleetIdleSystem.PlayerFormationSlotJob : IJobEntity, IJobChunk
+```
+
+| Member | Summary |
+|---|---|
+| `public ComponentLookup<ConstructionBotMarker> AllConstructionBots` |  |
+| `public ComponentLookup<FleetShip> AllFleetShips` |  |
+| `public ComponentLookup<DeterministicCombatObjectId> AllObjectIds` |  |
+| `public ComponentLookup<Shooter> AllShooters` |  |
+| `public NativeParallelHashMap<Entity, int> Slots` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
 
 ## OrbitStarStateSystem

@@ -30,6 +30,17 @@ public struct AncientGuardianSwarmSystem : ISystem, ISystemCompilerGenerated
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
 
+## GuardianStory
+
+```csharp
+public static class GuardianStory
+```
+
+| Member | Summary |
+|---|---|
+| `public static Entity LivingGuardianOf(EntityManager em, Entity owner)` |  |
+| `public static void OnDiscovered(EntityManager em, NativeList<Entity> discovered)` |  |
+
 ## StructureActivatorAutoKillSystem
 
 ```csharp
@@ -65,6 +76,7 @@ public struct StructureEnergyCellMovementSystem : ISystem, ISystemCompilerGenera
 
 | Member | Summary |
 |---|---|
+| `public const string ArchiveShardName = "Luminae Archive Shard"` |  |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |

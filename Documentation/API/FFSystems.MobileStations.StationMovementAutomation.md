@@ -14,6 +14,7 @@ Finds the rideable structure nearest the local player for the ride-a-vehicle pro
 | Member | Summary |
 |---|---|
 | `public NativeReference<Entity> ClosestHauler { get; }` |  |
+| `public Entity ClosestHaulerForMainThread { get; }` |  |
 | `public FindNearbyHaulersSystem()` |  |
 | `protected override void OnCreate()` |  |
 | `protected override void OnCreateForCompiler()` |  |

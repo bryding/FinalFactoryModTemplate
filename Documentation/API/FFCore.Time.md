@@ -68,6 +68,22 @@ Pure simulation-time identity for loot decisions. The saved monotonic simulation
 | `public static int3 GetChunkOriginTile(int2 chunk, int chunkSize)` |  |
 | `public static int GetCurrentWindow(fp simulationElapsedTime)` |  |
 
+## SimulationFreeze
+
+```csharp
+public static class SimulationFreeze
+```
+
+| Member | Summary |
+|---|---|
+| `public const double MaxHoldSeconds = 90` |  |
+| `public static string Reason { get; }` |  |
+| `public static Action<string, bool> Changed` |  |
+| `public static void Clear()` |  |
+| `public static void Hold(string reason, double seconds, double now)` |  |
+| `public static bool IsHeld(double now)` |  |
+| `public static void Release(string reason)` |  |
+
 ## SimulationRate
 
 ```csharp

@@ -97,6 +97,7 @@ Thrown for every mod-load failure that should be shown to the player (surfaces a
 | `public object[] Args { get; }` |  |
 | `public ModStatusReason Reason { get; }` |  |
 | `public ModLoadException(ModStatusReason reason, params object[] args)` |  |
+| `public static string Format(ModStatusReason reason, object[] args)` |  |
 | `public static string GetEnglishTemplate(ModStatusReason reason)` |  |
 
 ## ModLoader
@@ -110,6 +111,7 @@ Class that loads mods. All methods and member variables are Static because all e
 | Member | Summary |
 |---|---|
 | `public static bool AnyModsActive { get; }` | Whether this player counts as modded, which keeps them out of multiplayer: some mod's code is loaded in this process, or a switched-on mod is installed and would load on the next start. An empty or broken folder, or a switched-off mod, does not count. |
+| `public static IReadOnlyDictionary<string, string[]> ApiWarnings { get; }` |  |
 | `public static IReadOnlyDictionary<string, LoadedModInfo> DisabledModInfo { get; }` | Folders under `ModPath` skipped at startup because they are switched off (`ModEnablement`), keyed by lowercased ID like `ModInfo`. Read from the manifest where there is one, so the Mods menu can list them and switch them back on. |
 | `public static IReadOnlyDictionary<IUserModLoader, LoadedModInfo> LoaderToInfoMap { get; }` |  |
 | `public static bool ModDictionaryIsStale { get; }` |  |
@@ -122,6 +124,7 @@ Class that loads mods. All methods and member variables are Static because all e
 | `public static LoadedModInfo GetModInfoFromManifestFile(string manifestFile)` |  |
 | `public static IUserMod LoadIUserModForDll(string monoDLLPath)` |  |
 | `public static IUserMod LoadIUserModForModName(string modID)` |  |
+| `public static void RecordHookFailure(IUserModLoader loader, string hook, Exception exception)` |  |
 
 ## ModStatusReason
 
@@ -131,7 +134,7 @@ public enum ModStatusReason
 
 Every distinct status/failure reason a mod entry can carry -- thrown as `ModLoadException` for actual load failures, or set directly (no exception) for a non-error status like `RestartRequired`.
 
-Values: `InvalidModId = 0`, `IncompatibleGameVersion = 1`, `ModIdMismatch = 2`, `DllNotFound = 3`, `NoUserModImplementationFound = 4`, `MultipleUserModImplementationsFound = 5`, `TypesFailedToLoad = 6`, `DependenciesUnresolved = 7`, `EntitiesAbiTypeRegistryMissing = 8`, `EntitiesAbiTypeMissing = 9`, `EntitiesAbiMemberMissing = 10`, `EntitiesAbiCorruptMetadata = 11`, `EntitiesAbiVerificationFailed = 12`, `DoesNotImplementGameIUserMod = 13`, `ManifestNotFound = 14`, `ManifestMissingId = 15`, `RestartRequired = 16`
+Values: `InvalidModId = 0`, `IncompatibleGameVersion = 1`, `ModIdMismatch = 2`, `DllNotFound = 3`, `NoUserModImplementationFound = 4`, `MultipleUserModImplementationsFound = 5`, `TypesFailedToLoad = 6`, `DependenciesUnresolved = 7`, `EntitiesAbiTypeRegistryMissing = 8`, `EntitiesAbiTypeMissing = 9`, `EntitiesAbiMemberMissing = 10`, `EntitiesAbiCorruptMetadata = 11`, `EntitiesAbiVerificationFailed = 12`, `DoesNotImplementGameIUserMod = 13`, `ManifestNotFound = 14`, `ManifestMissingId = 15`, `RestartRequired = 16`, `HookFailed = 17`
 
 ## SpaghettiApi
 

@@ -66,6 +66,19 @@ public struct FfItemEntityPrefab : IBufferElementData
 |---|---|
 | `public Entity Value` |  |
 
+## FfItemEntityPrefabVariant
+
+```csharp
+public struct FfItemEntityPrefabVariant : IBufferElementData
+```
+
+| Member | Summary |
+|---|---|
+| `public Entity ConnectorPrefab` |  |
+| `public int ItemId` |  |
+| `public Entity Prefab` |  |
+| `public int Variant` |  |
+
 ## WeaponEffectEntityPrefab
 
 ```csharp

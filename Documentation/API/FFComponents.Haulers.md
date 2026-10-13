@@ -282,13 +282,80 @@ One building of the ship a landing zone last saw land on it: which item, which t
 | `public int CompareTo(LandingZoneShipCopy other)` | Canonical order: by tile (height, then z, then x), then item, then facing. |
 | `public static void Fill(DynamicBuffer<LandingZoneShipCopy> copy, NativeArray<Placeable> landed, int3 zoneTile)` | Replaces `copy` with the buildings of `landed`, placed on a zone at `zoneTile`, in canonical order. |
 | `public static bool TryCreate(in Placeable landed, int3 zoneTile, out LandingZoneShipCopy copy)` | The copy of `landed` (a building's placeable where it stands, or will stand, on the zone) for a zone at `zoneTile`. False for an offset a 16-bit tile cannot hold, which no ship reaches. |
-| `public static Placeable TurnedAbout(Placeable building, in Placeable zone, int quarterTurns)` | `building` (a building of the copy laid out on `zone`) turned `quarterTurns` quarter turns clockwise (Up to Right, as a landing turns) about the zone's centre: where the same ship stands when the zone faces that much further round. |
 
 ## NameUpdaterMarker
 
 ```csharp
 public struct NameUpdaterMarker : IComponentData, IQueryTypeParameter
 ```
+
+## PastedStationBlueprint
+
+```csharp
+[Save]
+public struct PastedStationBlueprint : IComponentData, IQueryTypeParameter
+```
+
+| Member | Summary |
+|---|---|
+| `public ulong Key` |  |
+
+## PastedStationCopyFormat
+
+```csharp
+[Save]
+public struct PastedStationCopyFormat : IComponentData, IQueryTypeParameter
+```
+
+| Member | Summary |
+|---|---|
+| `public FixedString64Bytes Name` |  |
+| `public FixedString64Bytes Numbered` |  |
+
+## PastedStationName
+
+```csharp
+[Save]
+public struct PastedStationName : IComponentData, IQueryTypeParameter
+```
+
+| Member | Summary |
+|---|---|
+| `public FixedString32Bytes Value` |  |
+
+## PastedStationOptions
+
+```csharp
+[Save]
+public struct PastedStationOptions : IComponentData, IQueryTypeParameter
+```
+
+| Member | Summary |
+|---|---|
+| `public int Options` |  |
+
+## PastedStationStop
+
+```csharp
+[Save] [InternalBufferCapacity(0)]
+public struct PastedStationStop : IBufferElementData
+```
+
+| Member | Summary |
+|---|---|
+| `public HaulerStop Stop` |  |
+
+## StationBlueprintLink
+
+```csharp
+[Save]
+public struct StationBlueprintLink : IComponentData, IQueryTypeParameter
+```
+
+| Member | Summary |
+|---|---|
+| `public ulong Key` |  |
+| `public bool UpdateBlueprint` |  |
 
 ## StationCargo
 

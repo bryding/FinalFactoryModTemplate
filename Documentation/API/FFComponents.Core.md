@@ -282,6 +282,34 @@ Contains data about items within a specific container entity.
 | `public int Count` | Total count of the item in this container. |
 | `public int Reserved` | Number of items reserved for pending operations. |
 
+## NetworkedProviderIndex
+
+```csharp
+public struct NetworkedProviderIndex
+```
+
+| Member | Summary |
+|---|---|
+| `public bool IsCreated { get; }` |  |
+| `public static int2 ChunkOf(int x, int z)` |  |
+| `public void Clear()` |  |
+| `public static NetworkedProviderIndex Create(Allocator allocator)` |  |
+| `public void Dispose()` |  |
+| `public bool Find(int item, int2 originGridTile, in NetworkedItemsCache cache, ComponentLookup<Placeable> placeables, ComponentLookup<UnderConstructionTag> underConstruction, out Entity foundEntity, out int itemCount, out int entryIndex)` |  |
+| `public void Take(int entryIndex, int amount)` |  |
+
+## NetworkedProviderIndex.Entry
+
+```csharp
+public struct NetworkedProviderIndex.Entry
+```
+
+| Member | Summary |
+|---|---|
+| `public int Available` |  |
+| `public Entity Container` |  |
+| `public Placeable Placeable` |  |
+
 ## Operation
 
 ```csharp

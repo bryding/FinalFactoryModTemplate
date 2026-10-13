@@ -33,6 +33,8 @@ public static class Ecs
 | Member | Summary |
 |---|---|
 | `public static Dictionary<Type, EntityQuery> EntityQueries` |  |
+| `public static bool MainThreadOnlyWritesSkipReaders` |  |
+| `public static bool ValueSingletonReadsSkipReaders` |  |
 | `public static CollisionWorld CollisionWorld { get; }` |  |
 | `public static EntityManager EntityManager { get; }` |  |
 | `public static bool Ready { get; }` | True only when there is a World whose native side is still alive. A disposed World keeps its managed wrapper (`World.IsCreated` is `WorldUnmanaged.m_Impl != null`, nulled in `WorldUnmanaged.Dispose()`), so a plain null check is not a liveness test. |
@@ -61,6 +63,7 @@ public static class Ecs
 | `public static void RunISystem<T>() where T : unmanaged, ISystem` |  |
 | `public static void RunISystemAndEcb<T, TCb>() where T : unmanaged, ISystem where TCb : EntityCommandBufferSystem` |  |
 | `public static void SetComponent<T>(this Entity entity, T component) where T : unmanaged, IComponentData` |  |
+| `public static void SetMainThreadOnlySingleton<T>(T componentData) where T : unmanaged, IComponentData` |  |
 | `public static void SetSingleton<T>(T componentData) where T : unmanaged, IComponentData` |  |
 | `public static bool TryGetBuffer<T>(this Entity entity, out DynamicBuffer<T> buffer) where T : unmanaged, IBufferElementData` |  |
 | `public static bool TryGetComponent<T>(this Entity entity, out T result) where T : unmanaged, IComponentData` |  |

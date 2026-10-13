@@ -135,6 +135,7 @@ public struct BlittableMiningReward : INonExistable
 |---|---|
 | `public int ItemIdentifier` |  |
 | `public int2 MiningRewardCountRange` |  |
+| `public int PlayerLaserYieldPercent` |  |
 | `public bool RewardAsPickupables` |  |
 | `public bool Exists { get; }` |  |
 | `public void MakeNonExistent()` |  |
@@ -163,6 +164,7 @@ public struct Cheats : IComponentData, IQueryTypeParameter
 | Member | Summary |
 |---|---|
 | `public bool FreeBuildingsCheat` |  |
+| `public bool InstantCraft` |  |
 
 ## ConfigConstants
 
@@ -231,10 +233,12 @@ public struct CraftConfigData : IComponentData, IQueryTypeParameter
 | `public bool IsArtifact` |  |
 | `public int Mass` |  |
 | `public bool NotPlayerCraftable` |  |
+| `public bool OutputScalesWithCost` |  |
 | `public bool RawResourceOverride` |  |
 | `public bool RecipeIsAnyInList` | This property is confusing but handles the case where an item can be crafted with any of the items in its recipe list. As of time of writing, this only apples to Ancient Tech Trash, which can be created with any artifact. |
 | `public bool RequiresSpecificStation` |  |
 | `public bool SpawnsOutsideOfInventory` |  |
+| `public int GetFinalOutputCount(int craftingModifier)` |  |
 | `public bool IsRawResource(SmallBuffer<CraftItem> craftItems)` |  |
 
 ## DynamicConfig
@@ -368,13 +372,17 @@ public class FFItemConfig : ScriptableObject, IFFItemConfig
 | `public List<FFItemConfig> SwappableStructures` |  |
 | `public List<FFItemConfig> ValidConnections` |  |
 | `public List<FFItemConfig> ValidFuel` |  |
+| `public IReadOnlyList<FeatureArtVariant> ArtVariants { get; }` |  |
 | `public AssemblerConfig AssemblerConfig { get; }` |  |
+| `public Sprite BaseIconSprite { get; }` |  |
 | `public GameObject ConnectorItemPrefab { get; }` |  |
+| `public string ConnectorItemPrefabFeatureToggle { get; }` |  |
 | `public ConstructionConfig ConstructionConfig { get; }` |  |
 | `public CraftConfigData CraftConfig { get; }` |  |
 | `public string Description { get; }` |  |
 | `public DynamicConfig DynamicConfig { get; }` |  |
 | `public GameObject EntityPrefab { get; }` |  |
+| `public string FeatureToggle { get; }` |  |
 | `public string FlavorText { get; }` |  |
 | `public FleetConfig FleetConfig { get; }` |  |
 | `public Sprite IconSprite { get; }` |  |
@@ -608,6 +616,7 @@ public class MiningReward
 |---|---|
 | `public FFItemConfig Item` |  |
 | `public int2 MiningRewardCountRange` |  |
+| `public int PlayerLaserYieldPercent` |  |
 | `public bool RewardAsPickupables` |  |
 | `public MiningReward()` |  |
 
@@ -621,6 +630,7 @@ public class MiningRewardRaw
 |---|---|
 | `public string ItemName` |  |
 | `public int2 MiningRewardCountRange` |  |
+| `public int PlayerLaserYieldPercent` |  |
 | `public bool RewardAsPickupables` |  |
 | `public MiningRewardRaw()` |  |
 
@@ -815,6 +825,21 @@ public struct ScaleConfig
 | `public bool RandomizeScale` |  |
 | `public float3x2 ScaleRange` |  |
 
+## SingularityStationSignal
+
+```csharp
+public static class SingularityStationSignal
+```
+
+| Member | Summary |
+|---|---|
+| `public static fp BaselineShare { get; }` |  |
+| `public static fp KilowattsPerDbm { get; }` |  |
+| `public static fp MaxSignal { get; }` |  |
+| `public static fp Baseline(in PowerConfig config)` |  |
+| `public static fp ForPowerOutput(in PowerConfig config, fp powerOutput)` |  |
+| `public static bool IsSingularityStation(in PowerConfig config)` |  |
+
 ## SpawnItem
 
 ```csharp
@@ -896,6 +921,7 @@ public struct WeaponConfig : IComponentData, IQueryTypeParameter
 | `public fp AoeImpactDamage` |  |
 | `public fp AoeImpactDamageShare` | a splash instead of a flat area hit. When above 0, a hit deals this share of the shot's own damage to every OTHER valid target within `AoeImpactRadius` of the hit target (the shot's target keeps its full hit), and `AoeImpactDamage` is not used. |
 | `public fp AoeImpactRadius` |  |
+| `public fp BuildingDamageMultiplier` |  |
 | `public fp DamageFp` |  |
 | `public int ImpactEffectId` |  |
 | `public FixedString64Bytes ImpactName` |  |
@@ -908,6 +934,7 @@ public struct WeaponConfig : IComponentData, IQueryTypeParameter
 | `public fp SizeFp` |  |
 | `public int Speed` |  |
 | `public FixedString64Bytes UniqueName` |  |
+| `public fp DamageAgainst(fp damage, bool targetIsBuilding)` |  |
 
 ## WeaponConfigs
 

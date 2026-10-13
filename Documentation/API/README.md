@@ -14,6 +14,7 @@ grep -i ":: .*struct .*Health" Documentation/API/all-members.txt   # find a comp
 |---|---|
 | `INDEX.md` | Every namespace, with its number of types |
 | `<Namespace>.md` | Each type: its declaration (attributes such as `[Save]` and `[UpdateInGroup]`, base types), its members, and summaries |
+| `CHANGES.md` | What changed in the public API since the previous reference (removed, changed, added members), written by the game team's `scripts/mod_api/api_diff.py` at release |
 | `all-members.txt` | One line per type, member and enum value: `Namespace.Type :: signature` |
 | `doc-comments.json` | The summaries, by member; kept so a regeneration without the game's source keeps them |
 

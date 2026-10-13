@@ -226,3 +226,41 @@ public struct SerializableLootBoxChunkData.SerializableInt2
 | `public SerializableInt2(int2 value)` |  |
 | `public int2 ToInt2()` |  |
 
+## StoryCinematicEvents
+
+```csharp
+public static class StoryCinematicEvents
+```
+
+| Member | Summary |
+|---|---|
+| `public static Action<StoryCinematicRequest> Raised` |  |
+| `public static void Raise(in StoryCinematicRequest request)` |  |
+
+## StoryCinematicKind
+
+```csharp
+public enum StoryCinematicKind : byte
+```
+
+Values: `None = 0`, `LuminaeIntro = 1`, `LuminaeOrbs = 2`, `AncientGuardian = 3`
+
+## StoryCinematicRequest
+
+```csharp
+public struct StoryCinematicRequest
+```
+
+| Member | Summary |
+|---|---|
+| `public float3 Focus` |  |
+| `public StoryCinematicKind Kind` |  |
+| `public Entity Second` |  |
+| `public float3 SecondPosition` |  |
+| `public float SecondRadius` |  |
+| `public bool SecondRevealedNow` |  |
+| `public Entity Subject` |  |
+| `public float3 SubjectPosition` |  |
+| `public float SubjectRadius` |  |
+| `public bool HasSecond { get; }` |  |
+

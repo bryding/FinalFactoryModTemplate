@@ -86,6 +86,7 @@ public struct AttackPriorityCalculatorSystem.AttackScheduleJob : IJob
 | `public ComponentLookup<AsteroItem> AsteroItems` |  |
 | `public NativeReference<int> AttackCountOverride` |  |
 | `public EntityArchetype AttackEventArchetype` |  |
+| `public int AttackFrequency` |  |
 | `public int AttackerCountMultiplier` | The saved new-game attacker-count setting, in percent. |
 | `public BufferLookup<EnemyCampStation> CampStations` |  |
 | `public NativeArray<Entity> Camps` |  |
@@ -104,7 +105,7 @@ public struct AttackPriorityCalculatorSystem.AttackScheduleJob : IJob
 | `public uint MasterSeed` |  |
 | `public const int MaxShipsPerAttack = 300` | No attack fields more ships than this, whatever the curve and settings: the advanced attacker-count slider reaches 1000%, which would otherwise allow 1,000. |
 | `public ComponentLookup<EnemyCampMetaData> MetaDataLookup` |  |
-| `public static void BuildGreedyComposition(NativeList<AttackPriorityCalculatorSystem.AttackScheduleJob.UnitSignalCost> sortedUnits, fp availableBank, int unitLimit, out SmallBuffer<UnitCountData> composition, out fp spent)` |  |
+| `public static void BuildComposition(NativeList<AttackPriorityCalculatorSystem.AttackScheduleJob.UnitSignalCost> sortedUnits, fp availableBank, int unitLimit, out SmallBuffer<UnitCountData> composition, out fp spent)` |  |
 | `public static fp EvaluateCurve(fp x, SmallBuffer<FixedPointXyWrapper> points)` | Piecewise-linear curve through points sorted by X, flat outside them. |
 | `public void Execute()` |  |
 | `public static int GetWaveUnitLimit(fp globalSignal, SmallBuffer<FixedPointXyWrapper> attackerCountBySignal, fp configMultiplier, int attackerCountMultiplier)` | The most ships one attack may field. This is the attack size the game had before the camp economy: `FFCore.GlobalConfig.CombatSettings.AttackerCountBySignal` at the current global signal, times the config multiplier and the new-game attacker-count setting in percent, never above `MaxShipsPerAttack`. Pacifist (0) fields no ships. An empty curve leaves only the ceiling. |
@@ -251,8 +252,11 @@ Pure launch-schedule math shared by camp placement, legacy-save restoration, and
 
 | Member | Summary |
 |---|---|
+| `public const int MaxAttackFrequency = 1000` |  |
+| `public const int StandardAttackFrequency = 100` |  |
 | `public const int WindowsPerSimulationSecond = 8` |  |
 | `public static int DeriveNextWindow(uint masterSeed, int3 campTile, int currentWindow, in CombatSettings combatSettings)` |  |
+| `public static int DeriveNextWindow(uint masterSeed, int3 campTile, int currentWindow, in CombatSettings combatSettings, int attackFrequencyPercent)` |  |
 | `public static int GetCurrentWindow(fp simulationElapsedTime)` |  |
 
 ## EnemyCount
@@ -279,6 +283,28 @@ public class EnemyCountSystem : FinalFactorySystemBase
 | `protected override void OnCreateForCompiler()` |  |
 | `protected override void PerformSystemUpdate()` |  |
 | `public override void PostConfigLoadHook()` |  |
+
+## EnemyRaidTelemetrySystem
+
+```csharp
+[UpdateInGroup(typeof(FFFixedLateGroup))] [UpdateAfter(typeof(AttackingShipSpawnerSystem))] [UpdateBefore(typeof(AttackEventCleanupSystem))]
+public class EnemyRaidTelemetrySystem : FinalFactorySystemBase
+```
+
+| Member | Summary |
+|---|---|
+| `public const string Arg = "-ffEnemyTelemetry"` |  |
+| `public const int CensusSeconds = 300` |  |
+| `public const string CensusTag = "[EnemyCensus]"` |  |
+| `public static bool Enabled` |  |
+| `public const string ExpansionTag = "[EnemyExpansion]"` |  |
+| `public const string RaidTag = "[EnemyRaid]"` |  |
+| `public EnemyRaidTelemetrySystem()` |  |
+| `public static int CountShips(in AttackEvent attackEvent)` |  |
+| `public static string FormatRaid(fp now, in AttackEvent attackEvent, in ItemConfig itemConfig)` |  |
+| `protected override void OnCreate()` |  |
+| `protected override void OnCreateForCompiler()` |  |
+| `protected override void PerformSystemUpdate()` |  |
 
 ## GlobalSignalData
 

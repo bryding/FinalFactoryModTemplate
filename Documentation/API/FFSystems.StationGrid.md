@@ -212,3 +212,20 @@ Republishes every StationGrid's outputs in ONE update on the first fixed tick af
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
 
+## StationSignalPotential
+
+```csharp
+public struct StationSignalPotential
+```
+
+| Member | Summary |
+|---|---|
+| `public bool HasThruster` |  |
+| `public int MovementStructures` |  |
+| `public fp RatedDampening` |  |
+| `public fp RatedEmitters` |  |
+| `public void Add(fp ratedEmission, fp ratedDampening, bool isThruster, bool addsMovementSignal)` |  |
+| `public static StationSignalPotential Gather(DynamicBuffer<StationGridItem> gridItems, NativeArray<PowerConfig> powerConfigs, NativeArray<PlaceableConfig> placeableConfigs)` |  |
+| `public readonly fp MaxEmitted(fp stabilityPenalty)` |  |
+| `public readonly fp MaxSignal(fp stabilityPenalty)` |  |
+

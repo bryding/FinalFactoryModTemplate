@@ -75,3 +75,13 @@ public struct PhysicsChildTransformUpdateSystem : ISystem, ISystemCompilerGenera
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
 
+## TransformWriteMode
+
+```csharp
+public static class TransformWriteMode
+```
+
+| Member | Summary |
+|---|---|
+| `public static readonly SharedStatic<bool> Legacy` |  |
+

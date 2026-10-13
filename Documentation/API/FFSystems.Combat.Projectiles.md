@@ -27,8 +27,9 @@ public struct KnnProjectileCollisionSystem : ISystem, ISystemCompilerGenerated
 | Member | Summary |
 |---|---|
 | `public static void CreateAggroMarker(Entity source, float3 markerPosition, Entity hitEntity, EntityArchetype aggroMarker, ComponentLookup<AsteroItem> asteroItems, NativeArray<FleetConfig> fleetConfigs, EntityCommandBufferWrapper cb)` |  |
+| `public static EntityArchetype CreateAggroMarkerArchetype(EntityManager entityManager)` |  |
 | `public static EntityArchetype CreateAoeImpactArchetype(EntityManager entityManager)` | The archetype every area hit (`AoeImpactDamage`) is created with. |
-| `public static Entity CreateAoeImpactEntity(Entity source, float3 position, fp damage, EntityArchetype aoeImpactArchetype, float range, bool isEnemy, EntityCommandBufferWrapper cb, Entity excludedTarget = default(Entity), bool validTargetsOnly = false)` |  |
+| `public static Entity CreateAoeImpactEntity(Entity source, float3 position, fp damage, EntityArchetype aoeImpactArchetype, float range, bool isEnemy, EntityCommandBufferWrapper cb, Entity excludedTarget = default(Entity), bool validTargetsOnly = false, fp buildingDamageMultiplier = default(fp))` |  |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |

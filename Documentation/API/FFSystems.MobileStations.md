@@ -77,6 +77,20 @@ Rebuilds the hauler of any station whose structures point at a hauler that no lo
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState state)` |  |
 
+## LandingZoneBlockedAlertSystem
+
+```csharp
+[UpdateInGroup(typeof(FFFixedPreTransformGroup))]
+public struct LandingZoneBlockedAlertSystem : ISystem, ISystemCompilerGenerated
+```
+
+| Member | Summary |
+|---|---|
+| `public const float LingerSeconds = 2` |  |
+| `public void OnCreate(ref SystemState systemState)` |  |
+| `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnUpdate(ref SystemState systemState)` |  |
+
 ## MobileStationGhostRiders
 
 ```csharp
@@ -162,6 +176,34 @@ Recalculates the Haulers when something changed (due to Hauler Reference Deletio
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState state)` |  |
 
+## PastedStationNaming
+
+```csharp
+public static class PastedStationNaming
+```
+
+| Member | Summary |
+|---|---|
+| `public const string DefaultName = "{0} (Copy)"` |  |
+| `public const string DefaultNumbered = "{0} (Copy {1})"` |  |
+| `public static string Fit(string source, string around)` |  |
+| `public static bool IsUsableName(string format)` |  |
+| `public static bool IsUsableNumbered(string format)` |  |
+| `public static FixedString32Bytes NameFor(string source, string nameFormat, string numberedFormat, Func<string, bool> isTaken)` |  |
+
+## PastedStationSettingsSystem
+
+```csharp
+[UpdateInGroup(typeof(FFFixedPostTransformGroup))] [UpdateAfter(typeof(MoveableStructurePostConnectionSystem))] [UpdateAfter(typeof(CorelessStationSettingsSystem))]
+public struct PastedStationSettingsSystem : ISystem, ISystemCompilerGenerated
+```
+
+| Member | Summary |
+|---|---|
+| `public void OnCreate(ref SystemState state)` |  |
+| `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnUpdate(ref SystemState state)` |  |
+
 ## PowerAggregatorDeletionSystem
 
 ```csharp
@@ -198,6 +240,16 @@ public struct RocketAdapterFuelConsumerSystem.RocketAdapterFuelConsumerJob : IJo
 |---|---|
 | `public ComponentLookup<StationGrid> StationGridLookup` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
+
+## StationBlueprintLinkOperations
+
+```csharp
+public static class StationBlueprintLinkOperations
+```
+
+| Member | Summary |
+|---|---|
+| `public static void Set(EntityManager em, Entity hauler, ulong key, bool updateBlueprint)` |  |
 
 ## StationGhostRiderFollowSystem
 

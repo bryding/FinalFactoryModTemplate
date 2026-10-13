@@ -568,6 +568,7 @@ Installs `PhysicsWorldRateManager` on Unity's `FixedStepSimulationSystemGroup`, 
 
 | Member | Summary |
 |---|---|
+| `public static bool PeriodicRebuildsWithHeartbeats { get; set; }` |  |
 | `public PhysicsWorldCadenceSystem()` |  |
 | `protected override void OnCreate()` |  |
 | `protected override void OnUpdate()` |  |
@@ -585,7 +586,7 @@ An `IRateManager` for Unity's `FixedStepSimulationSystemGroup` — which in this
 |---|---|
 | `public float Timestep { get; set; }` |  |
 | `public PhysicsWorldRateManager(float timestep)` |  |
-| `public PhysicsWorldRateManager(float timestep, EntityQuery heartbeatQuery)` |  |
+| `public PhysicsWorldRateManager(float timestep, EntityQuery heartbeatQuery, bool periodicWithHeartbeats = false)` |  |
 | `public void AdoptCadenceStateFrom(PhysicsWorldRateManager previous)` | Adopts `previous`'s cadence clock so a replacement manager continues where the old one left off instead of restarting cold. |
 | `public void InvalidateHeartbeatFreshness()` |  |
 | `public bool ShouldGroupUpdate(ComponentSystemGroup group)` |  |

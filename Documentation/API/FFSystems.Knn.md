@@ -110,6 +110,7 @@ The `ComponentLookup`-shaped sibling of `KnnChunkPoses`: the world position of o
 | `public static EntityWorldPose Create(ref SystemState state)` |  |
 | `public bool HasComponent(Entity entity)` | Whether the entity has a world pose at all — the same probe the replaced `LocalToWorld` checks made. |
 | `public float3 Position(Entity entity)` | World-space position; the caller must have checked `HasComponent`. |
+| `public static bool TryPositionOf(EntityManager em, Entity entity, out float3 position)` |  |
 | `public void Update(ref SystemState state)` |  |
 
 ## FriendlyKnnDisablerSystem
@@ -165,7 +166,7 @@ The one place the legacy KNN path decides WHERE an entity is — for the tree's 
 
 ```csharp
 [UpdateInGroup(typeof(FFFixedEarlyGroup), OrderFirst = true)] [UpdateAfter(typeof(SimulationClockSystem))]
-public class KnnSystem : FinalFactorySystemBase
+public class KnnSystem : KnnVisionRefresh
 ```
 
 Builds the two KD-trees (fleet, enemy) and refreshes every vision holder's 8-nearest-within-range neighbor list. CADENCE IS A PROPERTY OF THE GROUP: `FFFixedEarlyGroup` is heartbeat-cadenced by `FinalFactorySimulationRateManager`, so this system runs exactly once per simulation advance and not at all on a frame without one — the same mechanism every other fixed system gets from its group.
@@ -173,26 +174,49 @@ Builds the two KD-trees (fleet, enemy) and refreshes every vision holder's 8-nea
 | Member | Summary |
 |---|---|
 | `public KnnSystem()` |  |
-| `protected override void OnCreate()` |  |
-| `protected override void OnDestroy()` |  |
-| `protected override void OnStartRunning()` | The rollback gate re-evaluated on EVERY resume, not just at world creation. `OnCreate` runs once per World, so its verdict was silently overridden by anything that enabled this system later — `SystemManager`'s blanket `"FFSystems."` substring pass being the one that actually happened. Unity calls this whenever a stopped system resumes, which is exactly the moment the verdict has to hold again. |
-| `protected override void PerformSystemUpdate()` |  |
-| `public bool TryGetBuildWitness(bool enemyFamily, out NativeArray<KnnSystem.KnnSourceEntry> sources, out int sourceCount, out NativeArray<KnnVisionWitness> witness, out int visionCount)` | The ACTUAL retained build input of the last refresh — not an `EntityManager` re-query. |
 
-## KnnSystem.KnnSourceEntry
+## KnnTransientHitVisionSystem
 
 ```csharp
-public struct KnnSystem.KnnSourceEntry : IComparable<KnnSourceEntry>
+[UpdateInGroup(typeof(FFFixedLateGroup), OrderFirst = true)]
+public class KnnTransientHitVisionSystem : KnnVisionRefresh
 ```
 
-One gathered source: its cross-peer ordering key plus the two values the tree and the assign job actually consume. Sorted as a unit so the point array and the entity array are permuted together and `AssignVisionJob`'s index-into-Points/Entities mapping stays exact.
+| Member | Summary |
+|---|---|
+| `public KnnTransientHitVisionSystem()` |  |
+| `protected override EntityQuery CreateExcludedVisionQuery<T>() where T : struct, IComponentData` |  |
+| `protected override EntityQuery CreateVisionQuery<T>() where T : struct, IComponentData` |  |
+
+## KnnVisionRefresh
+
+```csharp
+public abstract class KnnVisionRefresh : FinalFactorySystemBase
+```
+
+| Member | Summary |
+|---|---|
+| `protected KnnVisionRefresh()` |  |
+| `protected virtual EntityQuery CreateExcludedVisionQuery<T>() where T : struct, IComponentData` |  |
+| `protected virtual EntityQuery CreateVisionQuery<T>() where T : struct, IComponentData` |  |
+| `protected override void OnCreate()` |  |
+| `protected override void OnDestroy()` |  |
+| `protected override void OnStartRunning()` |  |
+| `protected override void PerformSystemUpdate()` |  |
+| `public bool TryGetBuildWitness(bool enemyFamily, out NativeArray<KnnVisionRefresh.KnnSourceEntry> sources, out int sourceCount, out NativeArray<KnnVisionWitness> witness, out int visionCount)` |  |
+
+## KnnVisionRefresh.KnnSourceEntry
+
+```csharp
+public struct KnnVisionRefresh.KnnSourceEntry : IComparable<KnnSourceEntry>
+```
 
 | Member | Summary |
 |---|---|
 | `public Entity Entity` |  |
 | `public KnnSourceOrderKey Key` |  |
 | `public float3 Position` |  |
-| `public int CompareTo(KnnSystem.KnnSourceEntry other)` |  |
+| `public int CompareTo(KnnVisionRefresh.KnnSourceEntry other)` |  |
 
 ## LegacyKnnLoadPathWarmup
 

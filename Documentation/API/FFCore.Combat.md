@@ -291,6 +291,7 @@ Package-neutral 256-bit structural identity for C3 KNN ordering and fingerprints
 | `public bool Equals(DeterministicSpatialKey other)` |  |
 | `public override bool Equals(object obj)` |  |
 | `public override int GetHashCode()` |  |
+| `public static DeterministicSpatialKey PackDynamicObject(CombatSpatialKeyKind kind, ulong objectId)` |  |
 | `public static DeterministicSpatialKey PackProjectile(ulong emitterObjectId, ulong shotOrdinal, uint patternSubordinal)` | The projectile packing with NO validation, so a Burst job can call it — the `PackStaticGridObject` shape, extracted for the same reason and on the same evidence: `CreateProjectile` throws a formatted `ArgumentException` on the reserved zero emitter, which Burst cannot compile, and the T029 `CanonicalDynamicKey` precedent showed that the alternative — a second hand-typed copy of the bit layout — is… |
 | `public static DeterministicSpatialKey PackStaticGridObject(ulong ownerObjectId, int itemIdentity, int3 gridCoordinate)` | The static-grid packing with NO validation, so a Burst job can call it. |
 | `public override string ToString()` |  |

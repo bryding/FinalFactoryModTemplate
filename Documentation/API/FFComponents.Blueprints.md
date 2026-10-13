@@ -86,6 +86,17 @@ This is not really only for Construction tasks. Used for Supply Bots and Constru
 | `public int Item` |  |
 | `public TaskType TaskType` |  |
 
+## ConstructionTaskRequester
+
+```csharp
+[Save]
+public struct ConstructionTaskRequester : IComponentData, IQueryTypeParameter
+```
+
+| Member | Summary |
+|---|---|
+| `public Entity Player` |  |
+
 ## DysonSegmentPlacementMarker
 
 ```csharp

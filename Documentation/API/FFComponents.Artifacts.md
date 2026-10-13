@@ -127,6 +127,30 @@ An activation that has been mined but has not taken effect yet: the burst is pla
 | `public readonly PendingActivationReward GetReward(int index)` |  |
 | `public void SetReward(int index, PendingActivationReward reward)` |  |
 
+## SharedMiningHolder
+
+```csharp
+[Save]
+public struct SharedMiningHolder : IBufferElementData
+```
+
+| Member | Summary |
+|---|---|
+| `public FixedString128Bytes Guid` |  |
+
+## SharedMiningProgress
+
+```csharp
+[Save]
+public struct SharedMiningProgress : IComponentData, IQueryTypeParameter
+```
+
+| Member | Summary |
+|---|---|
+| `public fp EffortSeconds` |  |
+| `public static readonly fp SoloMiningSeconds` |  |
+| `public static float Fraction(fp effortSeconds)` |  |
+
 ## StructureActivationEffect
 
 ```csharp

@@ -33,11 +33,17 @@ public struct CombatSettings
 | `public ushort EnemyChunkRadius` |  |
 | `public EnemyDamageZoneSettings EnemyDamageToPlayer` |  |
 | `public float EnemyDifficultyCoefficient` |  |
+| `public fp ExpansionCheckSeconds` |  |
+| `public SmallBuffer<FixedPointXyWrapper> ExpansionCooldownMinutesBySignal` |  |
+| `public int ExpansionMinChunksFromStructures` |  |
+| `public int ExpansionOriginCamps` |  |
 | `public fp GameDifficultyCampGrowthSlopeFP` |  |
 | `public float HealthMultiplierDistanceCoefficient` |  |
 | `public fp LaunchIntervalMaxSeconds` |  |
 | `public fp LaunchIntervalMinSeconds` |  |
 | `public int MaxCampsInChunk` |  |
+| `public int MaxCampsNearFactory` |  |
+| `public int MaxExpansionDistanceChunks` |  |
 | `public float MaxSpeed` |  |
 | `public int MinElapsedTimeBeforeAttacks` |  |
 | `public int MinGlobalSignalRequiredForAttacksToStart` |  |

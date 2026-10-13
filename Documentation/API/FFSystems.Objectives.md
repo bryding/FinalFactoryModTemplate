@@ -23,3 +23,16 @@ public class ObjectivesTrackingSystem : NoUpdateSystem, ISerializableSystem, IGa
 | `public object Serialize()` |  |
 | `public void WriteState(BinaryWriter writer, object state)` |  |
 
+## StructuresPlacedStat
+
+```csharp
+public static class StructuresPlacedStat
+```
+
+| Member | Summary |
+|---|---|
+| `public static int CountLifetime(NativeParallelHashMap<FixedString128Bytes, int> itemsPlaced)` |  |
+| `public static int CountStanding(EntityManager em)` |  |
+| `public static bool IsBuiltPlayerStructure(in Placeable placeable, bool isUnderConstruction, bool isBlueprint)` |  |
+| `public static int Total(NativeParallelHashMap<FixedString128Bytes, int> itemsPlaced, EntityManager em)` |  |
+
