@@ -191,6 +191,17 @@ simulation runs at 16 heartbeats a second regardless of frame rate).
 
 ## Recipes for common tasks
 
+- **Console commands (Quantum Console).** A mod can add commands to the game's developer console: a `static` method
+  with `[Command("yourmod-name")]` (`using QFSW.QC;`, in `FFMod.asmdef`'s precompiled references). Measured (w1227): the
+  game's console ran a mod's command in a 0.50.0.103 Windows player and printed its return value. Running any command
+  switches off achievements for that save, and a command runs on this peer only, so it must not change simulation state
+  (send a network operation instead). `Assets/Scripts/Examples/ConsoleCommands/ModCommands.cs`.
+- **Change a technology the game already has** (`Assets/Scripts/Examples/ChangeTechnology/`): `AddTechnologies` only
+  adds; edit the game's own `TechnologyConfig` from `PostInitializationHook` through
+  `TechnologyLoader.Instance.TechnologyConfigs`.
+- **Find the children of your custom entities** (`Assets/Scripts/Examples/ChildEntities/`): names are gone in a built
+  player, so walk the prefab's `LinkedEntityGroup` and pick a child by a component only it carries
+  (`ChildEntities.ChildrenWith<T>`), in `PostInitializationHook`, on the prefab.
 - **Check names before the game does.** Recipe items, technology names and research types must be
   the game's exact English names. They are the `Key` column of
   `<Final Factory>/Localization/LocalizationMasterTable_en.csv`; grep it
@@ -330,6 +341,7 @@ when it or the line before carries a `// mp-safe: <reason>` comment.
 | `Assets/Scripts/UserMod.cs` | `IUserMod` — mod identity |
 | `Assets/Scripts/UserModLoader.cs` | `IUserModLoader` — entity configs, tech, config edits |
 | `Assets/Scripts/Systems/` | DOTS systems added by the mod |
+| `Assets/Scripts/Examples/ConsoleCommands/`, `ChangeTechnology/`, `ChildEntities/` | Small examples: a console command, editing an existing technology, finding the children of a custom entity's prefab |
 | `Assets/Scripts/Examples/RepairBeacon/` | The multiplayer-safe example: a `[Save]` component, a heartbeat system, a player action, a code-built UI panel |
 | `Documentation/API/` | Generated reference of the game's public mod-facing API (`README.md` there explains it) |
 | `Tools/` | `compile-check.sh`, `check-mp-safety.sh`, `generate-api-reference.sh` and the generator's source |

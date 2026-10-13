@@ -5,6 +5,7 @@ Generated from the game's assemblies for Final Factory 0.50.0.103 by `Tools/gene
 | Namespace | Types |
 |---|---|
 | [(global)](global.md) | 1 |
+| [Behaviours.Research](Behaviours.Research.md) | 1 |
 | [FFComponents.Abduction](FFComponents.Abduction.md) | 6 |
 | [FFComponents.Abilities](FFComponents.Abilities.md) | 25 |
 | [FFComponents.Abilities.CastMarkers](FFComponents.Abilities.CastMarkers.md) | 3 |
