@@ -189,5 +189,5 @@ Generated from the game's assemblies for Final Factory 0.50.0.103 by `Tools/gene
 | [FFSystems.UnitStateMachine](FFSystems.UnitStateMachine.md) | 18 |
 | [FFSystems.Utils](FFSystems.Utils.md) | 8 |
 | [FFTechnology](FFTechnology.md) | 9 |
-| [NetworkOperations.Settings](NetworkOperations.Settings.md) | 4 |
+| [NetworkOperations.Settings](NetworkOperations.Settings.md) | 5 |
 | [Unity.Mathematics.FixedPoint](Unity.Mathematics.FixedPoint.md) | 14 |
