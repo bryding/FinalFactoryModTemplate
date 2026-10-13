@@ -42,6 +42,39 @@ public struct EnemyCampCleanupSystem : ISystem, ISystemCompilerGenerated
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
 
+## EnemyCampExpansionSystem
+
+```csharp
+[UpdateInGroup(typeof(FFFixedLateGroup))] [UpdateAfter(typeof(EnemyCampEconomySystem))]
+public class EnemyCampExpansionSystem : FinalFactorySystemBase
+```
+
+| Member | Summary |
+|---|---|
+| `public static int SettledCount` |  |
+| `public EnemyCampExpansionSystem()` |  |
+| `public static int ChebyshevToNearest(int2 chunk, NativeList<int2> others)` |  |
+| `public static fp ExpansionChance(fp globalSignal, int campDensity, in CombatSettings combat)` |  |
+| `public static NativeList<int2> FactoryChunks(EntityManager entityManager, EntityQuery stationGrids, NativeList<int2> signalChunks)` |  |
+| `public static bool IsEnabled(in GameplaySettings settings, in MapGenerationData mapData, in CombatSettings combat)` |  |
+| `protected override void OnCreate()` |  |
+| `protected override void OnCreateForCompiler()` |  |
+| `protected override void PerformSystemUpdate()` |  |
+| `public static bool TryGetNewWindow(fp now, fp cadence, fp checkSeconds, out int window)` |  |
+| `public static bool TryPickChunk(NativeList<int2> grids, NativeList<EnemyCampExpansionSystem.CampSite> camps, NativeList<int2> players, FastLookupList<int2> explored, in CombatSettings combat, ref Random random, out int2 chunk)` |  |
+| `public static bool TryPickChunk(NativeList<int2> grids, NativeList<int2> structures, NativeList<EnemyCampExpansionSystem.CampSite> camps, NativeList<int2> players, FastLookupList<int2> explored, in CombatSettings combat, ref Random random, out int2 chunk, out int nearFactory)` |  |
+
+## EnemyCampExpansionSystem.CampSite
+
+```csharp
+public struct EnemyCampExpansionSystem.CampSite
+```
+
+| Member | Summary |
+|---|---|
+| `public int2 Chunk` |  |
+| `public int3 Tile` |  |
+
 ## EnemyCampIdleCleanupSystem
 
 ```csharp
@@ -72,6 +105,8 @@ public struct EnemyCampPlacementJob : IJob
 | `public CombatSettings Combat` |  |
 | `public int CurrentLaunchWindow` |  |
 | `public NativeParallelHashMap<int3, Entity> EntityGrid` |  |
+| `public bool Expansion` |  |
+| `public int ExpansionWindow` |  |
 | `public uint Seed` |  |
 | `public long SimulationTimeRaw` | Raw deterministic simulation time of the generating heartbeat. |
 | `public bool StampCombatIdentity` | 055 T026(c): camps are combat producers (the enemy attack spawner's ships take the camp's object id as provenance), so a camp's birth stamps `PendingCombatIdentity` for the serial assigner to drain. False in worlds without `FFTimeData` (minimal fixtures): the camp deterministically spawns unstamped and the T027 migration heals it. |

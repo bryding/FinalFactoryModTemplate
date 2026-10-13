@@ -242,7 +242,8 @@ The `LinearMotion` integration step itself, extracted from `LinearMotionSystem.L
 | `public const float RotationInterpolationRate = 15` | How fast a mover's presentation rotation chases its heading: the interpolation factor is `dt * this`, so the turn is rate-invariant in simulated time even though a single heartbeat's share is not (15 UPS is the crossover above which it snaps — `CombatLinearMotionCharacterizationTest.HeadingSnapsWhenTheHeartbeatIsLongerThanOneFifteenthOfASecond`). |
 | `public const float TangentSlideSpeed = 60` | The tangential slide speed while deflecting around a world obstacle: the historic 1 u-per-60-UPS-tick unit-normal step, now dt-invariant. |
 | `public const float WorldCollisionLookaheadSeconds = 0.016666668` | The world-collision avoidance margin, expressed in seconds of travel so it is heartbeat- rate-invariant: one tick at the 60 UPS the avoidance constants were tuned at. |
-| `public static void Move(Entity entity, ref LinearMotion linearMotion, ref LocalTransform localTransform, bool isPlayer, float dt, in CollisionWorld collisionWorld, in CollisionFilter linearMotionCollisionFilter, in ComponentLookup<LocalToWorld> allLocalToWorlds, in ComponentLookup<Player> players, in ComponentLookup<ColliderParent> colliderParents, in ComponentLookup<FleetIgnoreColliderMarker> allFleetIgnoreCollisionMarkers, bool resolvePlayerHitsToSimulation)` |  |
+| `public static void Move(Entity entity, ref LinearMotion linearMotion, ref LocalTransform localTransform, bool isPlayer, float dt, in SimCollisionWorld collisionWorld, in CollisionFilter linearMotionCollisionFilter, in ComponentLookup<LocalToWorld> allLocalToWorlds, in ComponentLookup<Player> players, in ComponentLookup<ColliderParent> colliderParents, in ComponentLookup<FleetIgnoreColliderMarker> allFleetIgnoreCollisionMarkers, bool resolvePlayerHitsToSimulation)` |  |
+| `public static int SlideSide(float3 dp, float3 directionToCenter)` |  |
 
 ## LinearMotionSystem
 
@@ -258,6 +259,7 @@ The heartbeat-cadenced integrator for every `LinearMotion` entity EXCEPT the two
 | `public static CollisionFilter GetCollisionFilterWithoutPlayerPlanes(SelectionRaycastData selectionRayCastData)` |  |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnDestroy(ref SystemState systemState)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
 
 ## LinearMotionSystem.LinearMotionJob
@@ -271,7 +273,7 @@ public struct LinearMotionSystem.LinearMotionJob : IJobChunk
 | `public ComponentLookup<FleetIgnoreColliderMarker> AllFleetIgnoreCollisionMarkers` |  |
 | `public ComponentLookup<LocalToWorld> AllLocalToWorlds` |  |
 | `public ComponentLookup<ColliderParent> ColliderParents` |  |
-| `public CollisionWorld CollisionWorld` |  |
+| `public SimCollisionWorld Collision` |  |
 | `public float DT` |  |
 | `public EntityTypeHandle EntityTypeHandle` |  |
 | `public CollisionFilter LinearMotionCollisionFilter` |  |
@@ -445,11 +447,14 @@ public class SoundEffectSystem : FinalFactorySystemBase
 | Member | Summary |
 |---|---|
 | `public Action<NativeArray<SoundEffect>> OnSoundEffectsPlayed` | Every sound request of this heartbeat, in query order. The listener (SoundEffectController) picks the ones to play with `SelectAudible`. Presentation only. |
+| `public const float ViewMargin = 0.1` |  |
 | `public SoundEffectSystem()` |  |
+| `public static bool IsInView(float3 position, float4x4 worldToClip, float margin)` |  |
 | `protected override void OnCreateForCompiler()` |  |
 | `protected override void PerformSystemUpdate()` |  |
 | `public static void PlaySoundEffect(SoundEffectType type, float3 position, EntityCommandBuffer cb)` | Requests a sound at a world position, played on every peer that runs the caller. |
 | `public static void SelectAudible(NativeArray<SoundEffect> requests, float3 listenerPosition, NativeList<SoundEffect> selected)` | Picks what to play from one heartbeat's requests: one sound per type, the one nearest the listener. A blueprint or a bot wave emits one request per building, and they used to play as a single sound (only the first request); now they are positional (U9), so the one kept is the one this player can hear best, not whichever a far-away player happened to emit first. Ties keep the earlier request. |
+| `public static void SelectAudible(NativeArray<SoundEffect> requests, float3 listenerPosition, NativeList<SoundEffect> selected, float4x4 worldToClip, bool gateByView)` |  |
 
 ## TimeSystem
 

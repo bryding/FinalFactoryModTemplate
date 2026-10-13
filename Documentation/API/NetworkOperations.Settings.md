@@ -45,7 +45,7 @@ public enum StructureSettingKind
 
 Identifies which structure setting a `StructureSettingPayload` carries and therefore which applier mutates the target (see `StructureSettingAppliers`). Values are explicit and WIRE-STABLE: they travel in serialized payloads between peers, so never renumber or reuse a value. Adding a setting = new member here + payload class + applier + EditMode test — never a new `NetworkGameOperationType` member.
 
-Values: `FilterConfig = 0`, `SplitterPriority = 1`, `RequesterConfig = 2`, `RequesterItems = 3`, `RequesterCargoHold = 4`, `SpawnerChestItem = 5`, `InventorySlotsDisabled = 6`, `ExplorationCenterConfig = 7`, `MassDriverTarget = 8`, `PowerDistributorTarget = 9`, `StructureName = 10`, `HaulerEnabled = 11`, `DefensePlatformRange = 12`, `InserterRange = 13`, `LightConfig = 14`, `MassDriverConfig = 15`, `FollowTarget = 16`, `JunctionSideLevels = 17`
+Values: `FilterConfig = 0`, `SplitterPriority = 1`, `RequesterConfig = 2`, `RequesterItems = 3`, `RequesterCargoHold = 4`, `SpawnerChestItem = 5`, `InventorySlotsDisabled = 6`, `ExplorationCenterConfig = 7`, `MassDriverTarget = 8`, `PowerDistributorTarget = 9`, `StructureName = 10`, `HaulerEnabled = 11`, `DefensePlatformRange = 12`, `InserterRange = 13`, `LightConfig = 14`, `MassDriverConfig = 15`, `FollowTarget = 16`, `JunctionSideLevels = 17`, `CircuitConfig = 18`, `SpawnerChestPower = 19`, `ArmorColor = 20`
 
 ## StructureSettingsDispatch
 
@@ -58,6 +58,7 @@ The ONE entry point panels (and `ffauto:setting.*` automation commands) use to c
 | Member | Summary |
 |---|---|
 | `public static void DispatchAcknowledgeDeployedShip()` | Dispatches the panel's spawn acknowledgement (Deployed → None) for the local player. |
+| `public static void DispatchArmorColor(Entity target, uint color)` |  |
 | `public static void DispatchDeployPlayerCraftedShip(int shipItemId)` | Dispatches "my player-crafter finished a ship — deploy it". The ship id is the crafting queue's completed item (client-local UI state the host cannot see; it is validated against the shared config host-side). |
 | `public static void DispatchDeployStructureCraftedShip(Entity crafterStructure)` | Dispatches a fleet-transfer deploy of the completed ship waiting in a STRUCTURE crafter; the host bakes the ship id from the crafter's authoritative recipe. |
 | `public static void DispatchFollowTarget(Entity target, bool follow)` | "Follow destination" for a mass driver or a power distributor: the Follow toggle of the target panel and the settings paste. |
@@ -77,4 +78,5 @@ The ONE entry point panels (and `ffauto:setting.*` automation commands) use to c
 | `public static void DispatchResearchQueueMove(string techName, int targetLevel, int fromIndex, int toIndex)` | Dispatches a research-queue reorder: the entry (`techName`, `targetLevel`) the sender sees at `fromIndex` should end at `toIndex`. The op is skipped on every peer if the queue changed under it. |
 | `public static void DispatchSetting(StructureSettingKind kind, Entity target, object innerPayload)` | Dispatches a setting change for a placeable target entity (the common panel case — the panel already holds the entity; its CenterTile becomes the peer-stable key, re-validated and re-baked host-side; `StructureSettingAppliers.DispatchKey` has the two kinds of exception). |
 | `public static void DispatchSetting(StructureSettingKind kind, int3 targetTile, object innerPayload)` | Dispatches a setting change for a placeable target entity (the common panel case — the panel already holds the entity; its CenterTile becomes the peer-stable key, re-validated and re-baked host-side; `StructureSettingAppliers.DispatchKey` has the two kinds of exception). |
+| `public static void DispatchSpawnerChestPower(Entity target, bool powerOn)` |  |
 

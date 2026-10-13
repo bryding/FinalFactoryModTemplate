@@ -23,6 +23,7 @@ A one-heartbeat area hit at its `LocalTransform`: `AoeImpactDamageSystem` deals 
 
 | Member | Summary |
 |---|---|
+| `public fp BuildingDamageMultiplier` |  |
 | `public fp Damage` |  |
 | `public Entity ExcludedTarget` | the shot's own target, already hit in full; a splash (a share of the shot's damage, `WeaponConfig.AoeImpactDamageShare`) spares it. `Entity.Null` for a flat area hit. |
 | `public Entity SourceEntity` |  |
@@ -1612,7 +1613,7 @@ public class ShooterBaker : Baker<ShooterAuthoring>
 public enum Source
 ```
 
-Values: `Other = 0`, `Projectile = 1`, `SelfDestruct = 2`, `Comet = 3`, `TransmitterBeam = 4`, `BlackHole = 5`, `Overheat = 6`, `Laser = 7`, `AsteroidLow = 8`, `ProjectileImpactAoe = 9`, `Repair = 10`, `HeatDamage = 11`
+Values: `Other = 0`, `Projectile = 1`, `SelfDestruct = 2`, `Comet = 3`, `TransmitterBeam = 4`, `BlackHole = 5`, `Overheat = 6`, `Laser = 7`, `AsteroidLow = 8`, `ProjectileImpactAoe = 9`, `Repair = 10`, `HeatDamage = 11`, `LandingBlocked = 12`
 
 ## SplashDamageEffect
 

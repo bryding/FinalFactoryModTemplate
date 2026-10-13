@@ -12,6 +12,7 @@ public struct CraftItem : INonExistable
 |---|---|
 | `public int Count` | The immutable base cost of the item. This is the cost of the item before any crafting modifiers are applied. |
 | `public int ItemId` |  |
+| `public bool ScalesWithOutput` |  |
 | `public bool Exists { get; }` |  |
 | `public int GetFinalCost(int craftingModifier)` | In game, players can adjust the crafting cost of items. This method returns the final cost of the item given the crafting modifier. |
 | `public void MakeNonExistent()` |  |
@@ -36,6 +37,17 @@ Mirrors the effective-rate math in CrafterUpdateSystem.UpdateCraftProgress so an
 |---|---|
 | `public static fp ComputeCraftSeconds(fp baseCraftTimeSeconds, fp satisfactionRatio, fp craftSpeedModifier, fp overdriverBonus)` | How long one craft takes right now: the recipe's craft time over the same speed factor, the time CrafterUpdateSystem's craft progress needs to reach the recipe's BaseCraftTimeFP (UpdateCraftProgress, StartCraftingIfPossible). One craft makes the whole batch (countWhenCrafted items), so this is the batch's time, not an item's. The additional-production timer does not shorten it. |
 | `public static fp ComputeCraftsPerMinute(fp baseCraftTimeSeconds, fp satisfactionRatio, fp craftSpeedModifier, fp overdriverBonus, fp productionMultiplier, fp configProductionBonus, int countWhenCrafted)` |  |
+
+## CraftingCostScale
+
+```csharp
+public static class CraftingCostScale
+```
+
+| Member | Summary |
+|---|---|
+| `public static void MarkIngredients(NativeArray<DynamicConfig> dynamicConfigs, NativeArray<CraftConfigData> craftConfigs)` |  |
+| `public static int Scale(int baseCount, int craftingModifier)` |  |
 
 ## ProductionOutputType
 

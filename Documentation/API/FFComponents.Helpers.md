@@ -16,6 +16,7 @@ public static class InventoryHelper
 | `public static void GetAllItems(in DynamicBuffer<InventorySlot> slots, out NativeParallelHashMap<int, int> items)` |  |
 | `public static int GetCountForItem(int item, in DynamicBuffer<InventorySlot> slots, InventoryMetaData inventoryMetaData, InventoryType inventoryType)` |  |
 | `public static int GetFinalCraftingCost(int baseCount, int craftingModifier)` |  |
+| `public static int GetFinalCraftingCost(int baseCount, int craftingModifier, bool scalesWithOutput)` |  |
 | `public static int GetFirstItemInInventory(Entity entity, InventoryHelper.InventoryNativeContainers inventory, InventoryType type)` |  |
 | `public static int GetFirstItemInInventory(in DynamicBuffer<InventorySlot> slots, in InventoryMetaData inventoryMetaData, InventoryType inventoryType)` |  |
 | `public static int GetFirstItemNotOreComponentIntermediate(DynamicBuffer<InventorySlot> slots, InventoryMetaData metaData, InventoryType inventoryType, NativeArray<AsteroItemConfigData> baseConfig)` |  |
@@ -63,7 +64,9 @@ public struct InventoryHelper.InventoryOrigin
 
 | Member | Summary |
 |---|---|
+| `public bool HasSlotIndex` |  |
 | `public Entity Owner` |  |
+| `public int SlotIndex` |  |
 | `public InventoryType Type` |  |
 
 ## LogisticsBayOutputPortHelper

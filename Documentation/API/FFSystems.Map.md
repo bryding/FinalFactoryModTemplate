@@ -154,6 +154,7 @@ This system is responsible for assigning biomes and generating chunks as the pla
 | Member | Summary |
 |---|---|
 | `public const string EnemyCampItemName = "Enemy Camp"` |  |
+| `public const int FlightChunksPerTick = 1` |  |
 | `public static void GenerateChunk(ref MapGenerationData mapGenerationData, int2 chunk, uint masterSeed, FFGrid gridRO, ItemConfig itemConfig, GameplaySettings gameplaySettings, CombatSettings combatSettings, Entity enemyCampPrefab, int currentLaunchWindow, long simulationTimeRaw, bool stampCombatIdentity, ComponentLookup<Placeable> placeableLookup, EntityCommandBuffer cb, MapItemGridding gridding, bool forceChunkExploration, bool isStartGen, bool instantiateObjects = true)` |  |
 | `public static void GetWorldObjectToSpawn(int2 position, bool instantiateObjects, bool runWorldObjectGeneratorJob, ref MapGenerationData mapGenerationData, uint masterSeed, ItemConfig itemConfig, GameplaySettings gameplaySettings, ComponentLookup<Placeable> placeableLookup, EntityCommandBuffer cb, MapItemGridding gridding)` |  |
 | `public void OnCreate(ref SystemState state)` |  |
@@ -161,7 +162,33 @@ This system is responsible for assigning biomes and generating chunks as the pla
 | `public void OnDestroy(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState state)` |  |
 | `public static Entity ResolveEnemyCampPrefab(in ItemConfig itemConfig)` | Camp-prefab lookup shared by the runtime and new-game generation paths. |
+| `public static bool TryResolveExplorerAnchor(Entity explorer, ComponentLookup<Player> players, ComponentLookup<Placeable> placeables, ComponentLookup<FleetShip> fleetShips, MapGeneratorSystemV2.FlyingStationAnchors flying, out MapGeneratorSystemV2.ExplorerAnchor anchor)` |  |
 | `public static bool TryResolveExplorerChunk(Entity explorer, ComponentLookup<Player> players, ComponentLookup<Placeable> placeables, ComponentLookup<FleetShip> fleetShips, out int2 chunk)` | Resolves a MapExplorer carrier to its deterministic chunk anchor. Players use their fp simulation position, placeables (Exploration Center) their grid tile, and fleet ships (explorer bots) their owner's anchor — a bot's own transform is float formation flight and must not trigger generation. |
+
+## MapGeneratorSystemV2.ExplorerAnchor
+
+```csharp
+public struct MapGeneratorSystemV2.ExplorerAnchor : IEquatable<ExplorerAnchor>
+```
+
+| Member | Summary |
+|---|---|
+| `public int2 Chunk` |  |
+| `public bool InFlight` |  |
+| `public bool Equals(MapGeneratorSystemV2.ExplorerAnchor other)` |  |
+
+## MapGeneratorSystemV2.FlyingStationAnchors
+
+```csharp
+public struct MapGeneratorSystemV2.FlyingStationAnchors
+```
+
+| Member | Summary |
+|---|---|
+| `public ComponentLookup<StationGridReference> GridReferences` |  |
+| `public NativeHashMap<Entity, fp3> PositionByGrid` |  |
+| `public static bool IsLowerPosition(fp3 a, fp3 b)` |  |
+| `public bool TryGetPosition(Entity structure, out fp3 position)` |  |
 
 ## MapItemGridding
 

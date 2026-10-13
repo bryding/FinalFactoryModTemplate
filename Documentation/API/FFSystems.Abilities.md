@@ -70,6 +70,7 @@ public struct FrenzyISystem : ISystem, ISystemCompilerGenerated
 
 | Member | Summary |
 |---|---|
+| `public const int ApproachSpeed = 150` |  |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |

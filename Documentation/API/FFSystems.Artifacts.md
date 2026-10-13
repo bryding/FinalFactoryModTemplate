@@ -24,12 +24,47 @@ public class AncientPortalCollisionSystem : FinalFactorySystemBase
 
 | Member | Summary |
 |---|---|
+| `public const float LookAhead = 10` |  |
+| `public const float PortalColliderReach = 200` |  |
 | `public Action<Entity> PortalOverlapAction` | Fires once per heartbeat with the ancient portal the local player is currently flying into, or `Entity.Null` when it is not in one. The raw state is reported every heartbeat rather than only the moment of entry so consumers can tell "still in the same portal" apart from "flew out and back in again". |
 | `public AncientPortalCollisionSystem()` |  |
 | `public static CollisionFilter GetTriggerCollisionFilter(SelectionRaycastData selectionRaycastData)` |  |
 | `protected override void OnCreate()` |  |
 | `protected override void OnCreateForCompiler()` |  |
+| `protected override void OnDestroy()` |  |
 | `protected override void PerformSystemUpdate()` |  |
+
+## AncientPortalCollisionSystem.PortalBodies
+
+```csharp
+public struct AncientPortalCollisionSystem.PortalBodies
+```
+
+| Member | Summary |
+|---|---|
+| `public ComponentLookup<PhysicsCollider> Colliders` |  |
+| `public BufferLookup<LinkedEntityGroup> Linked` |  |
+| `public ComponentLookup<LocalToWorld> LocalToWorlds` |  |
+| `public ComponentLookup<LocalTransform> LocalTransforms` |  |
+| `public ComponentLookup<PhysicsRenderEntity> RenderEntities` |  |
+| `public Entity FirstPortalOnRay(in RaycastInput ray, NativeArray<Entity> portals)` |  |
+
+## LuminaeStory
+
+```csharp
+public static class LuminaeStory
+```
+
+| Member | Summary |
+|---|---|
+| `public static int CountDiscoveredLuminae(EntityManager em)` |  |
+| `public static bool IsLuminaeStructure(EntityManager em, Entity entity)` |  |
+| `public static Entity NearestOracleToStart(EntityManager em, out int3 tile)` |  |
+| `public static Entity NearestToStart<T>(EntityManager em, out int3 tile) where T : unmanaged, IComponentData` |  |
+| `public static void OnActivationLanded(EntityManager em, Entity structure, in PendingStructureActivation pending)` |  |
+| `public static void OnDiscovered(EntityManager em, NativeList<Entity> discovered)` |  |
+| `public static float RadiusOf(EntityManager em, Entity entity)` |  |
+| `public static int3 TileOf(EntityManager em, Entity entity)` |  |
 
 ## PendingStructureActivationSystem
 

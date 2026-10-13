@@ -11,7 +11,7 @@ public struct BlackHoleDeathSystem : ISystem, ISystemCompilerGenerated
 
 | Member | Summary |
 |---|---|
-| `public const int KillRadius = 86` | World units from the centre at which a black hole kills: the edge of the black disc the player sees. `BlackHoleRaymarch.shader` captures every ray whose impact parameter is under the critical 3√3/2 · r_s, with r_s = `_HorizonRadius` (0.11 of the bounds in `BlackHole.mat`) and the bounds = the prefab Model's 600-unit sphere, radius 300: 2.598 · 0.11 · 300 ≈ 86. |
+| `public const int KillRadius = 150` | World units from the centre at which a black hole kills: the edge of the black disc the player sees. `BlackHoleRaymarch.shader` captures every ray whose impact parameter is under the critical 3√3/2 · r_s, with r_s = `_HorizonRadius` (0.11 of the bounds in `BlackHole.mat`) and the bounds = the prefab Model's 600-unit sphere, radius 300: 2.598 · 0.11 · 300 ≈ 86. |
 | `public static bool IsWithinRadius(fp3 centre, fp3 position, fp radius)` | Strictly inside `radius` of `centre`, in fixed point so every peer decides it the same way. The per-axis reject keeps the squared length far from overflow for distant units. |
 | `public void OnCreate(ref SystemState state)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |

@@ -112,6 +112,19 @@ public struct SingularityStationPowerSystem : ISystem, ISystemCompilerGenerated
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
 
+## SingularityStationSignalEmissionSystem
+
+```csharp
+[UpdateInGroup(typeof(FFFixedPreTransformGroup))] [UpdateAfter(typeof(SingularityStationPowerSystem))]
+public struct SingularityStationSignalEmissionSystem : ISystem, ISystemCompilerGenerated
+```
+
+| Member | Summary |
+|---|---|
+| `public void OnCreate(ref SystemState state)` |  |
+| `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnUpdate(ref SystemState state)` |  |
+
 ## SolarPanelPlacementSystem
 
 ```csharp

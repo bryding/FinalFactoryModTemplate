@@ -72,6 +72,7 @@ The Burst-facing half of trace logging: a SharedStatic table of enabled type has
 
 | Member | Summary |
 |---|---|
+| `public static readonly SharedStatic<TraceRuntime.TraceTable> Table` |  |
 | `public static bool AnyEnabled { get; }` | True when at least one type is being traced. A single load — the cheap pre-check. |
 | `public static bool IsEnabled(long typeHash)` | Is the type with this `BurstRuntime.GetHashCode64{T}` hash being traced? |
 | `public static bool TryGetName(long typeHash, out FixedString64Bytes name)` | Fetches the display name registered for an enabled type; false when the type is not traced. |

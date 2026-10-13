@@ -15,6 +15,19 @@ public struct AssemblyConnectorTransferSystem : ISystem, ISystemCompilerGenerate
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
 
+## BlueprintCrafterInventorySystem
+
+```csharp
+[UpdateInGroup(typeof(FFFixedPostTransformGroup))]
+public struct BlueprintCrafterInventorySystem : ISystem, ISystemCompilerGenerated
+```
+
+| Member | Summary |
+|---|---|
+| `public void OnCreate(ref SystemState systemState)` |  |
+| `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnUpdate(ref SystemState systemState)` |  |
+
 ## ConnectorPostPlacementSystem
 
 ```csharp
@@ -39,6 +52,17 @@ A crafter's connector slots feed both its input and its outputs. This moves ever
 | Member | Summary |
 |---|---|
 | `public static void FromConnector(DynamicBuffer<InventorySlot> slots, DynamicBuffer<InventoryFilter> filter, DynamicBuffer<InventoryUpdateNotifier> notifier, in Crafter crafter, in InventoryMetaData metaData, NativeArray<AsteroItemConfigData> asteroItemLookup, NativeArray<DynamicConfig> craftConfigLookup, in GameplaySettings gameplaySettings, int connectorStackMax)` |  |
+
+## CrafterInventoryFit
+
+```csharp
+public static class CrafterInventoryFit
+```
+
+| Member | Summary |
+|---|---|
+| `public static void Apply(DynamicBuffer<InventorySlot> slots, DynamicBuffer<InventoryFilter> inventoryFilters, ref InventoryMetaData inventoryMetaData, int recipeId, in DynamicConfig recipe, bool recipeIsAnyInList)` |  |
+| `public static bool IsFitted(DynamicBuffer<InventorySlot> slots, DynamicBuffer<InventoryFilter> inventoryFilters, in InventoryMetaData inventoryMetaData, int recipeId, in DynamicConfig recipe, bool recipeIsAnyInList)` |  |
 
 ## CrafterPlacementSystem
 

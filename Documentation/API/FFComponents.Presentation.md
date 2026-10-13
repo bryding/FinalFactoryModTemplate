@@ -257,6 +257,42 @@ From a driver's `MassDriverLaserColor` to its laser's `_BeamColor` override.
 | `public static float4 For(uint laserColor, float4 materialBeamColor, float highlightGain)` |  |
 | `public static float Luminance(float3 linear)` | Rec. 709 relative luminance of a linear colour. |
 
+## MassDriverFlow
+
+```csharp
+public static class MassDriverFlow
+```
+
+| Member | Summary |
+|---|---|
+| `public static float4 ColorFor(uint laserColor, float gain)` |  |
+| `public static float3 RibbonScale(float3 start, float3 end)` |  |
+| `public static bool ShowsPulse(bool laserOn, bool highlighted)` |  |
+
+## MassDriverFlowColor
+
+```csharp
+[MaterialProperty("_PulseColor", -1)]
+public struct MassDriverFlowColor : IComponentData, IQueryTypeParameter
+```
+
+| Member | Summary |
+|---|---|
+| `public float4 Value` |  |
+
+## MassDriverFlowRibbon
+
+```csharp
+public struct MassDriverFlowRibbon : IComponentData, IQueryTypeParameter
+```
+
+| Member | Summary |
+|---|---|
+| `public float4 Color` |  |
+| `public Entity Driver` |  |
+| `public float3 End` |  |
+| `public float3 Start` |  |
+
 ## PendingStationCommand
 
 ```csharp

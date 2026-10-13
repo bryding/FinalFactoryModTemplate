@@ -37,3 +37,36 @@ public class LaserTurretBaker : Baker<LaserTurretAuthoring>
 | `public LaserTurretBaker()` |  |
 | `public override void Bake(LaserTurretAuthoring authoring)` |  |
 
+## Railgun
+
+```csharp
+[Save]
+public struct Railgun : IComponentData, IQueryTypeParameter
+```
+
+| Member | Summary |
+|---|---|
+| `public bool ReadyToFire` |  |
+| `public fp Timer` |  |
+
+## RailgunAuthoring
+
+```csharp
+public class RailgunAuthoring : MonoBehaviour
+```
+
+| Member | Summary |
+|---|---|
+| `public RailgunAuthoring()` |  |
+
+## RailgunBaker
+
+```csharp
+public class RailgunBaker : Baker<RailgunAuthoring>
+```
+
+| Member | Summary |
+|---|---|
+| `public RailgunBaker()` |  |
+| `public override void Bake(RailgunAuthoring authoring)` |  |
+

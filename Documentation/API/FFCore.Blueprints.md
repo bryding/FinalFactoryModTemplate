@@ -15,7 +15,10 @@ public class Blueprint : ISteamWorkshopItem
 | `public string Icon` |  |
 | `public List<BlueprintMetaItemManaged> Items` |  |
 | `public int Length` |  |
+| `public string LinkId` |  |
 | `public string Name` |  |
+| `public string StationCopyWords` |  |
+| `public string StationLink` |  |
 | `public string Version` |  |
 | `public int Width` |  |
 | `public string author` |  |
@@ -28,6 +31,9 @@ public class Blueprint : ISteamWorkshopItem
 | `public SteamWorkshopItemType ItemType { get; }` |  |
 | `public FFVersion? ItemVersion { get; }` |  |
 | `public Blueprint()` |  |
+| `public List<BlueprintMetaItem> ConvertItems()` |  |
+| `public static string SplitCopyWords(string words, int part)` |  |
+| `public void TakeCopyWordsFrom(IEnumerable<BlueprintMetaItem> items)` |  |
 
 ## BlueprintCompatibility
 
@@ -40,6 +46,21 @@ Fix-ups applied to a blueprint the moment it is deserialized, so the rest of the
 | Member | Summary |
 |---|---|
 | `public static void Apply(Blueprint blueprint)` | Brings a freshly deserialized blueprint up to current conventions. Safe to call on any blueprint, including ones already current — a blueprint at or past this build returns immediately, and each individual fix-up is gated on the version that introduced it, so nothing is applied twice. |
+
+## BlueprintLink
+
+```csharp
+public static class BlueprintLink
+```
+
+| Member | Summary |
+|---|---|
+| `public static string EffectiveLinkId(Blueprint blueprint)` |  |
+| `public static void EnsureLinkId(Blueprint blueprint)` |  |
+| `public static ulong KeyForPaste(Blueprint blueprint)` |  |
+| `public static ulong KeyOf(Blueprint blueprint)` |  |
+| `public static ulong KeyOf(string linkId)` |  |
+| `public static string StationLinkOf(IEnumerable<ulong> keys)` |  |
 
 ## BlueprintMaster
 
@@ -57,6 +78,7 @@ public struct BlueprintMetaItem : IBufferElementData
 |---|---|
 | `public float AlertRange` |  |
 | `public int AmountRequested` |  |
+| `public uint ArmorColor` |  |
 | `public float AttackRange` |  |
 | `public int2 BlueprintDimensions` |  |
 | `public BlobAssetReference<NativeList<SerializedConnectorItem>> ConnectorItems` |  |
@@ -95,7 +117,13 @@ public struct BlueprintMetaItem : IBufferElementData
 | `public FixedString128Bytes RequestedItemName` |  |
 | `public BlobAssetReference<NativeList<BlueprintShipCopyItem>> ShipCopy` |  |
 | `public Direction ShipCopyFacing` |  |
+| `public ulong SourceBlueprintKey` |  |
 | `public FixedString128Bytes SpawnerItemName` |  |
+| `public FixedString64Bytes StationCopyName` |  |
+| `public FixedString64Bytes StationCopyNameNumbered` |  |
+| `public int StationOptions` |  |
+| `public BlobAssetReference<NativeList<BlueprintStationStopCondition>> StationStopConditions` |  |
+| `public BlobAssetReference<NativeList<BlueprintStationStop>> StationStops` |  |
 | `public bool UseSpecificLogisticsRequests` |  |
 | `public int Width` |  |
 | `public void Dispose()` |  |
@@ -148,8 +176,10 @@ public class BlueprintMetaItemManaged : IEquatable<BlueprintMetaItemManaged>
 | `public List<BlueprintShipCopyItemManaged> ShipCopy` |  |
 | `public Direction ShipCopyFacing` |  |
 | `public string SpawnerItemName` |  |
+| `public List<BlueprintStationStopManaged> StationStops` |  |
 | `public bool UseSpecificLogisticsRequests` |  |
 | `public int Width` |  |
+| `public uint ArmorColor { get; set; }` |  |
 | `public BlueprintMetaItemManaged()` |  |
 | `public BlueprintMetaItem Convert()` |  |
 | `public static BlueprintMetaItemManaged Create(BlueprintMetaItem item)` |  |
@@ -195,6 +225,71 @@ The blueprint string's form of `BlueprintShipCopyItem`.
 | `public override bool Equals(object obj)` |  |
 | `public override int GetHashCode()` |  |
 
+## BlueprintStationStop
+
+```csharp
+public struct BlueprintStationStop
+```
+
+| Member | Summary |
+|---|---|
+| `public int ConditionCount` |  |
+| `public int ConditionStart` |  |
+| `public int MobileCommandType` |  |
+| `public long PosRawX` |  |
+| `public long PosRawY` |  |
+| `public long PosRawZ` |  |
+| `public int StopDirection` |  |
+| `public FixedString32Bytes StopName` |  |
+
+## BlueprintStationStopCondition
+
+```csharp
+public struct BlueprintStationStopCondition
+```
+
+| Member | Summary |
+|---|---|
+| `public int Comparison` |  |
+| `public int Join` |  |
+| `public long MaxTimeRaw` |  |
+| `public int RequiredItemCount` |  |
+| `public FixedString128Bytes RequiredItemName` |  |
+| `public int StopType` |  |
+
+## BlueprintStationStopConditionManaged
+
+```csharp
+public class BlueprintStationStopConditionManaged
+```
+
+| Member | Summary |
+|---|---|
+| `public int Comparison` |  |
+| `public int Join` |  |
+| `public long MaxTimeRaw` |  |
+| `public int RequiredItemCount` |  |
+| `public string RequiredItemName` |  |
+| `public int StopType` |  |
+| `public BlueprintStationStopConditionManaged()` |  |
+
+## BlueprintStationStopManaged
+
+```csharp
+public class BlueprintStationStopManaged
+```
+
+| Member | Summary |
+|---|---|
+| `public List<BlueprintStationStopConditionManaged> Conditions` |  |
+| `public int MobileCommandType` |  |
+| `public long PosRawX` |  |
+| `public long PosRawY` |  |
+| `public long PosRawZ` |  |
+| `public int StopDirection` |  |
+| `public string StopName` |  |
+| `public BlueprintStationStopManaged()` |  |
+
 ## DevSlotNames
 
 ```csharp
@@ -209,4 +304,18 @@ One `BlueprintMetaItemManaged.DevSlotData` slot's item and filter by name, so a 
 | `public string Item` |  |
 | `public static DevSlotNames Of(InventorySlotData slot, in ItemConfig itemConfig)` |  |
 | `public InventorySlotData WithCurrentIds(InventorySlotData slot, in ItemConfig itemConfig)` | The slot with its item and filter ids looked up by name in this build's item table. |
+
+## StationCopyOptions
+
+```csharp
+public static class StationCopyOptions
+```
+
+| Member | Summary |
+|---|---|
+| `public const int All = 3` |  |
+| `public const int EnableTransit = 1` |  |
+| `public const int RecordKind = 100` |  |
+| `public const int StaySeparate = 2` |  |
+| `public static bool IsValid(int options)` |  |
 

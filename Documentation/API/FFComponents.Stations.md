@@ -877,6 +877,18 @@ public class SpawnerChestBaker : Baker<SpawnerChestAuthoring>
 | `public SpawnerChestBaker()` |  |
 | `public override void Bake(SpawnerChestAuthoring authoring)` |  |
 
+## SpawnerChestPower
+
+```csharp
+[Save]
+public struct SpawnerChestPower : IComponentData, IQueryTypeParameter
+```
+
+| Member | Summary |
+|---|---|
+| `public byte Off` |  |
+| `public readonly bool IsOff { get; }` |  |
+
 ## StabilizerGridItem
 
 ```csharp

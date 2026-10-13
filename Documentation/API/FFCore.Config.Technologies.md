@@ -10,10 +10,12 @@ public class TechnologyConfig
 
 | Member | Summary |
 |---|---|
+| `public List<TechnologyConfig.CollectibleRequirement> CollectibleRequirements` |  |
 | `public int Cost` |  |
 | `public string Description` |  |
 | `public bool DisableForDemo` |  |
 | `public bool Disabled` |  |
+| `public string FeatureToggle` |  |
 | `public Sprite Icon` |  |
 | `public string IconNameFromModdedBundle` |  |
 | `public float InfiniteGrowRate` |  |
@@ -28,6 +30,18 @@ public class TechnologyConfig
 | `public List<TechnologyConfig.TechnologyRewardFunction> Rewards` |  |
 | `public TechnologyConfig()` |  |
 | `public int GetCost(int technologyCostModifier)` |  |
+
+## TechnologyConfig.CollectibleRequirement
+
+```csharp
+public struct TechnologyConfig.CollectibleRequirement
+```
+
+| Member | Summary |
+|---|---|
+| `public int Count` |  |
+| `public string FeatureToggle` |  |
+| `public string ItemName` |  |
 
 ## TechnologyConfig.SpecificResearchRequirement
 

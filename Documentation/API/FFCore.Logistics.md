@@ -70,5 +70,5 @@ Values: `AddStation = 0`, `RemoveStation = 1`, `PickupItem = 2`, `MoveItem = 3`,
 public enum TransitState
 ```
 
-Values: `Idle = 0`, `ToDestination = 1`, `ToSource = 2`, `AtDestination = 3`, `AtSource = 4`, `PlayerRecall = 7`, `TaskAssigned = 10`, `ToOwner = 11`, `AtOwner = 12`
+Values: `Idle = 0`, `ToDestination = 1`, `ToSource = 2`, `AtDestination = 3`, `AtSource = 4`, `PlayerRecall = 7`, `TaskAssigned = 10`, `ToOwner = 11`, `AtOwner = 12`, `AwaitingNextTask = 13`
 

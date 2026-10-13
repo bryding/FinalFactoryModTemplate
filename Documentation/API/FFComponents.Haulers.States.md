@@ -52,6 +52,16 @@ public struct InTransitState : IComponentData, IQueryTypeParameter, IHaulerState
 |---|---|
 | `public float TransitTime` |  |
 
+## LandingBlock
+
+```csharp
+public static class LandingBlock
+```
+
+| Member | Summary |
+|---|---|
+| `public static bool IsBlocked(in DockingState docking, in HaulerFlightRails rails)` |  |
+
 ## UndockingState
 
 ```csharp

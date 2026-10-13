@@ -64,6 +64,7 @@ public class InserterPickupSystem : FinalFactorySystemBase
 |---|---|
 | `public const int CargoBargeMaxDockSeconds = 7` | A cargo barge (any tier) that has been docked at its pickup this long departs with whatever it carries, even if it isn't full. An empty barge keeps waiting: it would only turn straight back (InserterMovementSystem reverses an empty unit toward its pickup). So does a barge with no destination, for the same reason: it stays docked with its cargo until it has somewhere to deliver it. |
 | `public InserterPickupSystem()` |  |
+| `public static bool IsCargoDock(PlaceableType type)` |  |
 | `public static int MaxTransfersThisHeartbeat(int heartbeat, int updatesPerSecond)` | 057 US4: how many load/unload transfers one unit may make in this heartbeat. A transfer shorter than a heartbeat (an Express arm's 20 ms, a barge's 5-10 ms unload) used to run once per heartbeat, 16/s at 16 UPS instead of the configured 50/s. The cap is the 60-per-second ceiling single-player had at 60 UPS, paid out by the heartbeat counter: exactly 1 at 60 UPS, 3 or 4 at 16. |
 | `protected override void OnCreate()` |  |
 | `protected override void OnCreateForCompiler()` |  |
@@ -86,6 +87,7 @@ public struct InserterPickupSystem.InserterCargoJob : IJob
 | `public ComponentLookup<Inserter> AllInserters` |  |
 | `public BufferLookup<LinkedEntityGroup> AllLinkedGroups` |  |
 | `public ComponentLookup<NetworkedContainer> AllNetworkedContainers` |  |
+| `public ComponentLookup<OutOfPlay> AllOutOfPlay` |  |
 | `public ComponentLookup<LogisticsBayOutputPort> AllOutputPorts` |  |
 | `public ComponentLookup<Placeable> AllPlaceables` |  |
 | `public ComponentLookup<StationGridPowerConsumer> AllPowerConsumers` |  |
