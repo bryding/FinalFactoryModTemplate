@@ -12,12 +12,18 @@ What a light's stored `LightStructure.Color` means. It is a linear colour, the f
 
 | Member | Summary |
 |---|---|
-| `public const float BulbIntensity = 1.6` | How bright the lamp's own emission is for a full-brightness colour. Just above the look's bloom threshold (1.05), so the lamp keeps its shape and its colour and only its rim blooms. |
+| `public const float BulbShare = 0.75` | The share of a lamp's peak its own emission carries; LightGlowSystem's inner glow adds the rest at the centre, so the middle of the lamp is a little brighter in the same colour. |
 | `public const uint DefaultRgb = 16767930` | A new light's colour, in sRGB: a warm white, about 4500 K. The light prefab bakes it. |
-| `public static Color Emission(Color stored)` | The lamp's emission when it is on and powered. |
+| `public const float SaturatedOffset = 0.23` | See `SaturatedScale`. |
+| `public const float SaturatedScale = 0.38` | A fully saturated colour peaks at `SaturatedScale / (luminance + SaturatedOffset)` of its hue, capped at `WhiteIntensity`: about 0.85 for red, 0.4 for green, 1.2 for blue (`PeakIntensity`). |
+| `public const float WhiteIntensity = 1.4` | How bright a white (or pale) lamp's centre is: the lamp's emission plus the inner glow LightGlowSystem draws over it (`PeakIntensity`). |
+| `public static Color Emission(Color stored)` | The lamp's emission when it is on and powered: its share of the lamp's peak. |
 | `public static Color FromPacked(uint packed)` | The stored value for a packed pick; the picker's "Default" (0) is `DefaultRgb`. |
 | `public static Color FromRgb(uint rgb)` | The stored (linear) value for an sRGB colour picked as 0xRRGGBB. |
 | `public static Color Hue(Color stored)` | The linear colour a stored value stands for, each channel 0..1. |
+| `public static Color HueOfEmission(Color emission)` | The hue (linear, 0..1) a lamp's `Emission` stands for: the colour of the light it casts. |
+| `public static float PeakIntensity(Color hue)` | How bright a lamp of this colour is at its centre, as a multiple of its hue. The look tonemaps with ACES, which lifts every channel of a bright colour toward the same ceiling, so a saturated colour turns pale and then white as it brightens, while the dim tail of its halo keeps the colour: the lamps peaked at 2.6 times their hue (emission 1.6 plus the glow's 1.0) and their middles read white. |
+| `public static Color PeakOfEmission(Color emission)` | The lamp's brightness at its centre (its emission plus the inner glow) for an `Emission`. |
 | `public static uint ToPacked(Color stored)` | A stored value in the colour picker's packed form (`MassDriverLaserColorPacking`): always a chosen colour, never the picker's "Default" 0, since a light stores the colour itself. |
 | `public static uint ToRgb(Color stored)` | A stored value as the sRGB 0xRRGGBB the picker shows (its hue, rounded to bytes). |
 

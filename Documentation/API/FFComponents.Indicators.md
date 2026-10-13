@@ -11,6 +11,8 @@ public struct ActiveItemDisplay : IComponentData, IQueryTypeParameter
 | Member | Summary |
 |---|---|
 | `public Entity ActiveItemIcon` |  |
+| `public fp EmptySince` | When a cargo hold went empty while it still shows its last item, on the simulation clock. Not saved, and no simulation system reads it. |
+| `public bool EmptyTimerRunning` |  |
 | `public int Item` |  |
 | `public bool UseSmallIcons` |  |
 | `public float YOffset` |  |

@@ -702,6 +702,7 @@ public struct IncomingHealthChangeSystem : ISystem, ISystemCompilerGenerated
 | Member | Summary |
 |---|---|
 | `public const float AttackLingerSeconds = 8` | How long the attack (and death) HUD alert stays up after the last hit, counted down by FFSystems.Indicators.AttackWarningSystem. Long, because this system only refreshes the warning when damage actually lands -- a defended attack should stay flagged for a beat rather than blinking out between volleys. |
+| `public static bool IsEnemyWeaponSource(Source source)` | the damage sources an enemy's weapons produce (shots, their splash and impact AoE, beams, turret lasers). Only enemies can aim these at a player ship -- a player's weapons pick targets from enemy vision -- so on a `Player` they are enemy damage. Environment and self damage (comets, black holes, heat, self-destruct, other) is left alone. |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
@@ -717,10 +718,12 @@ public struct IncomingHealthChangeSystem.IncomingHealthChangeJob : IJobChunk
 | `public ComponentLookup<AttackWarningData> AllAttackWarningData` |  |
 | `public ComponentLookup<Enemy> AllEnemies` |  |
 | `public ComponentLookup<Placeable> AllPlaceables` |  |
+| `public ComponentLookup<Player> AllPlayers` |  |
 | `public EntityCommandBuffer.ParallelWriter Cb` |  |
 | `public NativeArray<int> ChunkBaseEntityIndices` |  |
 | `public EntityArchetype DeathMarkerArchetype` |  |
 | `public fp Dt` |  |
+| `public EnemyDamageZoneSettings EnemyDamageToPlayer` |  |
 | `public EntityTypeHandle EntityTypeHandle` |  |
 | `public ComponentLookup<HealthBarInitializer> HealthBarInitializerLookup` |  |
 | `public ComponentLookup<HealthBarReference> HealthBarLookup` |  |
@@ -772,6 +775,7 @@ Fires weapons at whatever `Targeter` already names, and spawns the projectiles. 
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
+| `public static float3 PlayerLeadAim(float3 sourcePos, in Player player, in WeaponConfig weaponConfig)` | where an enemy aims a straight shot at a moving player: the weapon's `WeaponConfig.PlayerLeadFraction` of a first-order intercept of the player's replicated `SimulationPosition` / `SimulationVelocity`, solved in fp (`InterceptAim`). Shared by this system and `OldShootingSystem`. |
 
 ## OldBeamShootingSystem
 
@@ -853,6 +857,7 @@ public struct TargetingSystem : ISystem, ISystemCompilerGenerated
 
 | Member | Summary |
 |---|---|
+| `public const float PassiveSpellSeconds = 2` | How long, in seconds of idling, a ship the leash sent home is held back from chasing. |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnDestroy(ref SystemState systemState)` |  |
@@ -871,12 +876,14 @@ public struct TargetingSystem.TargeterJob : IJobEntity, IJobChunk
 | `public ComponentLookup<FleetControl> AllFleetControls` |  |
 | `public ComponentLookup<FleetIdleMarker> AllFleetIdleMarkers` |  |
 | `public ComponentLookup<FleetIgnoreColliderMarker> AllFleetIgnoreColliders` |  |
+| `public ComponentLookup<FleetShip> AllFleetShips` |  |
 | `public ComponentLookup<KnnFleetVision> AllFleetVisions` |  |
 | `public BufferLookup<GivenUpTarget> AllGiveUps` |  |
 | `public ComponentLookup<Health> AllHealths` |  |
 | `public ComponentLookup<ScalableLaserOwner> AllLasers` |  |
 | `public ComponentLookup<OutOfPlay> AllOutOfPlays` |  |
 | `public ComponentLookup<Placeable> AllPlaceables` |  |
+| `public ComponentLookup<PreventFleetIdleMarker> AllPreventFleetIdles` |  |
 | `public ComponentLookup<ShipMarker> AllShipMarkers` |  |
 | `public ComponentLookup<Shooter> AllShooters` |  |
 | `public ComponentLookup<TargetProgressTracker> AllTrackers` |  |

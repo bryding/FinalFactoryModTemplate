@@ -1,6 +1,6 @@
 # API reference index
 
-Generated from the game's assemblies for Final Factory 0.50.0.78 by `Tools/generate-api-reference`. Do not edit by hand; see `README.md` here for what is included and how to regenerate.
+Generated from the game's assemblies for Final Factory 0.50.0.91 (Steam development branch, build 25827483) by `Tools/generate-api-reference`. Do not edit by hand; see `README.md` here for what is included and how to regenerate.
 
 | Namespace | Types |
 |---|---|
@@ -21,7 +21,7 @@ Generated from the game's assemblies for Final Factory 0.50.0.78 by `Tools/gener
 | [FFComponents.Combat](FFComponents.Combat.md) | 150 |
 | [FFComponents.Commands](FFComponents.Commands.md) | 5 |
 | [FFComponents.Connections](FFComponents.Connections.md) | 1 |
-| [FFComponents.Connectors](FFComponents.Connectors.md) | 17 |
+| [FFComponents.Connectors](FFComponents.Connectors.md) | 18 |
 | [FFComponents.Construction](FFComponents.Construction.md) | 19 |
 | [FFComponents.Core](FFComponents.Core.md) | 28 |
 | [FFComponents.Crafting](FFComponents.Crafting.md) | 4 |
@@ -32,7 +32,7 @@ Generated from the game's assemblies for Final Factory 0.50.0.78 by `Tools/gener
 | [FFComponents.Fleet](FFComponents.Fleet.md) | 3 |
 | [FFComponents.Fog](FFComponents.Fog.md) | 14 |
 | [FFComponents.FuelConsumption](FFComponents.FuelConsumption.md) | 3 |
-| [FFComponents.Haulers](FFComponents.Haulers.md) | 23 |
+| [FFComponents.Haulers](FFComponents.Haulers.md) | 27 |
 | [FFComponents.Haulers.States](FFComponents.Haulers.States.md) | 6 |
 | [FFComponents.Heat](FFComponents.Heat.md) | 20 |
 | [FFComponents.Helpers](FFComponents.Helpers.md) | 10 |
@@ -49,22 +49,22 @@ Generated from the game's assemblies for Final Factory 0.50.0.78 by `Tools/gener
 | [FFComponents.Map](FFComponents.Map.md) | 50 |
 | [FFComponents.MassDrivers](FFComponents.MassDrivers.md) | 8 |
 | [FFComponents.Materials](FFComponents.Materials.md) | 7 |
-| [FFComponents.MobileStations](FFComponents.MobileStations.md) | 18 |
+| [FFComponents.MobileStations](FFComponents.MobileStations.md) | 19 |
 | [FFComponents.MobileStations.MovingStates](FFComponents.MobileStations.MovingStates.md) | 2 |
 | [FFComponents.Modding](FFComponents.Modding.md) | 2 |
 | [FFComponents.Player](FFComponents.Player.md) | 38 |
 | [FFComponents.Power](FFComponents.Power.md) | 77 |
-| [FFComponents.Presentation](FFComponents.Presentation.md) | 51 |
+| [FFComponents.Presentation](FFComponents.Presentation.md) | 53 |
 | [FFComponents.Rendering](FFComponents.Rendering.md) | 4 |
 | [FFComponents.Selection](FFComponents.Selection.md) | 13 |
 | [FFComponents.SolarPanels](FFComponents.SolarPanels.md) | 3 |
 | [FFComponents.SoundEffects](FFComponents.SoundEffects.md) | 6 |
-| [FFComponents.Stations](FFComponents.Stations.md) | 94 |
+| [FFComponents.Stations](FFComponents.Stations.md) | 96 |
 | [FFComponents.Stats](FFComponents.Stats.md) | 2 |
 | [FFComponents.SystemMarkers](FFComponents.SystemMarkers.md) | 25 |
 | [FFComponents.Transforms](FFComponents.Transforms.md) | 18 |
 | [FFComponents.Turrets](FFComponents.Turrets.md) | 3 |
-| [FFComponents.UnitStateMarkers](FFComponents.UnitStateMarkers.md) | 3 |
+| [FFComponents.UnitStateMarkers](FFComponents.UnitStateMarkers.md) | 4 |
 | [FFComponents.UnitStates](FFComponents.UnitStates.md) | 1 |
 | [FFComponents.UnitStates.Combat](FFComponents.UnitStates.Combat.md) | 10 |
 | [FFComponents.UnitStates.Inserters](FFComponents.UnitStates.Inserters.md) | 6 |
@@ -83,14 +83,14 @@ Generated from the game's assemblies for Final Factory 0.50.0.78 by `Tools/gener
 | [FFCore.Extensions](FFCore.Extensions.md) | 8 |
 | [FFCore.FixedPoints](FFCore.FixedPoints.md) | 4 |
 | [FFCore.Fleet](FFCore.Fleet.md) | 14 |
-| [FFCore.GameRunning](FFCore.GameRunning.md) | 13 |
-| [FFCore.GlobalConfig](FFCore.GlobalConfig.md) | 7 |
-| [FFCore.Haulers](FFCore.Haulers.md) | 4 |
+| [FFCore.GameRunning](FFCore.GameRunning.md) | 14 |
+| [FFCore.GlobalConfig](FFCore.GlobalConfig.md) | 8 |
+| [FFCore.Haulers](FFCore.Haulers.md) | 8 |
 | [FFCore.Inventory](FFCore.Inventory.md) | 3 |
 | [FFCore.Items](FFCore.Items.md) | 6 |
 | [FFCore.Logging](FFCore.Logging.md) | 9 |
 | [FFCore.Logistics](FFCore.Logistics.md) | 8 |
-| [FFCore.Map](FFCore.Map.md) | 6 |
+| [FFCore.Map](FFCore.Map.md) | 8 |
 | [FFCore.Media](FFCore.Media.md) | 1 |
 | [FFCore.Mining](FFCore.Mining.md) | 1 |
 | [FFCore.Modding](FFCore.Modding.md) | 8 |
@@ -107,7 +107,7 @@ Generated from the game's assemblies for Final Factory 0.50.0.78 by `Tools/gener
 | [FFCore.Systems](FFCore.Systems.md) | 47 |
 | [FFCore.Time](FFCore.Time.md) | 6 |
 | [FFCore.Unity](FFCore.Unity.md) | 1 |
-| [FFCore.Utils](FFCore.Utils.md) | 25 |
+| [FFCore.Utils](FFCore.Utils.md) | 26 |
 | [FFCore.Version](FFCore.Version.md) | 1 |
 | [FFSystems](FFSystems.md) | 1 |
 | [FFSystems.Abduction](FFSystems.Abduction.md) | 1 |
@@ -124,7 +124,7 @@ Generated from the game's assemblies for Final Factory 0.50.0.78 by `Tools/gener
 | [FFSystems.Combat.Aoe](FFSystems.Combat.Aoe.md) | 2 |
 | [FFSystems.Combat.Projectiles](FFSystems.Combat.Projectiles.md) | 7 |
 | [FFSystems.Combat.WeaponOwnerSetup](FFSystems.Combat.WeaponOwnerSetup.md) | 2 |
-| [FFSystems.Comets](FFSystems.Comets.md) | 5 |
+| [FFSystems.Comets](FFSystems.Comets.md) | 7 |
 | [FFSystems.Connectors](FFSystems.Connectors.md) | 15 |
 | [FFSystems.Construction](FFSystems.Construction.md) | 4 |
 | [FFSystems.ConstructionBots](FFSystems.ConstructionBots.md) | 15 |
@@ -145,26 +145,26 @@ Generated from the game's assemblies for Final Factory 0.50.0.78 by `Tools/gener
 | [FFSystems.LogiNetwork](FFSystems.LogiNetwork.md) | 1 |
 | [FFSystems.Logistics](FFSystems.Logistics.md) | 16 |
 | [FFSystems.Loot](FFSystems.Loot.md) | 5 |
-| [FFSystems.Map](FFSystems.Map.md) | 10 |
+| [FFSystems.Map](FFSystems.Map.md) | 12 |
 | [FFSystems.MassDrivers](FFSystems.MassDrivers.md) | 10 |
 | [FFSystems.Mining](FFSystems.Mining.md) | 8 |
-| [FFSystems.MobileStations](FFSystems.MobileStations.md) | 10 |
+| [FFSystems.MobileStations](FFSystems.MobileStations.md) | 15 |
 | [FFSystems.MobileStations.StationMovementAutomation](FFSystems.MobileStations.StationMovementAutomation.md) | 4 |
 | [FFSystems.MobileStations.StationMovementAutomation.Lifecycle](FFSystems.MobileStations.StationMovementAutomation.Lifecycle.md) | 7 |
-| [FFSystems.MobileStations.StationMovementAutomation.StateMachine](FFSystems.MobileStations.StationMovementAutomation.StateMachine.md) | 10 |
+| [FFSystems.MobileStations.StationMovementAutomation.StateMachine](FFSystems.MobileStations.StationMovementAutomation.StateMachine.md) | 14 |
 | [FFSystems.Objectives](FFSystems.Objectives.md) | 1 |
 | [FFSystems.Physics](FFSystems.Physics.md) | 1 |
 | [FFSystems.Players](FFSystems.Players.md) | 6 |
 | [FFSystems.Power](FFSystems.Power.md) | 15 |
 | [FFSystems.PowerTransfer](FFSystems.PowerTransfer.md) | 16 |
-| [FFSystems.Presentation](FFSystems.Presentation.md) | 79 |
+| [FFSystems.Presentation](FFSystems.Presentation.md) | 85 |
 | [FFSystems.Rendering](FFSystems.Rendering.md) | 2 |
 | [FFSystems.RepairCenters](FFSystems.RepairCenters.md) | 3 |
 | [FFSystems.Science](FFSystems.Science.md) | 2 |
 | [FFSystems.Selection](FFSystems.Selection.md) | 3 |
 | [FFSystems.SingularityVessels](FFSystems.SingularityVessels.md) | 1 |
 | [FFSystems.Sound](FFSystems.Sound.md) | 7 |
-| [FFSystems.StationGrid](FFSystems.StationGrid.md) | 12 |
+| [FFSystems.StationGrid](FFSystems.StationGrid.md) | 13 |
 | [FFSystems.Stations](FFSystems.Stations.md) | 11 |
 | [FFSystems.Stats](FFSystems.Stats.md) | 2 |
 | [FFSystems.SupplyBots](FFSystems.SupplyBots.md) | 1 |

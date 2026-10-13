@@ -49,4 +49,4 @@ by `Tools/ApiReference/api-reference.json`:
 - **Summaries, not design notes.** The doc comments are the game's own, cut to their first paragraph, with
   internal references removed (source file paths, task and feature numbers, people's names, dates, TODOs).
 
-This version was generated from Final Factory 0.50.0.78 (Steam development branch, build 25734448).
+This version was generated from Final Factory 0.50.0.91 (Steam development branch, build 25827483).

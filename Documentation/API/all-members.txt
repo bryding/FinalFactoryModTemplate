@@ -1051,6 +1051,7 @@ FFComponents.Connectors.ConnectorItemBaker :: public override void Bake(Connecto
 FFComponents.Connectors.ConnectorSpeedBonus :: public struct ConnectorSpeedBonus : IComponentData, IQueryTypeParameter
 FFComponents.Connectors.ConnectorVisualData :: public struct ConnectorVisualData : IComponentData, IQueryTypeParameter
 FFComponents.Connectors.ConnectorVisualData :: public Entity Beam
+FFComponents.Connectors.ConnectorVisualData :: public Entity CurveAdapterEnd
 FFComponents.Connectors.ConnectorVisualData :: public Entity CurvedBeam
 FFComponents.Connectors.ConnectorVisualData :: public Entity InputEnd
 FFComponents.Connectors.ConnectorVisualData :: public Entity LeftCurve
@@ -1074,6 +1075,11 @@ FFComponents.Connectors.PerpendicularConnectorItem :: public int ItemId
 FFComponents.Connectors.PerpendicularConnectorItem :: public Entity OutputConnector
 FFComponents.Connectors.PerpendicularConnectorItem :: public Entity SourceConnectorGroup
 FFComponents.Connectors.PerpendicularConnectorItemTransferMarker :: public struct PerpendicularConnectorItemTransferMarker : IComponentData, IQueryTypeParameter
+FFComponents.Connectors.SideLoadTurn :: [Save] public struct SideLoadTurn : IComponentData, IQueryTypeParameter
+FFComponents.Connectors.SideLoadTurn :: public byte LastSide
+FFComponents.Connectors.SideLoadTurn :: public const byte None = 0
+FFComponents.Connectors.SideLoadTurn :: public static byte Encode(Direction direction)
+FFComponents.Connectors.SideLoadTurn :: public static int Rank(byte lastSide, Direction direction)
 FFComponents.Construction.ConstructionCompleteMarker :: [Save] public struct ConstructionCompleteMarker : IComponentData, IQueryTypeParameter
 FFComponents.Construction.ConstructionCompleteMarker :: public byte Marker
 FFComponents.Construction.ConstructionParentTag :: public struct ConstructionParentTag : IComponentData, IQueryTypeParameter
@@ -1583,7 +1589,26 @@ FFComponents.Haulers.LandingZoneShipCopy :: public static void Fill(DynamicBuffe
 FFComponents.Haulers.LandingZoneShipCopy :: public static bool TryCreate(in Placeable landed, int3 zoneTile, out LandingZoneShipCopy copy)
 FFComponents.Haulers.LandingZoneShipCopy :: public static Placeable TurnedAbout(Placeable building, in Placeable zone, int quarterTurns)
 FFComponents.Haulers.NameUpdaterMarker :: public struct NameUpdaterMarker : IComponentData, IQueryTypeParameter
+FFComponents.Haulers.StationCargo :: public static class StationCargo
+FFComponents.Haulers.StationCargo :: public static int CountOf(int item, in DynamicBuffer<InventorySlot> slots, in InventoryMetaData metaData)
+FFComponents.Haulers.StationCargo :: public static bool Counts(in DynamicBuffer<InventorySlot> slots, in InventoryMetaData metaData)
+FFComponents.Haulers.StationCargo :: public static bool HasRoom(in DynamicBuffer<InventorySlot> slots, in InventoryMetaData metaData, NativeArray<AsteroItemConfigData> itemConfig, int stackSizeModifier)
+FFComponents.Haulers.StationCargo :: public static bool HoldsAnything(in DynamicBuffer<InventorySlot> slots, in InventoryMetaData metaData)
+FFComponents.Haulers.StationCargoReading :: public struct StationCargoReading
+FFComponents.Haulers.StationCargoReading :: public bool AnyItem
+FFComponents.Haulers.StationCargoReading :: public bool AnyRoom
+FFComponents.Haulers.StationCargoReading :: public int Holds
+FFComponents.Haulers.StationCargoReading :: public readonly bool Empty { get; }
+FFComponents.Haulers.StationCargoReading :: public readonly bool Full { get; }
+FFComponents.Haulers.StationCargoReading :: public void Add(in DynamicBuffer<InventorySlot> slots, in InventoryMetaData metaData, NativeArray<AsteroItemConfigData> itemConfig, int stackSizeModifier)
+FFComponents.Haulers.StationLock :: [Save] public struct StationLock : IComponentData, IQueryTypeParameter
+FFComponents.Haulers.StationLock :: public int LockId
+FFComponents.Haulers.StationLockHint :: [Save] public struct StationLockHint : IComponentData, IQueryTypeParameter
+FFComponents.Haulers.StationLockHint :: public int LockId
+FFComponents.Haulers.StationLockHint :: public static bool TryCreateFor(Entity structure, ComponentLookup<HaulerReference> haulerReferences, ComponentLookup<StationLock> stationLocks, out StationLockHint hint)
 FFComponents.Haulers.StopCondition :: public struct StopCondition : INonExistable
+FFComponents.Haulers.StopCondition :: public ItemCountComparison Comparison
+FFComponents.Haulers.StopCondition :: public StopConditionJoin Join
 FFComponents.Haulers.StopCondition :: public fp MaxTime
 FFComponents.Haulers.StopCondition :: public int RequiredItem
 FFComponents.Haulers.StopCondition :: public int RequiredItemCount
@@ -1754,6 +1779,8 @@ FFComponents.Helpers.ShipTransferHelper :: public static int TransferShips(Entit
 FFComponents.Helpers.ShipTransferHelper :: public static int TransferSpecificShips(Entity originEntity, Entity destinationEntity, bool isDestinationPlayer, int maxFleetCapacity, bool max, int count, int activeFilter, bool keepConstructionBot, ItemConfig itemConfig, EntityManager em)
 FFComponents.Indicators.ActiveItemDisplay :: public struct ActiveItemDisplay : IComponentData, IQueryTypeParameter
 FFComponents.Indicators.ActiveItemDisplay :: public Entity ActiveItemIcon
+FFComponents.Indicators.ActiveItemDisplay :: public fp EmptySince
+FFComponents.Indicators.ActiveItemDisplay :: public bool EmptyTimerRunning
 FFComponents.Indicators.ActiveItemDisplay :: public int Item
 FFComponents.Indicators.ActiveItemDisplay :: public bool UseSmallIcons
 FFComponents.Indicators.ActiveItemDisplay :: public float YOffset
@@ -2009,12 +2036,18 @@ FFComponents.Knn.VisionElement :: public void MakeNonExistent()
 FFComponents.Legacy.LegacySaveTypes :: public static class LegacySaveTypes
 FFComponents.Legacy.LegacySaveTypes :: public static Type DisableMovementMarker { get; }
 FFComponents.Lights.LightColors :: public static class LightColors
-FFComponents.Lights.LightColors :: public const float BulbIntensity = 1.6
+FFComponents.Lights.LightColors :: public const float BulbShare = 0.75
 FFComponents.Lights.LightColors :: public const uint DefaultRgb = 16767930
+FFComponents.Lights.LightColors :: public const float SaturatedOffset = 0.23
+FFComponents.Lights.LightColors :: public const float SaturatedScale = 0.38
+FFComponents.Lights.LightColors :: public const float WhiteIntensity = 1.4
 FFComponents.Lights.LightColors :: public static Color Emission(Color stored)
 FFComponents.Lights.LightColors :: public static Color FromPacked(uint packed)
 FFComponents.Lights.LightColors :: public static Color FromRgb(uint rgb)
 FFComponents.Lights.LightColors :: public static Color Hue(Color stored)
+FFComponents.Lights.LightColors :: public static Color HueOfEmission(Color emission)
+FFComponents.Lights.LightColors :: public static float PeakIntensity(Color hue)
+FFComponents.Lights.LightColors :: public static Color PeakOfEmission(Color emission)
 FFComponents.Lights.LightColors :: public static uint ToPacked(Color stored)
 FFComponents.Lights.LightColors :: public static uint ToRgb(Color stored)
 FFComponents.Lights.LightReference :: public struct LightReference : IComponentData, IQueryTypeParameter
@@ -2508,11 +2541,13 @@ FFComponents.Map.DepletedAsteroidBaker :: public class DepletedAsteroidBaker : B
 FFComponents.Map.DepletedAsteroidBaker :: public DepletedAsteroidBaker()
 FFComponents.Map.DepletedAsteroidBaker :: public override void Bake(DepletedAsteroidAuthoring authoring)
 FFComponents.Map.FFGrid :: public struct FFGrid : IComponentData, IQueryTypeParameter
+FFComponents.Map.FFGrid :: public const int ChunkMapCapacity = 2000000
 FFComponents.Map.FFGrid :: public NativeParallelMultiHashMap<int2, Entity> EnemySpawnerChunkMap
 FFComponents.Map.FFGrid :: public NativeParallelHashMap<int3, Entity> EntityMap
 FFComponents.Map.FFGrid :: public NativeParallelHashMap<Entity, Placeable> EntityPlaceableMap
 FFComponents.Map.FFGrid :: public NativeParallelMultiHashMap<int2, Entity> FriendlyChunkMap
 FFComponents.Map.FFGrid :: public static void CreateGrid()
+FFComponents.Map.FFGrid :: public static void CreateGrid(int chunkMapCapacity)
 FFComponents.Map.FFGrid :: public void Dispose()
 FFComponents.Map.IrregularPlaceableTile :: [Save] public struct IrregularPlaceableTile : IBufferElementData
 FFComponents.Map.IrregularPlaceableTile :: public byte Value
@@ -2652,6 +2687,8 @@ FFComponents.MobileStations.MoveableStructureControllerStateData :: public struc
 FFComponents.MobileStations.MoveableStructureControllerStateData :: public MobileStationControllerState CommandType
 FFComponents.MobileStations.MoveableStructureControllerStateData :: public Entity TargetEntity
 FFComponents.MobileStations.RideableStructure :: public struct RideableStructure : IComponentData, IQueryTypeParameter
+FFComponents.MobileStations.StationGhostRider :: [Save] public struct StationGhostRider : IComponentData, IQueryTypeParameter
+FFComponents.MobileStations.StationGhostRider :: public Entity Core
 FFComponents.MobileStations.StationMoverStructure :: public struct StationMoverStructure : IComponentData, IQueryTypeParameter
 FFComponents.MobileStations.StationMoverStructureAuthoring :: public class StationMoverStructureAuthoring : MonoBehaviour
 FFComponents.MobileStations.StationMoverStructureAuthoring :: public StationMoverStructureAuthoring()
@@ -3154,6 +3191,17 @@ FFComponents.Presentation.HaulerManualDriveEcho :: public struct HaulerManualDri
 FFComponents.Presentation.HaulerManualDriveEcho :: public ushort HeartbeatFrame
 FFComponents.Presentation.HaulerManualDriveEcho :: public float3 Translation
 FFComponents.Presentation.HaulerManualDriveEcho :: public float TurnRadians
+FFComponents.Presentation.ImpactHull :: public struct ImpactHull
+FFComponents.Presentation.ImpactHull :: public float2 Cell
+FFComponents.Presentation.ImpactHull :: public const int Cells = 48
+FFComponents.Presentation.ImpactHull :: public float2 Centre
+FFComponents.Presentation.ImpactHull :: public float2 Min
+FFComponents.Presentation.ImpactHull :: public float Radius
+FFComponents.Presentation.ImpactHull :: public FixedList512Bytes<ulong> Rows
+FFComponents.Presentation.ImpactHull :: public int Tick
+FFComponents.Presentation.ImpactHull :: public float Top
+FFComponents.Presentation.ImpactHullCache :: public struct ImpactHullCache : IComponentData, IQueryTypeParameter
+FFComponents.Presentation.ImpactHullCache :: public NativeParallelHashMap<long, ImpactHull> Hulls
 FFComponents.Presentation.LocalPlayerMotionOutcome :: public enum LocalPlayerMotionOutcome : byte
 FFComponents.Presentation.LocalPlayerMotionOutcome :: NoPlayer = 0
 FFComponents.Presentation.LocalPlayerMotionOutcome :: Moved = 1
@@ -3293,9 +3341,15 @@ FFComponents.Presentation.VfxImpactBaker :: public class VfxImpactBaker : Baker<
 FFComponents.Presentation.VfxImpactBaker :: public VfxImpactBaker()
 FFComponents.Presentation.VfxImpactBaker :: public override void Bake(VfxImpactAuthoring authoring)
 FFComponents.Presentation.VfxImpactDrawnAnchor :: public struct VfxImpactDrawnAnchor : IComponentData, IQueryTypeParameter
+FFComponents.Presentation.VfxImpactDrawnAnchor :: public float3 Direction
+FFComponents.Presentation.VfxImpactDrawnAnchor :: public float3 HitPoint
+FFComponents.Presentation.VfxImpactDrawnAnchor :: public long HullKey
+FFComponents.Presentation.VfxImpactDrawnAnchor :: public long KindKey
 FFComponents.Presentation.VfxImpactDrawnAnchor :: public float3 Offset
 FFComponents.Presentation.VfxImpactDrawnAnchor :: public byte State
 FFComponents.Presentation.VfxImpactDrawnAnchor :: public Entity Target
+FFComponents.Presentation.VfxImpactDrawnAnchor :: public float3 TargetPosition
+FFComponents.Presentation.VfxImpactDrawnAnchor :: public quaternion TargetRotation
 FFComponents.Presentation.VfxImpactDrawnAnchorState :: public enum VfxImpactDrawnAnchorState : byte
 FFComponents.Presentation.VfxImpactDrawnAnchorState :: None = 0
 FFComponents.Presentation.VfxImpactDrawnAnchorState :: Pending = 1
@@ -3406,6 +3460,7 @@ FFComponents.Selection.SelectFromAnywhereMarkerBaker :: public override void Bak
 FFComponents.Selection.SelectionMarker :: public struct SelectionMarker : IComponentData, IQueryTypeParameter
 FFComponents.Selection.SelectionMarker :: public float3 FinalPosition
 FFComponents.Selection.SelectionMarker :: public int Length
+FFComponents.Selection.SelectionMarker :: public Entity Target
 FFComponents.Selection.SelectionMarker :: public int Width
 FFComponents.Selection.SelectionMarkerAuthoring :: public class SelectionMarkerAuthoring : MonoBehaviour
 FFComponents.Selection.SelectionMarkerAuthoring :: public float3 FinalPosition
@@ -3551,6 +3606,29 @@ FFComponents.Stations.JunctionAuthoring :: public JunctionAuthoring()
 FFComponents.Stations.JunctionBaker :: public class JunctionBaker : Baker<JunctionAuthoring>
 FFComponents.Stations.JunctionBaker :: public JunctionBaker()
 FFComponents.Stations.JunctionBaker :: public override void Bake(JunctionAuthoring authoring)
+FFComponents.Stations.JunctionSidePriority :: [Save] public struct JunctionSidePriority : IComponentData, IQueryTypeParameter
+FFComponents.Stations.JunctionSidePriority :: public uint InputTurns
+FFComponents.Stations.JunctionSidePriority :: public uint Levels
+FFComponents.Stations.JunctionSidePriority :: public const byte MaxLevel = 3
+FFComponents.Stations.JunctionSidePriority :: public const byte None = 0
+FFComponents.Stations.JunctionSidePriority :: public uint OutputTurns
+FFComponents.Stations.JunctionSidePriority :: public const int SideCount = 4
+FFComponents.Stations.JunctionSidePriority :: public const byte SlotFilledWithoutLevel = 4
+FFComponents.Stations.JunctionSidePriority :: public uint SlotLevels
+FFComponents.Stations.JunctionSidePriority :: public bool HasLevels { get; }
+FFComponents.Stations.JunctionSidePriority :: public static byte GetByte(uint packed, int index)
+FFComponents.Stations.JunctionSidePriority :: public static bool IsValid(uint levels)
+FFComponents.Stations.JunctionSidePriority :: public byte LevelOf(int side)
+FFComponents.Stations.JunctionSidePriority :: public static int LevelRank(byte level)
+FFComponents.Stations.JunctionSidePriority :: public static int Rank(uint levels, uint turns, int side)
+FFComponents.Stations.JunctionSidePriority :: public static uint Served(uint levels, uint turns, int side)
+FFComponents.Stations.JunctionSidePriority :: public static uint SetByte(uint packed, int index, byte value)
+FFComponents.Stations.JunctionSidePriority :: public static int SlotRank(byte recorded)
+FFComponents.Stations.JunctionSidePriority :: public static byte SlotValue(byte level)
+FFComponents.Stations.JunctionTurns :: [Save] public struct JunctionTurns : IComponentData, IQueryTypeParameter
+FFComponents.Stations.JunctionTurns :: public byte LastInputSide
+FFComponents.Stations.JunctionTurns :: public byte LastInventorySlot
+FFComponents.Stations.JunctionTurns :: public const byte None = 0
 FFComponents.Stations.LogisticsBay :: public struct LogisticsBay : IComponentData, IQueryTypeParameter
 FFComponents.Stations.LogisticsBayAuthoring :: public class LogisticsBayAuthoring : MonoBehaviour
 FFComponents.Stations.LogisticsBayAuthoring :: public LogisticsBayAuthoring()
@@ -3819,6 +3897,7 @@ FFComponents.Turrets.LaserTurretAuthoring :: public LaserTurretAuthoring()
 FFComponents.Turrets.LaserTurretBaker :: public class LaserTurretBaker : Baker<LaserTurretAuthoring>
 FFComponents.Turrets.LaserTurretBaker :: public LaserTurretBaker()
 FFComponents.Turrets.LaserTurretBaker :: public override void Bake(LaserTurretAuthoring authoring)
+FFComponents.UnitStateMarkers.PreventFleetIdleMarker :: [Save] public struct PreventFleetIdleMarker : IComponentData, IQueryTypeParameter
 FFComponents.UnitStateMarkers.PreventKnnDisablingMarker :: public struct PreventKnnDisablingMarker : IComponentData, IQueryTypeParameter
 FFComponents.UnitStateMarkers.PreventMotionMarker :: [Save] public struct PreventMotionMarker : IComponentData, IQueryTypeParameter
 FFComponents.UnitStateMarkers.PreventMotionMarker :: public byte Marker
@@ -4120,6 +4199,7 @@ FFCore.Blueprints.BlueprintMetaItem :: public bool HasLightColor
 FFCore.Blueprints.BlueprintMetaItem :: public int InserterMaxRangeTiles
 FFCore.Blueprints.BlueprintMetaItem :: public bool IsLandCommand
 FFCore.Blueprints.BlueprintMetaItem :: public FixedString128Bytes ItemName
+FFCore.Blueprints.BlueprintMetaItem :: public int JunctionSideLevels
 FFCore.Blueprints.BlueprintMetaItem :: public int Length
 FFCore.Blueprints.BlueprintMetaItem :: public Color LightColor
 FFCore.Blueprints.BlueprintMetaItem :: public bool LightSwitchedOff
@@ -4163,6 +4243,7 @@ FFCore.Blueprints.BlueprintMetaItemManaged :: public int3 GridTile
 FFCore.Blueprints.BlueprintMetaItemManaged :: public bool HasLightColor
 FFCore.Blueprints.BlueprintMetaItemManaged :: public int InserterMaxRangeTiles
 FFCore.Blueprints.BlueprintMetaItemManaged :: public string ItemName
+FFCore.Blueprints.BlueprintMetaItemManaged :: public int JunctionSideLevels
 FFCore.Blueprints.BlueprintMetaItemManaged :: public int Length
 FFCore.Blueprints.BlueprintMetaItemManaged :: public Color LightColor
 FFCore.Blueprints.BlueprintMetaItemManaged :: public bool LightSwitchedOff
@@ -5011,6 +5092,7 @@ FFCore.Config.WeaponConfig :: public int ImpactEffectId
 FFCore.Config.WeaponConfig :: public FixedString64Bytes ImpactName
 FFCore.Config.WeaponConfig :: public int MaxRange
 FFCore.Config.WeaponConfig :: public int MaxTurnDegrees
+FFCore.Config.WeaponConfig :: public fp PlayerLeadFraction
 FFCore.Config.WeaponConfig :: [Obsolete("Use Unique name instead to identify the weapon and its effect.")] public ProjectileType ProjectileType
 FFCore.Config.WeaponConfig :: public float ShotCooldown
 FFCore.Config.WeaponConfig :: public fp ShotCooldownFp
@@ -5051,6 +5133,7 @@ FFCore.Config.WorldObjectConfigDataBlittable :: public SmallBuffer<WorldObjectCh
 FFCore.Config.WorldObjectConfigDataBlittable :: public bool IsIrregular
 FFCore.Config.WorldObjectConfigDataBlittable :: public int ItemIdentifier
 FFCore.Config.WorldObjectConfigDataBlittable :: public float MinDistanceFromStart
+FFCore.Config.WorldObjectConfigDataBlittable :: public int NeighbourClearance
 FFCore.Config.WorldObjectConfigDataBlittable :: public fp ProbabilityChildrenSpawn
 FFCore.Config.WorldObjectConfigDataBlittable :: public RotationRandomization RotationRandomization
 FFCore.Config.WorldObjectConfigDataBlittable :: public ScaleConfig ScaleRange
@@ -5242,6 +5325,9 @@ FFCore.Fleet.State :: LogisticsOperation = 6
 FFCore.Fleet.State :: AttackMove = 7
 FFCore.GameRunning.AttackData :: public struct AttackData : IComponentData, IQueryTypeParameter
 FFCore.GameRunning.AttackData :: public int NumAttacks
+FFCore.GameRunning.AttackData :: public fp RaidClockStartTime
+FFCore.GameRunning.AttackData :: public byte RaidClockState
+FFCore.GameRunning.AttackData :: public byte RaidClockTrigger
 FFCore.GameRunning.AttackData :: public int WarningsIssued
 FFCore.GameRunning.CosmicObjectTourismData :: public struct CosmicObjectTourismData : IComponentData, IQueryTypeParameter
 FFCore.GameRunning.CosmicObjectTourismData :: public bool SeenBlackHole
@@ -5309,6 +5395,24 @@ FFCore.GameRunning.PersistentData :: public int SupplyBotCarryCapacity
 FFCore.GameRunning.PersistentData :: public bool WasFleetHidden
 FFCore.GameRunning.PersistentEntitiesContainer :: public struct PersistentEntitiesContainer : IComponentData, IQueryTypeParameter
 FFCore.GameRunning.PersistentEntitiesContainer :: public Entity SingularityInventoryEntity
+FFCore.GameRunning.RaidClock :: public static class RaidClock
+FFCore.GameRunning.RaidClock :: public const string AsteroidScienceTechName = "Asteroid Science"
+FFCore.GameRunning.RaidClock :: public const byte Started = 2
+FFCore.GameRunning.RaidClock :: public const byte TriggerAsteroidScience = 3
+FFCore.GameRunning.RaidClock :: public const byte TriggerFixture = 5
+FFCore.GameRunning.RaidClock :: public const byte TriggerLegacySave = 4
+FFCore.GameRunning.RaidClock :: public const byte TriggerNone = 0
+FFCore.GameRunning.RaidClock :: public const byte TriggerShipAssembler = 1
+FFCore.GameRunning.RaidClock :: public const byte TriggerTutorialCombat = 2
+FFCore.GameRunning.RaidClock :: public const byte Unresolved = 0
+FFCore.GameRunning.RaidClock :: public const byte Waiting = 1
+FFCore.GameRunning.RaidClock :: public static bool CountdownElapsed(in AttackData data, fp simulationElapsedTime, int countdownMinutes)
+FFCore.GameRunning.RaidClock :: public static fp CountdownSeconds(int countdownMinutes)
+FFCore.GameRunning.RaidClock :: public static string Describe(in AttackData data)
+FFCore.GameRunning.RaidClock :: public static bool IsStarted(in AttackData data)
+FFCore.GameRunning.RaidClock :: public static bool TryResolve(ref AttackData data, fp simulationElapsedTime, int countdownMinutes)
+FFCore.GameRunning.RaidClock :: public static bool TryStart(ref AttackData data, fp now, byte trigger)
+FFCore.GameRunning.RaidClock :: public static bool TryStartNow(byte trigger)
 FFCore.GameRunning.SerializableLootBoxChunkData :: public class SerializableLootBoxChunkData : ISerializable
 FFCore.GameRunning.SerializableLootBoxChunkData :: public SerializableLootBoxChunkData.SerializableInt2[] LootBoxKeys
 FFCore.GameRunning.SerializableLootBoxChunkData :: public int[] LootBoxValues
@@ -5346,6 +5450,7 @@ FFCore.GlobalConfig.CombatSettings :: public float DamageMultiplierDistanceCoeff
 FFCore.GlobalConfig.CombatSettings :: public int EasySpawnRadius
 FFCore.GlobalConfig.CombatSettings :: public int EnemyAttackChunkRadius
 FFCore.GlobalConfig.CombatSettings :: public ushort EnemyChunkRadius
+FFCore.GlobalConfig.CombatSettings :: public EnemyDamageZoneSettings EnemyDamageToPlayer
 FFCore.GlobalConfig.CombatSettings :: public float EnemyDifficultyCoefficient
 FFCore.GlobalConfig.CombatSettings :: public fp GameDifficultyCampGrowthSlopeFP
 FFCore.GlobalConfig.CombatSettings :: public float HealthMultiplierDistanceCoefficient
@@ -5359,6 +5464,10 @@ FFCore.GlobalConfig.CombatSettings :: public int MinSignalRequiredForAttacksInCh
 FFCore.GlobalConfig.CombatSettings :: public int MinimumEnemiesNeededForAttack
 FFCore.GlobalConfig.CombatSettings :: public int RequiredDistanceToActivePlayerChunks
 FFCore.GlobalConfig.CombatSettings :: public fp StartZoneRadiusFP
+FFCore.GlobalConfig.EnemyDamageZoneSettings :: public struct EnemyDamageZoneSettings
+FFCore.GlobalConfig.EnemyDamageZoneSettings :: public fp DeepSpaceMultiplier
+FFCore.GlobalConfig.EnemyDamageZoneSettings :: public fp DeepSpaceRadius
+FFCore.GlobalConfig.EnemyDamageZoneSettings :: public fp OutsideHavenMultiplier
 FFCore.GlobalConfig.GlobalConfig :: public struct GlobalConfig : IComponentData, IQueryTypeParameter
 FFCore.GlobalConfig.GlobalConfig :: public CombatSettings Combat
 FFCore.GlobalConfig.GlobalConfig :: public LogisticsSettings Logistics
@@ -5403,11 +5512,31 @@ FFCore.Haulers.DockingStep :: Dock = 2
 FFCore.Haulers.InQueueStateType :: public enum InQueueStateType
 FFCore.Haulers.InQueueStateType :: EnRoute = 0
 FFCore.Haulers.InQueueStateType :: InPosition = 1
+FFCore.Haulers.ItemCountComparison :: public enum ItemCountComparison : byte
+FFCore.Haulers.ItemCountComparison :: GreaterThan = 0
+FFCore.Haulers.ItemCountComparison :: LessThan = 1
+FFCore.Haulers.ItemCountComparison :: GreaterOrEqual = 2
+FFCore.Haulers.ItemCountComparison :: LessOrEqual = 3
+FFCore.Haulers.ItemCountComparison :: Equal = 4
+FFCore.Haulers.ItemCountComparison :: NotEqual = 5
 FFCore.Haulers.OutOfSyncResult :: public enum OutOfSyncResult
 FFCore.Haulers.OutOfSyncResult :: InSync = 0
 FFCore.Haulers.OutOfSyncResult :: StopEntityDeletedFromWorld = 1
 FFCore.Haulers.OutOfSyncResult :: StopDeletedFromHaulerList = 2
 FFCore.Haulers.OutOfSyncResult :: HaulerOrphaned = 3
+FFCore.Haulers.StopConditionJoin :: public enum StopConditionJoin : byte
+FFCore.Haulers.StopConditionJoin :: Or = 0
+FFCore.Haulers.StopConditionJoin :: And = 1
+FFCore.Haulers.StopConditionRules :: public static class StopConditionRules
+FFCore.Haulers.StopConditionRules :: public const int ComparisonCount = 6
+FFCore.Haulers.StopConditionRules :: public const int MaxConditionsPerStop = 8
+FFCore.Haulers.StopConditionRules :: public static bool Compare(int have, ItemCountComparison comparison, int target)
+FFCore.Haulers.StopConditionRules :: public static bool IsValidComparison(int comparison)
+FFCore.Haulers.StopConditionRules :: public static bool IsValidJoin(int join)
+FFCore.Haulers.StopConditionRules :: public static bool IsValidStopType(int stopType)
+FFCore.Haulers.StopConditionVerdict :: public struct StopConditionVerdict
+FFCore.Haulers.StopConditionVerdict :: public readonly bool Met { get; }
+FFCore.Haulers.StopConditionVerdict :: public void Add(StopConditionJoin join, bool met)
 FFCore.Haulers.StopType :: public enum StopType
 FFCore.Haulers.StopType :: Inactive = 0
 FFCore.Haulers.StopType :: Time = 1
@@ -5581,9 +5710,11 @@ FFCore.Logistics.TransitState :: ToOwner = 11
 FFCore.Logistics.TransitState :: AtOwner = 12
 FFCore.Map.BiomeGeneration :: public static class BiomeGeneration
 FFCore.Map.BiomeGeneration :: public const int GridBiomeSize = 256
+FFCore.Map.BiomeGeneration :: public const int HavenRadiusTiles = 90
 FFCore.Map.BiomeGeneration :: public static int2 GetBiomeGridMax(int2 cell)
 FFCore.Map.BiomeGeneration :: public static int2 GetBiomeGridMin(int2 cell)
 FFCore.Map.BiomeGeneration :: public static FixedString32Bytes GetBiomeType(int2 coord, uint seed)
+FFCore.Map.BiomeGeneration :: public static bool IsHavenBlock(int2 block)
 FFCore.Map.BiomeMetadata :: public struct BiomeMetadata
 FFCore.Map.BiomeMetadata :: public int2 BoundsMax
 FFCore.Map.BiomeMetadata :: public int2 BoundsMin
@@ -5606,6 +5737,14 @@ FFCore.Map.BlittableWorldObjectBiomeData :: public WorldObjectBiomeDistribution 
 FFCore.Map.BlittableWorldObjectBiomeData :: public int MaxCountInBiome
 FFCore.Map.BlittableWorldObjectBiomeData :: public int ObjectId
 FFCore.Map.BlittableWorldObjectBiomeData :: public float Value
+FFCore.Map.EnemyDamageZone :: public enum EnemyDamageZone : byte
+FFCore.Map.EnemyDamageZone :: Haven = 0
+FFCore.Map.EnemyDamageZone :: OutsideHaven = 1
+FFCore.Map.EnemyDamageZone :: DeepSpace = 2
+FFCore.Map.EnemyDamageZones :: public static class EnemyDamageZones
+FFCore.Map.EnemyDamageZones :: public static fp GetMultiplier(EnemyDamageZone zone, in EnemyDamageZoneSettings settings)
+FFCore.Map.EnemyDamageZones :: public static fp GetMultiplier(fp3 position, in EnemyDamageZoneSettings settings)
+FFCore.Map.EnemyDamageZones :: public static EnemyDamageZone GetZone(fp3 position, fp deepSpaceRadius)
 FFCore.Map.WorldObjectBiomeDistribution :: public enum WorldObjectBiomeDistribution
 FFCore.Map.WorldObjectBiomeDistribution :: Density = 0
 FFCore.Map.WorldObjectBiomeDistribution :: Central = 1
@@ -6309,6 +6448,9 @@ FFCore.Utils.IntWrapper :: public int Value
 FFCore.Utils.IntWrapper :: public bool Exists { readonly get; set; }
 FFCore.Utils.IntWrapper :: public static IntWrapper From(int value)
 FFCore.Utils.IntWrapper :: public void MakeNonExistent()
+FFCore.Utils.InterceptAim :: public static class InterceptAim
+FFCore.Utils.InterceptAim :: public static fp3 AimPoint(fp3 shooter, fp3 target, fp3 targetVelocity, fp projectileSpeed, fp leadFraction)
+FFCore.Utils.InterceptAim :: public static bool TryInterceptTime(fp3 toTarget, fp3 targetVelocity, fp projectileSpeed, out fp time)
 FFCore.Utils.LinkedEntityGroupHygiene :: public static class LinkedEntityGroupHygiene
 FFCore.Utils.LinkedEntityGroupHygiene :: public static int RemoveDeadLinks(ref DynamicBuffer<LinkedEntityGroup> group, in EntityStorageInfoLookup storage)
 FFCore.Utils.LinkedEntityGroupHygiene :: public static void RemoveLink(ref DynamicBuffer<LinkedEntityGroup> group, in Entity entity)
@@ -6376,7 +6518,7 @@ FFCore.Version.FFVersion :: public readonly struct FFVersion : IEquatable<FFVers
 FFCore.Version.FFVersion :: public static readonly FFVersion Empty
 FFCore.Version.FFVersion :: public static FFVersion FinalFactoryVersion
 FFCore.Version.FFVersion :: public static readonly FFVersion MinimumSaveVersion
-FFCore.Version.FFVersion :: public const string ReleasedUtc = "2026-10-05T18:18:28Z"
+FFCore.Version.FFVersion :: public const string ReleasedUtc = "2026-10-09T10:54:13Z"
 FFCore.Version.FFVersion :: public int Major { get; }
 FFCore.Version.FFVersion :: public int Minor { get; }
 FFCore.Version.FFVersion :: public int Patch { get; }
@@ -6664,6 +6806,7 @@ FFSystems.Blueprints.BlueprintMirror :: public static bool IsExactMirror(in Plac
 FFSystems.Blueprints.BlueprintMirror :: public static void MirrorAnchor(ref int3 relativeTile, ref int3 bodyOffset, int worldWidth, int worldLength, int boundsMinPlusMax, MirrorAxis axis)
 FFSystems.Blueprints.BlueprintMirror :: public static Direction MirrorDirection(Direction direction, MirrorAxis axis)
 FFSystems.Blueprints.BlueprintMirror :: public static Direction MirrorFacing(in PlaceableConfig config, Placeable placeable, MirrorAxis axis)
+FFSystems.Blueprints.BlueprintMirror :: public static uint MirrorJunctionSideLevels(uint levels, Placeable before, Placeable after, MirrorAxis axis)
 FFSystems.Blueprints.BlueprintMirror :: public static int MirrorPriorityIndex(int priorityIndex, Placeable before, Placeable after, MirrorAxis axis)
 FFSystems.Blueprints.BlueprintMirror :: public static int3 MirrorRelativeTarget(int3 offset, int sourceWidth, int sourceLength, MirrorAxis axis)
 FFSystems.Blueprints.BlueprintMirror :: public static int MirrorWorldSlot(int worldSlot, int worldWidth, int worldLength, MirrorAxis axis)
@@ -6983,6 +7126,7 @@ FFSystems.Combat.HealthRegenSystem :: public void OnCreateForCompiler(ref System
 FFSystems.Combat.HealthRegenSystem :: public void OnUpdate(ref SystemState systemState)
 FFSystems.Combat.IncomingHealthChangeSystem :: [UpdateInGroup(typeof(FFFixedEarlyGroup))] public struct IncomingHealthChangeSystem : ISystem, ISystemCompilerGenerated
 FFSystems.Combat.IncomingHealthChangeSystem :: public const float AttackLingerSeconds = 8
+FFSystems.Combat.IncomingHealthChangeSystem :: public static bool IsEnemyWeaponSource(Source source)
 FFSystems.Combat.IncomingHealthChangeSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.Combat.IncomingHealthChangeSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.Combat.IncomingHealthChangeSystem :: public void OnUpdate(ref SystemState systemState)
@@ -6990,10 +7134,12 @@ FFSystems.Combat.IncomingHealthChangeSystem.IncomingHealthChangeJob :: public st
 FFSystems.Combat.IncomingHealthChangeSystem.IncomingHealthChangeJob :: public ComponentLookup<AttackWarningData> AllAttackWarningData
 FFSystems.Combat.IncomingHealthChangeSystem.IncomingHealthChangeJob :: public ComponentLookup<Enemy> AllEnemies
 FFSystems.Combat.IncomingHealthChangeSystem.IncomingHealthChangeJob :: public ComponentLookup<Placeable> AllPlaceables
+FFSystems.Combat.IncomingHealthChangeSystem.IncomingHealthChangeJob :: public ComponentLookup<Player> AllPlayers
 FFSystems.Combat.IncomingHealthChangeSystem.IncomingHealthChangeJob :: public EntityCommandBuffer.ParallelWriter Cb
 FFSystems.Combat.IncomingHealthChangeSystem.IncomingHealthChangeJob :: public NativeArray<int> ChunkBaseEntityIndices
 FFSystems.Combat.IncomingHealthChangeSystem.IncomingHealthChangeJob :: public EntityArchetype DeathMarkerArchetype
 FFSystems.Combat.IncomingHealthChangeSystem.IncomingHealthChangeJob :: public fp Dt
+FFSystems.Combat.IncomingHealthChangeSystem.IncomingHealthChangeJob :: public EnemyDamageZoneSettings EnemyDamageToPlayer
 FFSystems.Combat.IncomingHealthChangeSystem.IncomingHealthChangeJob :: public EntityTypeHandle EntityTypeHandle
 FFSystems.Combat.IncomingHealthChangeSystem.IncomingHealthChangeJob :: public ComponentLookup<HealthBarInitializer> HealthBarInitializerLookup
 FFSystems.Combat.IncomingHealthChangeSystem.IncomingHealthChangeJob :: public ComponentLookup<HealthBarReference> HealthBarLookup
@@ -7016,6 +7162,7 @@ FFSystems.Combat.NewShootingSystem :: public static Entity CreateProjectileEntit
 FFSystems.Combat.NewShootingSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.Combat.NewShootingSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.Combat.NewShootingSystem :: public void OnUpdate(ref SystemState systemState)
+FFSystems.Combat.NewShootingSystem :: public static float3 PlayerLeadAim(float3 sourcePos, in Player player, in WeaponConfig weaponConfig)
 FFSystems.Combat.OldBeamShootingSystem :: [UpdateInGroup(typeof(FFFixedEarlyGroup))] public struct OldBeamShootingSystem : ISystem, ISystemCompilerGenerated
 FFSystems.Combat.OldBeamShootingSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.Combat.OldBeamShootingSystem :: public void OnCreateForCompiler(ref SystemState state)
@@ -7037,6 +7184,7 @@ FFSystems.Combat.PlayerSimulationObjectIdentitySystem :: public void OnCreate(re
 FFSystems.Combat.PlayerSimulationObjectIdentitySystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.Combat.PlayerSimulationObjectIdentitySystem :: public void OnUpdate(ref SystemState systemState)
 FFSystems.Combat.TargetingSystem :: [UpdateInGroup(typeof(FFFixedPostTransformGroup))] public struct TargetingSystem : ISystem, ISystemCompilerGenerated
+FFSystems.Combat.TargetingSystem :: public const float PassiveSpellSeconds = 2
 FFSystems.Combat.TargetingSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.Combat.TargetingSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.Combat.TargetingSystem :: public void OnDestroy(ref SystemState systemState)
@@ -7047,12 +7195,14 @@ FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<KnnEnemyV
 FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<FleetControl> AllFleetControls
 FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<FleetIdleMarker> AllFleetIdleMarkers
 FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<FleetIgnoreColliderMarker> AllFleetIgnoreColliders
+FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<FleetShip> AllFleetShips
 FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<KnnFleetVision> AllFleetVisions
 FFSystems.Combat.TargetingSystem.TargeterJob :: public BufferLookup<GivenUpTarget> AllGiveUps
 FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<Health> AllHealths
 FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<ScalableLaserOwner> AllLasers
 FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<OutOfPlay> AllOutOfPlays
 FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<Placeable> AllPlaceables
+FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<PreventFleetIdleMarker> AllPreventFleetIdles
 FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<ShipMarker> AllShipMarkers
 FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<Shooter> AllShooters
 FFSystems.Combat.TargetingSystem.TargeterJob :: public ComponentLookup<TargetProgressTracker> AllTrackers
@@ -7149,6 +7299,8 @@ FFSystems.Comets.CometCatcherPlacementValidation :: public void OnCreate(ref Sys
 FFSystems.Comets.CometCatcherPlacementValidation :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.Comets.CometCatcherPlacementValidation :: public void OnUpdate(ref SystemState systemState)
 FFSystems.Comets.CometCatcherSystem :: [UpdateInGroup(typeof(FFFixedEarlyGroup))] public struct CometCatcherSystem : ISystem, ISystemCompilerGenerated
+FFSystems.Comets.CometCatcherSystem :: public const int SpawnHeight = 500
+FFSystems.Comets.CometCatcherSystem :: public static int GetCometXFixedPoint(float y)
 FFSystems.Comets.CometCatcherSystem :: public static float3 GetNextCoordinate(int nextX)
 FFSystems.Comets.CometCatcherSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.Comets.CometCatcherSystem :: public void OnCreateForCompiler(ref SystemState state)
@@ -7157,7 +7309,23 @@ FFSystems.Comets.CometCatcherTransferSystem :: [UpdateInGroup(typeof(FFFixedPreT
 FFSystems.Comets.CometCatcherTransferSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.Comets.CometCatcherTransferSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.Comets.CometCatcherTransferSystem :: public void OnUpdate(ref SystemState systemState)
+FFSystems.Comets.CometLane :: public static class CometLane
+FFSystems.Comets.CometLane :: public const float DefaultVisionRange = 55
+FFSystems.Comets.CometLane :: public const int MaxTicks = 4096
+FFSystems.Comets.CometLane :: public static bool Extent(CometLane.Tick[] ticks, int count, float radius, float height, out float min, out float max)
+FFSystems.Comets.CometLane :: public static float HalfWidth(CometLane.Tick[] ticks, int count, float radius, float forward, float height)
+FFSystems.Comets.CometLane :: public static bool IsInDanger(CometLane.Tick[] ticks, int count, float radius, float forward, float lateral, float height)
+FFSystems.Comets.CometLane :: public static int Trace(fp dt, float catcherWorldY, CometLane.Tick[] ticks)
+FFSystems.Comets.CometLane.Tick :: public struct CometLane.Tick
+FFSystems.Comets.CometLane.Tick :: public float2 Centre
+FFSystems.Comets.CometLane.Tick :: public bool Lethal
 FFSystems.Comets.CometMoverSystem :: [UpdateInGroup(typeof(FFFixedPreTransformGroup))] public struct CometMoverSystem : ISystem, ISystemCompilerGenerated
+FFSystems.Comets.CometMoverSystem :: public const int InitialSlowdownDistance = 20000
+FFSystems.Comets.CometMoverSystem :: public const float LethalHeightMax = 60
+FFSystems.Comets.CometMoverSystem :: public const float LethalHeightMin = 2
+FFSystems.Comets.CometMoverSystem :: public const int PoopSpeed = 80000
+FFSystems.Comets.CometMoverSystem :: public static bool IsLethalHeight(float y)
+FFSystems.Comets.CometMoverSystem :: public static int NextPoopX(int currentPoopX, fp dt)
 FFSystems.Comets.CometMoverSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.Comets.CometMoverSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.Comets.CometMoverSystem :: public void OnUpdate(ref SystemState systemState)
@@ -7274,6 +7442,8 @@ FFSystems.Connectors.RoundRobinOutputToConnectorSystem.RoundRobinOutputToConnect
 FFSystems.Connectors.RoundRobinOutputToConnectorSystem.RoundRobinOutputToConnectorJob :: public BufferTypeHandle<InventorySlot> InventorySlotTypeHandleRW
 FFSystems.Connectors.RoundRobinOutputToConnectorSystem.RoundRobinOutputToConnectorJob :: public BufferTypeHandle<InventoryUpdateNotifier> InventoryUpdateNotifierTypeHandleRW
 FFSystems.Connectors.RoundRobinOutputToConnectorSystem.RoundRobinOutputToConnectorJob :: public NativeArray<AsteroItemConfigData> ItemConfigs
+FFSystems.Connectors.RoundRobinOutputToConnectorSystem.RoundRobinOutputToConnectorJob :: public ComponentTypeHandle<JunctionSidePriority> JunctionSidePriorityTypeHandleRW
+FFSystems.Connectors.RoundRobinOutputToConnectorSystem.RoundRobinOutputToConnectorJob :: public ComponentTypeHandle<JunctionTurns> JunctionTurnsTypeHandleRW
 FFSystems.Connectors.RoundRobinOutputToConnectorSystem.RoundRobinOutputToConnectorJob :: public ComponentLookup<LocalTransform> LocalTransformLookup
 FFSystems.Connectors.RoundRobinOutputToConnectorSystem.RoundRobinOutputToConnectorJob :: public ComponentTypeHandle<InventoryMetaData> MetaDataTypeHandleRO
 FFSystems.Connectors.RoundRobinOutputToConnectorSystem.RoundRobinOutputToConnectorJob :: public BufferTypeHandle<ModuleOutputConnection> ModuleOutputConnectionTypeHandleRO
@@ -7345,7 +7515,7 @@ FFSystems.ConstructionBots.ConstructionBotPoolMode :: public enum ConstructionBo
 FFSystems.ConstructionBots.ConstructionBotPoolMode :: Player = 0
 FFSystems.ConstructionBots.ConstructionBotPoolMode :: Tower = 1
 FFSystems.ConstructionBots.ConstructionBotTaskSystem :: [UpdateInGroup(typeof(FFFixedPreTransformGroup))] [UpdateAfter(typeof(ConstructionTaskAssignerSystem))] public struct ConstructionBotTaskSystem : ISystem, ISystemCompilerGenerated
-FFSystems.ConstructionBots.ConstructionBotTaskSystem :: public static void FinishConstruction(Entity constructionTaskEntity, Placeable placeable, EntityCommandBuffer cb, ActiveItemDisplay activeItemDisplay, bool hasActiveItemDisplay, Crafter crafter, bool hasCrafter, RenderMeshChildren renderMeshChildren, DynamicBuffer<LinkedEntityGroup> linkedEntityGroup, ref LocalTransform mainMeshLocalTransform, NativeArray<DynamicConfig> dynamicConfigs)
+FFSystems.ConstructionBots.ConstructionBotTaskSystem :: public static void FinishConstruction(Entity constructionTaskEntity, Placeable placeable, EntityCommandBuffer cb, Crafter crafter, bool hasCrafter, RenderMeshChildren renderMeshChildren, DynamicBuffer<LinkedEntityGroup> linkedEntityGroup, ref LocalTransform mainMeshLocalTransform, NativeArray<DynamicConfig> dynamicConfigs)
 FFSystems.ConstructionBots.ConstructionBotTaskSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.ConstructionBots.ConstructionBotTaskSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.ConstructionBots.ConstructionBotTaskSystem :: public void OnUpdate(ref SystemState systemState)
@@ -7391,9 +7561,11 @@ FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<Cr
 FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<DefensePlatformMarker> DefensePlatformMarkers
 FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<Filter> Filters
 FFSystems.ConstructionBots.SwappedStructureSettings :: public NativeArray<FleetConfig> FleetConfigs
+FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<HaulerReference> HaulerReferences
 FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<Inserter> Inserters
 FFSystems.ConstructionBots.SwappedStructureSettings :: public InventoryHelper.InventoryNativeContainers InventoryContainers
 FFSystems.ConstructionBots.SwappedStructureSettings :: public NativeArray<InventoryMetaDataConfig> InventoryMetaDataConfigs
+FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<JunctionSidePriority> JunctionSidePriorities
 FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<LightStructure> LightStructures
 FFSystems.ConstructionBots.SwappedStructureSettings :: public BufferLookup<LogisticsRequestItem> LogisticsRequestItems
 FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<LogisticsRequester> LogisticsRequesters
@@ -7407,6 +7579,7 @@ FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<Re
 FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<RequesterCargoHold> RequesterCargoHolds
 FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<RoundRobinOutputToConnector> RoundRobins
 FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<SpawnerChest> SpawnerChests
+FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<StationLock> StationLocks
 FFSystems.ConstructionBots.SwappedStructureSettings :: public ComponentLookup<TargetStructureMemory> TargetStructureMemories
 FFSystems.ConstructionBots.SwappedStructureSettings :: public static void CarrySlotStates(DynamicBuffer<InventorySlot> slots, int oldCount, int newCount)
 FFSystems.ConstructionBots.SwappedStructureSettings :: public void Copy(Entity source, Entity target, Entity prefab, Placeable newPlaceable, EntityCommandBuffer cb)
@@ -7722,6 +7895,9 @@ FFSystems.EnemyAttacking.AttackPriorityCalculatorSystem.AttackScheduleJob.UnitSi
 FFSystems.EnemyAttacking.AttackPriorityCalculatorSystem.AttackScheduleJob.UnitSignalCostComparer :: public struct AttackPriorityCalculatorSystem.AttackScheduleJob.UnitSignalCostComparer : IComparer<UnitSignalCost>
 FFSystems.EnemyAttacking.AttackPriorityCalculatorSystem.AttackScheduleJob.UnitSignalCostComparer :: public int Compare(AttackPriorityCalculatorSystem.AttackScheduleJob.UnitSignalCost a, AttackPriorityCalculatorSystem.AttackScheduleJob.UnitSignalCost b)
 FFSystems.EnemyAttacking.AttackPriorityCalculatorSystem.SerializedAttackSystemData :: public class AttackPriorityCalculatorSystem.SerializedAttackSystemData
+FFSystems.EnemyAttacking.AttackPriorityCalculatorSystem.SerializedAttackSystemData :: public fp RaidClockStartTime
+FFSystems.EnemyAttacking.AttackPriorityCalculatorSystem.SerializedAttackSystemData :: public byte RaidClockState
+FFSystems.EnemyAttacking.AttackPriorityCalculatorSystem.SerializedAttackSystemData :: public byte RaidClockTrigger
 FFSystems.EnemyAttacking.AttackPriorityCalculatorSystem.SerializedAttackSystemData :: public int TotalNumAttacks
 FFSystems.EnemyAttacking.AttackPriorityCalculatorSystem.SerializedAttackSystemData :: public int WarningsIssued
 FFSystems.EnemyAttacking.AttackPriorityCalculatorSystem.SerializedAttackSystemData :: public SerializedAttackSystemData()
@@ -7893,6 +8069,9 @@ FFSystems.Fleet.EnemyShipSpawnerSystem :: public void OnCreateForCompiler(ref Sy
 FFSystems.Fleet.EnemyShipSpawnerSystem :: public void OnUpdate(ref SystemState systemState)
 FFSystems.Fleet.EnemyShipSpawnerSystem :: public static void SpawnWorldEnemy(Entity entity, Entity prefab, int3 spawningTile, float3 spawnerPosition, int shipToSpawn, GameplaySettings gameplaySettings, CombatSettings combatSettings, NativeArray<FleetConfig> fleetConfig, EntityCommandBuffer cb, bool stampCombatIdentity, long simulationTimeRaw, in ComponentLookup<DeterministicCombatObjectId> combatObjectIds, ref ComponentLookup<DeterministicSpawnSequence> spawnSequences)
 FFSystems.Fleet.FleetCommanderSystem :: [UpdateInGroup(typeof(FFFixedPreTransformGroup))] [UpdateBefore(typeof(FleetIdleSystem))] [UpdateBefore(typeof(FleetIdleStationSystem))] public struct FleetCommanderSystem : ISystem, ISystemCompilerGenerated
+FFSystems.Fleet.FleetCommanderSystem :: public const float PlayerJumpSpeedFactor = 6
+FFSystems.Fleet.FleetCommanderSystem :: public const float PlayerUnevenSampleFactor = 4
+FFSystems.Fleet.FleetCommanderSystem :: public static float3 DerivePlayerCommanderVelocity(float3 simulationPosition, float3 lastSimulationPosition, float dt, float baseMoveSpeed)
 FFSystems.Fleet.FleetCommanderSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.Fleet.FleetCommanderSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.Fleet.FleetCommanderSystem :: public void OnUpdate(ref SystemState systemState)
@@ -8054,6 +8233,7 @@ FFSystems.Heat.PowerReceiverHeatGenerationSystem :: public void OnCreateForCompi
 FFSystems.Heat.PowerReceiverHeatGenerationSystem :: public void OnUpdate(ref SystemState systemState)
 FFSystems.Indicators.ActiveItemDisplaySystem :: [UpdateInGroup(typeof(FFFixedPreTransformGroup))] public struct ActiveItemDisplaySystem : ISystem, ISystemCompilerGenerated
 FFSystems.Indicators.ActiveItemDisplaySystem :: public static bool ShowActiveItemDisplays { get; set; }
+FFSystems.Indicators.ActiveItemDisplaySystem :: public static LocalTransform IconPose(in ActiveItemDisplay display, quaternion parentRotation)
 FFSystems.Indicators.ActiveItemDisplaySystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.Indicators.ActiveItemDisplaySystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.Indicators.ActiveItemDisplaySystem :: public void OnUpdate(ref SystemState systemState)
@@ -8490,8 +8670,19 @@ FFSystems.Map.EntityGridPersistenceSystem.OccupantBlock :: public int Version
 FFSystems.Map.EntityGridPersistenceSystem.SaveData :: public class EntityGridPersistenceSystem.SaveData
 FFSystems.Map.EntityGridPersistenceSystem.SaveData :: public EntityGridPersistenceSystem.OccupantBlock[] Occupants
 FFSystems.Map.EntityGridPersistenceSystem.SaveData :: public SaveData()
+FFSystems.Map.GasGiantSwap :: public struct GasGiantSwap
+FFSystems.Map.GasGiantSwap :: public int GasGiantId
+FFSystems.Map.GasGiantSwap :: public const string GasGiantName = "Gas Giant"
+FFSystems.Map.GasGiantSwap :: public const uint OneIn = 3
+FFSystems.Map.GasGiantSwap :: public int TerraWorldId
+FFSystems.Map.GasGiantSwap :: public const string TerraWorldName = "Terra World"
+FFSystems.Map.GasGiantSwap :: public bool IsActive { get; }
+FFSystems.Map.GasGiantSwap :: public int Apply(int itemId, uint masterSeed, int2 cell)
+FFSystems.Map.GasGiantSwap :: public static GasGiantSwap Resolve(in ItemConfig itemConfig)
+FFSystems.Map.GasGiantSwap :: public static bool Swaps(uint masterSeed, int2 cell)
 FFSystems.Map.MapGeneratorSystem :: [UpdateInGroup(typeof(FFFixedPreTransformGroup))] public class MapGeneratorSystem : NoUpdateSystem, ISerializableSystem, IGameResetter, IBinarySerializableSystem
 FFSystems.Map.MapGeneratorSystem :: public static readonly Vector3 FirstEnemySpawnerPos
+FFSystems.Map.MapGeneratorSystem :: public static readonly Vector3 LegacyFirstEnemySpawnerPos
 FFSystems.Map.MapGeneratorSystem :: public byte CurrentVersion { get; }
 FFSystems.Map.MapGeneratorSystem :: public MapGeneratorSystem()
 FFSystems.Map.MapGeneratorSystem :: public void Deserialize(object serialized, Dictionary<int, int> finalizedIdToIdMap)
@@ -8531,6 +8722,13 @@ FFSystems.Map.MapItemGridding :: public bool PrefabDecisionResolved
 FFSystems.Map.MapItemGridding :: public ComponentLookup<StationGridReference> StationGridReferences
 FFSystems.Map.MapItemGridding :: public static MapItemGridding ForPrefab(EntityManager em, Entity mailbox, Entity prefab)
 FFSystems.Map.MapItemGridding :: public void QueueAddIfGridded(EntityCommandBuffer cb, Entity prefab, in Placeable prefabPlaceable, Entity spawned)
+FFSystems.Map.TutorialCampSpot :: public static class TutorialCampSpot
+FFSystems.Map.TutorialCampSpot :: public const int CampFootprint = 3
+FFSystems.Map.TutorialCampSpot :: public static readonly int2[] Candidates
+FFSystems.Map.TutorialCampSpot :: public const int Clearance = 2
+FFSystems.Map.TutorialCampSpot :: public static float3 Find(float3 preferred, int width, int length, NativeParallelHashMap<int3, Entity> entityMap, NativeParallelHashMap<int2, bool> worldObjectTiles)
+FFSystems.Map.TutorialCampSpot :: public static bool IsCampSpot(float3 position)
+FFSystems.Map.TutorialCampSpot :: public static bool IsClear(int2 centreTile, int width, int length, NativeParallelHashMap<int3, Entity> entityMap, NativeParallelHashMap<int2, bool> worldObjectTiles)
 FFSystems.Map.WorldObjectGeneratorJob :: public struct WorldObjectGeneratorJob : IJob
 FFSystems.Map.WorldObjectGeneratorJob :: public NativeArray<Entity> BasePrefabMap
 FFSystems.Map.WorldObjectGeneratorJob :: public int BiomeId
@@ -8542,6 +8740,7 @@ FFSystems.Map.WorldObjectGeneratorJob :: public bool InstantiateObjects
 FFSystems.Map.WorldObjectGeneratorJob :: public MapGenerationData MapGenerationData
 FFSystems.Map.WorldObjectGeneratorJob :: public NativeArray<PlaceableConfig> PlaceableConfigLookup
 FFSystems.Map.WorldObjectGeneratorJob :: public ComponentLookup<Placeable> PlaceableLookup
+FFSystems.Map.WorldObjectGeneratorJob :: public GasGiantSwap PlanetSwap
 FFSystems.Map.WorldObjectGeneratorJob :: public uint Seed
 FFSystems.Map.WorldObjectGeneratorJob :: public NativeParallelHashMap<int, WorldObjectConfigDataBlittable> WorldObjectConfigDataLookup
 FFSystems.Map.WorldObjectGeneratorJob :: public void Execute()
@@ -8659,6 +8858,10 @@ FFSystems.MobileStations.CommandCoreDeletionSystem :: public CommandCoreDeletion
 FFSystems.MobileStations.CommandCoreDeletionSystem :: protected override void OnCreate()
 FFSystems.MobileStations.CommandCoreDeletionSystem :: protected override void OnCreateForCompiler()
 FFSystems.MobileStations.CommandCoreDeletionSystem :: protected override void PerformSystemUpdate()
+FFSystems.MobileStations.CorelessStationSettingsSystem :: [UpdateInGroup(typeof(FFFixedPostTransformGroup))] [UpdateAfter(typeof(MoveableStructurePostConnectionSystem))] public struct CorelessStationSettingsSystem : ISystem, ISystemCompilerGenerated
+FFSystems.MobileStations.CorelessStationSettingsSystem :: public void OnCreate(ref SystemState state)
+FFSystems.MobileStations.CorelessStationSettingsSystem :: public void OnCreateForCompiler(ref SystemState state)
+FFSystems.MobileStations.CorelessStationSettingsSystem :: public void OnUpdate(ref SystemState state)
 FFSystems.MobileStations.HaulerKey :: public static class HaulerKey
 FFSystems.MobileStations.HaulerKey :: public const int IdKeyY = 4194304
 FFSystems.MobileStations.HaulerKey :: public static int3 ForId(int id)
@@ -8673,6 +8876,16 @@ FFSystems.MobileStations.HaulerReferenceValidationSystem :: [UpdateInGroup(typeo
 FFSystems.MobileStations.HaulerReferenceValidationSystem :: public void OnCreate(ref SystemState state)
 FFSystems.MobileStations.HaulerReferenceValidationSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.MobileStations.HaulerReferenceValidationSystem :: public void OnUpdate(ref SystemState state)
+FFSystems.MobileStations.MobileStationGhostRiders :: public static class MobileStationGhostRiders
+FFSystems.MobileStations.MobileStationGhostRiders :: public static void AddNeighbours(in Placeable placeable, NativeParallelHashMap<int3, Entity> entityMap, NativeList<Entity> into)
+FFSystems.MobileStations.MobileStationGhostRiders :: public static void Claim(NativeArray<Entity> riders, in ComponentLookup<Placeable> placeables, NativeParallelHashMap<int3, Entity> entityMap)
+FFSystems.MobileStations.MobileStationGhostRiders :: public static void FindRiders(DynamicBuffer<StationGridItem> members, NativeParallelHashMap<int3, Entity> entityMap, in ComponentLookup<Placeable> placeables, in ComponentLookup<OutOfPlay> outOfPlay, in ComponentLookup<ConstructionTaskData> tasks, in ComponentLookup<DeletionMarker> deletionMarkers, in ComponentLookup<HaulerStation> landingZones, NativeList<Entity> riders)
+FFSystems.MobileStations.MobileStationGhostRiders :: public static bool HaveRoom(NativeArray<Entity> riders, NativeArray<Placeable> landing, NativeParallelHashMap<int3, Entity> entityMap)
+FFSystems.MobileStations.MobileStationGhostRiders :: public static bool HaveRoom(NativeArray<Entity> riders, in ComponentLookup<Placeable> placeables, NativeParallelHashMap<int3, Entity> entityMap)
+FFSystems.MobileStations.MobileStationGhostRiders :: public static bool IsUnbuiltGhost(Entity entity, in ComponentLookup<OutOfPlay> outOfPlay, in ComponentLookup<ConstructionTaskData> tasks, in ComponentLookup<DeletionMarker> deletionMarkers)
+FFSystems.MobileStations.MobileStationGhostRiders :: public static void RidersOf(Entity core, NativeArray<Entity> allRiders, in ComponentLookup<StationGhostRider> riders, NativeList<Entity> into)
+FFSystems.MobileStations.MobileStationGhostRiders :: public static LocalTransform RidingPose(in LocalTransform core, in Placeable corePlaceable, in Placeable rider, float riderScale)
+FFSystems.MobileStations.MobileStationGhostRiders :: public static void SortByTile(NativeArray<Entity> riders, in ComponentLookup<Placeable> placeables)
 FFSystems.MobileStations.MobileStationPresentationInterpolation :: public static class MobileStationPresentationInterpolation
 FFSystems.MobileStations.MobileStationPresentationInterpolation :: public static void Disable(DynamicBuffer<StationGridItem> stationGridItems, ComponentLookup<WorldEntityPresentationInterpolation> interpolationLookup, EntityCommandBuffer cb)
 FFSystems.MobileStations.MobileStationPresentationInterpolation :: public static void Enable(DynamicBuffer<StationGridItem> stationGridItems, ComponentLookup<LocalTransform> localTransformLookup, ComponentLookup<WorldEntityPresentationInterpolation> interpolationLookup, EntityCommandBuffer cb, ushort heartbeatFrame)
@@ -8691,6 +8904,7 @@ FFSystems.MobileStations.MobileStationUtils :: public static int GetDockingSpeed
 FFSystems.MobileStations.MobileStationUtils :: public static void IncrementStopIndex(DynamicBuffer<HaulerStop> stops, ref Hauler hauler)
 FFSystems.MobileStations.MobileStationUtils :: public static bool IsAnythingInTheLandingZone(DynamicBuffer<StationGridItem> stationGridItems, NativeParallelHashMap<int3, Entity> entityMap, ComponentLookup<Placeable> placeableLookup)
 FFSystems.MobileStations.MobileStationUtils :: public static bool IsOnItsWayToALandingZone(Hauler hauler, DynamicBuffer<HaulerStop> stops, out Entity zone)
+FFSystems.MobileStations.MobileStationUtils :: public static Direction LandingFacing(in HaulerStop stop, Direction zoneFacing)
 FFSystems.MobileStations.MobileStationUtils :: public static Placeable LandingPlaceable(Placeable current, Placeable reference, int3 zoneTile, Direction stopDirection)
 FFSystems.MobileStations.MobileStationUtils :: public static void MakeTerrainExtractorsIdle(DynamicBuffer<StationGridItem> stationGridItems, BufferLookup<OwnedShip> ownedShipBufferLookup, ComponentLookup<TerrainExtractorMarker> terrainExtractorLookup, ComponentLookup<ScalableLaserOwner> scalableLaserOwnerLookup, ComponentLookup<ResearchBotPhysicalState> researchPhysicalLookup, ComponentLookup<MinerBotPhysicalState> minerPhysicalLookup, ComponentLookup<LocalTransform> researchTransformLookup, ComponentLookup<LinearMotion> researchMotionLookup, EntityCommandBufferWrapper cb)
 FFSystems.MobileStations.MobileStationUtils :: public static void MoveStation(float3 direction, float speed, fp dt, float maxSpeedOrDistanceToTarget, DynamicBuffer<StationGridItem> stationGridItems, ComponentLookup<LocalTransform> localTransformLookup, EntityCommandBufferWrapper cb)
@@ -8701,6 +8915,8 @@ FFSystems.MobileStations.MobileStationUtils :: public static bool StopGotDeleted
 FFSystems.MobileStations.MobileStationUtils :: public static bool TryClaimLandingZone(DynamicBuffer<StationGridItem> stationGridItems, NativeArray<Placeable> newPlaceables, NativeParallelHashMap<int3, Entity> entityMap)
 FFSystems.MobileStations.MobileStationUtils :: public static bool TryDuplicateStop(DynamicBuffer<HaulerStop> stops, int index, int newStopIdentifier, ref Hauler hauler)
 FFSystems.MobileStations.MobileStationUtils :: public static bool TryGetLandingZoneHeadedFor(Hauler hauler, DynamicBuffer<HaulerStop> stops, out Entity zone)
+FFSystems.MobileStations.MobileStationUtils :: public static Direction TurnFrom(Direction from, Direction facing)
+FFSystems.MobileStations.MobileStationUtils :: public static Direction Turned(Direction facing, Direction turn)
 FFSystems.MobileStations.MobileStationUtils :: public static void UpdatePlaceable(int3 targetPosition, Direction desiredDirection, ref Placeable placeable, Placeable primaryMoverPlaceable)
 FFSystems.MobileStations.MoveableStructurePostConnectionSystem :: [UpdateInGroup(typeof(FFFixedPostTransformGroup))] public struct MoveableStructurePostConnectionSystem : ISystem, ISystemCompilerGenerated
 FFSystems.MobileStations.MoveableStructurePostConnectionSystem :: public void OnCreate(ref SystemState state)
@@ -8717,6 +8933,17 @@ FFSystems.MobileStations.RocketAdapterFuelConsumerSystem :: public void OnUpdate
 FFSystems.MobileStations.RocketAdapterFuelConsumerSystem.RocketAdapterFuelConsumerJob :: public struct RocketAdapterFuelConsumerSystem.RocketAdapterFuelConsumerJob : IJobEntity, IJobChunk
 FFSystems.MobileStations.RocketAdapterFuelConsumerSystem.RocketAdapterFuelConsumerJob :: public ComponentLookup<StationGrid> StationGridLookup
 FFSystems.MobileStations.RocketAdapterFuelConsumerSystem.RocketAdapterFuelConsumerJob :: public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)
+FFSystems.MobileStations.StationGhostRiderFollowSystem :: [UpdateInGroup(typeof(FFFixedDeletionGroup))] public struct StationGhostRiderFollowSystem : ISystem, ISystemCompilerGenerated
+FFSystems.MobileStations.StationGhostRiderFollowSystem :: public void OnCreate(ref SystemState state)
+FFSystems.MobileStations.StationGhostRiderFollowSystem :: public void OnCreateForCompiler(ref SystemState state)
+FFSystems.MobileStations.StationGhostRiderFollowSystem :: public void OnUpdate(ref SystemState state)
+FFSystems.MobileStations.StationGhostRiderOrphanSystem :: [UpdateInGroup(typeof(FFFixedLateGroup))] public struct StationGhostRiderOrphanSystem : ISystem, ISystemCompilerGenerated
+FFSystems.MobileStations.StationGhostRiderOrphanSystem :: public void OnCreate(ref SystemState state)
+FFSystems.MobileStations.StationGhostRiderOrphanSystem :: public void OnCreateForCompiler(ref SystemState state)
+FFSystems.MobileStations.StationGhostRiderOrphanSystem :: public void OnUpdate(ref SystemState state)
+FFSystems.MobileStations.StationLockOperations :: public static class StationLockOperations
+FFSystems.MobileStations.StationLockOperations :: public static int NextLockId(EntityManager em)
+FFSystems.MobileStations.StationLockOperations :: public static void SetLocked(EntityManager em, Entity hauler, bool isLocked)
 FFSystems.MobileStations.StationMovementAutomation.FindNearbyHaulersSystem :: [UpdateInGroup(typeof(FFFixedEarlyGroup))] public class FindNearbyHaulersSystem : FinalFactorySystemBase
 FFSystems.MobileStations.StationMovementAutomation.FindNearbyHaulersSystem :: public NativeReference<Entity> ClosestHauler { get; }
 FFSystems.MobileStations.StationMovementAutomation.FindNearbyHaulersSystem :: public FindNearbyHaulersSystem()
@@ -8764,6 +8991,53 @@ FFSystems.MobileStations.StationMovementAutomation.Lifecycle.StrandedFlyingStruc
 FFSystems.MobileStations.StationMovementAutomation.Lifecycle.StrandedFlyingStructureLandingSystem :: public void OnCreate(ref SystemState state)
 FFSystems.MobileStations.StationMovementAutomation.Lifecycle.StrandedFlyingStructureLandingSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.MobileStations.StationMovementAutomation.Lifecycle.StrandedFlyingStructureLandingSystem :: public void OnUpdate(ref SystemState state)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static class LandingZoneQueueLayout
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public const int Sides = 4
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static fp ApproachLength { get; }
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static fp ApproachTolerance { get; }
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static fp Gap { get; }
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static fp MaxReach { get; }
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static fp MaxSpeed { get; }
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static fp MinSpeed { get; }
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static fp SearchStep { get; }
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static fp SpeedPerDistance { get; }
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static fp3 ApproachPoint(fp3 padPosition, fp3 position)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static bool CanStartLanding(fp3 padPosition, fp3 position)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static fp3 Centre(in Placeable placeable)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static void LayOut<T>(fp3 zoneCentre, Direction facing, NativeArray<fp> padReach, NativeArray<LandingZoneQueueLayout.QueueFootprint> footprints, NativeArray<fp3> places, NativeArray<bool> placed, NativeArray<int> sides, ref T check) where T : struct, LandingZoneQueueLayout.IPlaceCheck
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static void SideAxes(Direction facing, int side, out int2 along, out int2 across)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static fp Speed(fp traveled, fp remaining, fp topSpeed)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static int2 Step(Direction direction)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static bool TerrainAhead(NativeParallelHashMap<int3, Entity> entityMap, ComponentLookup<Placeable> placeables, ComponentLookup<CosmicTerrain> cosmicTerrain, fp3 origin, in Placeable placeable, int layer, Entity self)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static LandingZoneQueueLayout.QueueBox Tiles(int3 gridTile, int width, int length)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static bool TryMeasure(Entity station, ComponentLookup<Hauler> haulers, ComponentLookup<Placeable> placeables, ComponentLookup<StationGridReference> gridReferences, BufferLookup<StationGridItem> gridItems, ComponentLookup<HaulerManualHeading> manualHeadings, out LandingZoneQueueLayout.QueueFootprint footprint)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout :: public static fp3 Waypoint(fp3 zoneCentre, Direction facing, int side, fp3 position, fp3 place, in LandingZoneQueueLayout.QueueFootprint own, NativeList<LandingZoneQueueLayout.QueueBox> taken, int padBoxes)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.IPlaceCheck :: public interface LandingZoneQueueLayout.IPlaceCheck
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.IPlaceCheck :: bool IsClear(int index, fp3 centre, in LandingZoneQueueLayout.QueueBox box)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.IPlaceCheck :: void Taken(int index, fp3 centre, in LandingZoneQueueLayout.QueueBox box)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueBox :: public struct LandingZoneQueueLayout.QueueBox
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueBox :: public fp MaxX
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueBox :: public fp MaxZ
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueBox :: public fp MinX
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueBox :: public fp MinZ
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueBox :: public static LandingZoneQueueLayout.QueueBox Around(fp3 centre, fp radius)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueBox :: public LandingZoneQueueLayout.QueueBox Grown(fp margin)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueBox :: public bool Overlaps(in LandingZoneQueueLayout.QueueBox other)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueBox :: public fp Reach(fp3 origin, int2 along)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueBox :: public void Span(fp3 origin, int2 axis, out fp min, out fp max)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueBox :: public LandingZoneQueueLayout.QueueBox Union(in LandingZoneQueueLayout.QueueBox other)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueFootprint :: public struct LandingZoneQueueLayout.QueueFootprint
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueFootprint :: public fp MaxX
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueFootprint :: public fp MaxZ
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueFootprint :: public fp MinX
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueFootprint :: public fp MinZ
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueFootprint :: public fp Radius
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueFootprint :: public LandingZoneQueueLayout.QueueBox At(fp3 centre)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueFootprint :: public static LandingZoneQueueLayout.QueueFootprint Circle(fp radius)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueFootprint :: public void Include(int3 gridTile, int width, int length, fp3 centre, bool first)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueFootprint :: public void Measure(int2 along, int2 across, out fp ahead, out fp behind, out fp acrossMiddle)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueFootprint :: public void Span(int2 axis, out fp min, out fp max)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.LandingZoneQueueLayout.QueueFootprint :: public LandingZoneQueueLayout.QueueFootprint Turned(int quarterTurns)
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationDockingSystem :: [UpdateInGroup(typeof(FFFixedPreTransformGroup))] public struct MobileStationDockingSystem : ISystem, ISystemCompilerGenerated
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationDockingSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationDockingSystem :: public void OnCreateForCompiler(ref SystemState state)
@@ -8797,7 +9071,7 @@ FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUnd
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockLiftFlagConvergenceSystem :: public void OnUpdate(ref SystemState systemState)
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem :: [UpdateInGroup(typeof(FFFixedLateGroup))] public struct MobileStationUndockingSystem : ISystem, ISystemCompilerGenerated
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem :: public static readonly float HaulerY
-FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem :: public static fp3 GetStopPositionForPlaceable(HaulerStop stop, fp3 centerOfStopPosition, Placeable placeable, int stopLength, int stopWidth)
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem :: public static fp3 GetStopPositionForPlaceable(Direction landingFacing, fp3 centerOfStopPosition, Placeable placeable, int stopLength, int stopWidth)
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem :: public void OnUpdate(ref SystemState systemState)
@@ -8809,6 +9083,8 @@ FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUnd
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<PowerTransferEdge> AllPowerTransferEdges
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<AsteroItem> AsteroItemLookup
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public EntityCommandBuffer Cb
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<ConstructionTaskData> ConstructionTaskLookup
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<CosmicTerrain> CosmicTerrainLookup
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<DeletionMarker> DeletionMarkerLookup
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public fp Dt
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public NativeArray<Entity> Entities
@@ -8825,6 +9101,7 @@ FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUnd
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<Health> HealthLookup
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public NativeArray<Entity> InboundCandidates
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<LocalTransform> LocalTransformLookup
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<HaulerManualHeading> ManualHeadingLookup
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<MinerBotPhysicalState> MinerPhysicalLookup
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<OutOfPlay> OutOfPlayLookup
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public BufferLookup<OwnedShip> OwnedShipBufferLookup
@@ -8837,7 +9114,9 @@ FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUnd
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public BufferLookup<RemotePowerProducer> RemotePowerProducersLookup
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<LinearMotion> ResearchMotionLookup
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<ResearchBotPhysicalState> ResearchPhysicalLookup
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public NativeArray<Entity> Riders
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<ScalableLaserOwner> ScalableLaserOwnerLookup
+FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<StationGhostRider> StationGhostRiderLookup
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public BufferLookup<StationGridItem> StationGridItemBufferLookup
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public ComponentLookup<StationGrid> StationGridLookup
 FFSystems.MobileStations.StationMovementAutomation.StateMachine.MobileStationUndockingSystem.StationAutoUndockingJob :: public int StopLength
@@ -9125,6 +9404,7 @@ FFSystems.Presentation.CargoDroneVisibilitySystem :: public void OnUpdate(ref Sy
 FFSystems.Presentation.CombatVfxPresentationSystem :: [UpdateInGroup(typeof(PresentationSystemGroup))] [UpdateAfter(typeof(WorldEntityInterpolationRenderSystem))] [UpdateAfter(typeof(PilotedStationPredictionRenderSystem))] [UpdateAfter(typeof(StationRiderPresentationSystem))] [UpdateBefore(typeof(EntitiesGraphicsSystem))] public struct CombatVfxPresentationSystem : ISystem, ISystemCompilerGenerated
 FFSystems.Presentation.CombatVfxPresentationSystem :: public void OnCreate(ref SystemState state)
 FFSystems.Presentation.CombatVfxPresentationSystem :: public void OnCreateForCompiler(ref SystemState state)
+FFSystems.Presentation.CombatVfxPresentationSystem :: public void OnDestroy(ref SystemState state)
 FFSystems.Presentation.CombatVfxPresentationSystem :: public void OnUpdate(ref SystemState state)
 FFSystems.Presentation.CometVfxInstance :: public struct CometVfxInstance
 FFSystems.Presentation.CometVfxInstance :: public float4 Anim
@@ -9262,6 +9542,11 @@ FFSystems.Presentation.GuardianShieldExpiryStep :: public const float MinFactor 
 FFSystems.Presentation.GuardianShieldExpiryStep :: public const float Seconds = 0.2
 FFSystems.Presentation.GuardianShieldExpiryStep :: public static float DrawnFactor(float secondsToRemoval, float secondsSinceHeartbeat)
 FFSystems.Presentation.GuardianShieldExpiryStep :: public static float SecondsToRemoval(long releaseRaw, long simulationTimeRaw, long heartbeatRaw, float heartbeatSeconds)
+FFSystems.Presentation.HiddenCargoBarges :: public static class HiddenCargoBarges
+FFSystems.Presentation.HiddenCargoBarges :: public static bool AreHidden()
+FFSystems.Presentation.HiddenCargoBarges :: public static bool IsHideableBarge(Entity entity, in ComponentLookup<Inserter> inserters, in ComponentLookup<OutOfPlay> outOfPlay)
+FFSystems.Presentation.HiddenCargoBarges :: public static bool IsHideableBarge(Entity entity, EntityManager entityManager)
+FFSystems.Presentation.HiddenCargoBarges :: public static void RemoveFrom(NativeParallelHashSet<Entity> entities, EntityManager entityManager)
 FFSystems.Presentation.HoverFieldVfxInstance :: public struct HoverFieldVfxInstance
 FFSystems.Presentation.HoverFieldVfxInstance :: public float2 AxisX
 FFSystems.Presentation.HoverFieldVfxInstance :: public float4 Hull
@@ -9284,6 +9569,16 @@ FFSystems.Presentation.HoverFieldVfxPresentationSystem :: protected override voi
 FFSystems.Presentation.HoverFieldVfxPresentationSystem :: protected override void OnCreateForCompiler()
 FFSystems.Presentation.HoverFieldVfxPresentationSystem :: protected override void OnDestroy()
 FFSystems.Presentation.HoverFieldVfxPresentationSystem :: protected override void OnUpdate()
+FFSystems.Presentation.ImpactHullCacheSystem :: [UpdateInGroup(typeof(PresentationSystemGroup))] [UpdateAfter(typeof(WorldEntityInterpolationRenderSystem))] [UpdateAfter(typeof(PilotedStationPredictionRenderSystem))] [UpdateAfter(typeof(StationRiderPresentationSystem))] [UpdateBefore(typeof(CombatVfxPresentationSystem))] [UpdateBefore(typeof(ScalableLaserPresentationSystem))] public class ImpactHullCacheSystem : SystemBase
+FFSystems.Presentation.ImpactHullCacheSystem :: public const int MaxHulls = 4096
+FFSystems.Presentation.ImpactHullCacheSystem :: public const int MaxTrianglesPerFrame = 30000
+FFSystems.Presentation.ImpactHullCacheSystem :: public ImpactHullCacheSystem()
+FFSystems.Presentation.ImpactHullCacheSystem :: public static void Collect(EntityManager em, Entity entity, int mapObjectsLayer, NativeList<float3> triangles)
+FFSystems.Presentation.ImpactHullCacheSystem :: protected override void OnCreate()
+FFSystems.Presentation.ImpactHullCacheSystem :: protected override void OnCreateForCompiler()
+FFSystems.Presentation.ImpactHullCacheSystem :: protected override void OnDestroy()
+FFSystems.Presentation.ImpactHullCacheSystem :: protected override void OnUpdate()
+FFSystems.Presentation.ImpactHullCacheSystem :: public static bool TryMeasure(EntityManager em, Entity entity, int mapObjectsLayer, out ImpactHull hull)
 FFSystems.Presentation.LagFollowProbeSystem :: [UpdateInGroup(typeof(PresentationSystemGroup))] [UpdateAfter(typeof(WorldEntityInterpolationRenderSystem))] [UpdateBefore(typeof(EntitiesGraphicsSystem))] public class LagFollowProbeSystem : SystemBase
 FFSystems.Presentation.LagFollowProbeSystem :: public const string Flag = "-ffLagFollowProbe"
 FFSystems.Presentation.LagFollowProbeSystem :: public static string OutputPath { get; set; }
@@ -9590,6 +9885,7 @@ FFSystems.Presentation.RocketPlumeVfxPresentationSystem :: protected override vo
 FFSystems.Presentation.ScalableLaserPresentationSystem :: [UpdateInGroup(typeof(PresentationSystemGroup))] [UpdateAfter(typeof(WorldEntityInterpolationRenderSystem))] [UpdateAfter(typeof(PilotedStationPredictionRenderSystem))] [UpdateBefore(typeof(EntitiesGraphicsSystem))] public struct ScalableLaserPresentationSystem : ISystem, ISystemCompilerGenerated
 FFSystems.Presentation.ScalableLaserPresentationSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.Presentation.ScalableLaserPresentationSystem :: public void OnCreateForCompiler(ref SystemState state)
+FFSystems.Presentation.ScalableLaserPresentationSystem :: public void OnDestroy(ref SystemState systemState)
 FFSystems.Presentation.ScalableLaserPresentationSystem :: public void OnUpdate(ref SystemState systemState)
 FFSystems.Presentation.ScaleOverTimePresentationStep :: public static class ScaleOverTimePresentationStep
 FFSystems.Presentation.ScaleOverTimePresentationStep :: public static bool TryDrawnScale(in ScaleOverTime animation, float secondsSinceHeartbeat, out float3 scale)
@@ -9600,6 +9896,11 @@ FFSystems.Presentation.StationBeltItemPresentationSystem :: [UpdateInGroup(typeo
 FFSystems.Presentation.StationBeltItemPresentationSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.Presentation.StationBeltItemPresentationSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.Presentation.StationBeltItemPresentationSystem :: public void OnUpdate(ref SystemState systemState)
+FFSystems.Presentation.StationCompanionPresentationSystem :: [UpdateInGroup(typeof(PresentationSystemGroup))] [UpdateAfter(typeof(WorldEntityInterpolationRenderSystem))] [UpdateAfter(typeof(PilotedStationPredictionRenderSystem))] [UpdateBefore(typeof(EntitiesGraphicsSystem))] public class StationCompanionPresentationSystem : SystemBase
+FFSystems.Presentation.StationCompanionPresentationSystem :: public const string DisableFlag = "-ffNoStationCompanionSmoothing"
+FFSystems.Presentation.StationCompanionPresentationSystem :: public StationCompanionPresentationSystem()
+FFSystems.Presentation.StationCompanionPresentationSystem :: protected override void OnCreate()
+FFSystems.Presentation.StationCompanionPresentationSystem :: protected override void OnUpdate()
 FFSystems.Presentation.StationFollowerStep :: public static class StationFollowerStep
 FFSystems.Presentation.StationFollowerStep :: public const float ApproachRange = 120
 FFSystems.Presentation.StationFollowerStep :: public const float HandOverSlideSpeed = 30
@@ -9617,6 +9918,17 @@ FFSystems.Presentation.StationFollowerStep.Frame :: public float3 DrawnPosition
 FFSystems.Presentation.StationFollowerStep.Frame :: public float DrawnYaw
 FFSystems.Presentation.StationFollowerStep.Frame :: public float3 TimelyPosition
 FFSystems.Presentation.StationFollowerStep.Frame :: public float TimelyYaw
+FFSystems.Presentation.StationGhostRiderPresentationSystem :: [UpdateInGroup(typeof(PresentationSystemGroup))] [UpdateAfter(typeof(PilotedStationPredictionRenderSystem))] [UpdateBefore(typeof(EntitiesGraphicsSystem))] public struct StationGhostRiderPresentationSystem : ISystem, ISystemCompilerGenerated
+FFSystems.Presentation.StationGhostRiderPresentationSystem :: public void OnCreate(ref SystemState state)
+FFSystems.Presentation.StationGhostRiderPresentationSystem :: public void OnCreateForCompiler(ref SystemState state)
+FFSystems.Presentation.StationGhostRiderPresentationSystem :: public void OnUpdate(ref SystemState state)
+FFSystems.Presentation.StationMotionGateSystem :: [UpdateInGroup(typeof(PresentationSystemGroup), OrderFirst = true)] public class StationMotionGateSystem : SystemBase
+FFSystems.Presentation.StationMotionGateSystem :: public bool AnyStationDrawnOffPose { get; }
+FFSystems.Presentation.StationMotionGateSystem :: public StationMotionGateSystem()
+FFSystems.Presentation.StationMotionGateSystem :: public static bool AnyStationDrawnOffPoseIn(World world)
+FFSystems.Presentation.StationMotionGateSystem :: protected override void OnCreate()
+FFSystems.Presentation.StationMotionGateSystem :: protected override void OnCreateForCompiler()
+FFSystems.Presentation.StationMotionGateSystem :: protected override void OnUpdate()
 FFSystems.Presentation.StationRiderPresentationSystem :: [UpdateInGroup(typeof(PresentationSystemGroup))] [UpdateAfter(typeof(WorldEntityInterpolationRenderSystem))] [UpdateAfter(typeof(PilotedStationPredictionRenderSystem))] [UpdateBefore(typeof(EngineExhaustVfxPresentationSystem))] [UpdateBefore(typeof(EntitiesGraphicsSystem))] public struct StationRiderPresentationSystem : ISystem, ISystemCompilerGenerated
 FFSystems.Presentation.StationRiderPresentationSystem :: public static bool HideRiders
 FFSystems.Presentation.StationRiderPresentationSystem :: public const float SeatY = 50
@@ -9634,6 +9946,19 @@ FFSystems.Presentation.VfxImpactDrawnAnchorStep :: public const float MaxOffset 
 FFSystems.Presentation.VfxImpactDrawnAnchorStep :: public static bool LaunchedEnabled { get; }
 FFSystems.Presentation.VfxImpactDrawnAnchorStep :: public static void Nearest(in SmallBuffer<VisionElement> vision, float3 origin, ref Entity target, ref float bestDistanceSq)
 FFSystems.Presentation.VfxImpactDrawnAnchorStep :: public static bool TryOffset(float3 targetDrawn, float3 targetSimulated, out float3 offset)
+FFSystems.Presentation.VfxImpactSurfaceStep :: public static class VfxImpactSurfaceStep
+FFSystems.Presentation.VfxImpactSurfaceStep :: public const string DisableFlag = "-ffNoImpactSurface"
+FFSystems.Presentation.VfxImpactSurfaceStep :: public const float MaxShift = 60
+FFSystems.Presentation.VfxImpactSurfaceStep :: public const float MinSize = 0.5
+FFSystems.Presentation.VfxImpactSurfaceStep :: public const float StandOff = 1
+FFSystems.Presentation.VfxImpactSurfaceStep :: public static bool LaunchedEnabled { get; }
+FFSystems.Presentation.VfxImpactSurfaceStep :: public static void AppendBox(NativeList<float3> triangles, in float4x4 partInHull, float3 centre, float3 extents)
+FFSystems.Presentation.VfxImpactSurfaceStep :: public static bool Covered(in ImpactHull hull, float2 point)
+FFSystems.Presentation.VfxImpactSurfaceStep :: public static long KindKey(int configIndex)
+FFSystems.Presentation.VfxImpactSurfaceStep :: public static bool TryBuild(NativeArray<float3> triangles, out ImpactHull hull)
+FFSystems.Presentation.VfxImpactSurfaceStep :: public static bool TryEntry(in ImpactHull hull, float2 origin, float2 heading, float reach, out float entry)
+FFSystems.Presentation.VfxImpactSurfaceStep :: public static bool TrySurfacePoint(in ImpactHull hull, RigidTransform root, float3 hit, float3 direction, out float3 surface)
+FFSystems.Presentation.VfxImpactSurfaceStep :: public static long UnitKey(Entity target)
 FFSystems.Presentation.VisualEpisodePresentationProbeSystem :: [UpdateInGroup(typeof(PresentationSystemGroup))] [UpdateAfter(typeof(WorldEntityInterpolationRenderSystem))] [UpdateBefore(typeof(EntitiesGraphicsSystem))] public struct VisualEpisodePresentationProbeSystem : ISystem, ISystemCompilerGenerated
 FFSystems.Presentation.VisualEpisodePresentationProbeSystem :: public void OnCreate(ref SystemState state)
 FFSystems.Presentation.VisualEpisodePresentationProbeSystem :: public void OnCreateForCompiler(ref SystemState state)
@@ -9650,7 +9975,7 @@ FFSystems.Presentation.WorldEntityInterpolationCaptureSystem :: public void OnCr
 FFSystems.Presentation.WorldEntityInterpolationCaptureSystem :: public void OnUpdate(ref SystemState systemState)
 FFSystems.Presentation.WorldEntityInterpolationRenderSystem :: [UpdateInGroup(typeof(PresentationSystemGroup))] [UpdateBefore(typeof(EntitiesGraphicsSystem))] public struct WorldEntityInterpolationRenderSystem : ISystem, ISystemCompilerGenerated
 FFSystems.Presentation.WorldEntityInterpolationRenderSystem :: public const float HiddenShipAnchorRange = 180
-FFSystems.Presentation.WorldEntityInterpolationRenderSystem :: public const int MaxBrushDepth = 3
+FFSystems.Presentation.WorldEntityInterpolationRenderSystem :: public const int MaxBrushDepth = 4
 FFSystems.Presentation.WorldEntityInterpolationRenderSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.Presentation.WorldEntityInterpolationRenderSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.Presentation.WorldEntityInterpolationRenderSystem :: public void OnDestroy(ref SystemState systemState)
@@ -9818,6 +10143,10 @@ FFSystems.StationGrid.StationGridCalculationSystem :: public void OnCreate(ref S
 FFSystems.StationGrid.StationGridCalculationSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.StationGrid.StationGridCalculationSystem :: public void OnUpdate(ref SystemState systemState)
 FFSystems.StationGrid.StationGridCalculationSystem :: public static bool WereCalculatedGridsUpdatedLastUpdate(long heartbeat)
+FFSystems.StationGrid.StationGridPostResetAdmissionSystem :: [UpdateInGroup(typeof(FFFixedInitializationGroup))] [UpdateBefore(typeof(StationGridMembershipSystem))] public struct StationGridPostResetAdmissionSystem : ISystem, ISystemCompilerGenerated
+FFSystems.StationGrid.StationGridPostResetAdmissionSystem :: public void OnCreate(ref SystemState state)
+FFSystems.StationGrid.StationGridPostResetAdmissionSystem :: public void OnCreateForCompiler(ref SystemState state)
+FFSystems.StationGrid.StationGridPostResetAdmissionSystem :: public void OnUpdate(ref SystemState state)
 FFSystems.StationGrid.StationGridPostResetRecalcSystem :: [UpdateInGroup(typeof(FFFixedEarlyGroup))] public struct StationGridPostResetRecalcSystem : ISystem, ISystemCompilerGenerated
 FFSystems.StationGrid.StationGridPostResetRecalcSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.StationGrid.StationGridPostResetRecalcSystem :: public void OnCreateForCompiler(ref SystemState state)
@@ -9939,6 +10268,7 @@ FFSystems.Turrets.LaserTurretFiringSystem :: public void OnCreateForCompiler(ref
 FFSystems.Turrets.LaserTurretFiringSystem :: public void OnUpdate(ref SystemState state)
 FFSystems.Turrets.LaserTurretHeatingSystem :: public struct LaserTurretHeatingSystem
 FFSystems.UnitStateMachine.ChaseSystem :: [UpdateInGroup(typeof(FFFixedPreTransformGroup))] [UpdateBefore(typeof(LinearMotionSystem))] public struct ChaseSystem : ISystem, ISystemCompilerGenerated
+FFSystems.UnitStateMachine.ChaseSystem :: public const float PlayerFleetLeash = 200
 FFSystems.UnitStateMachine.ChaseSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.UnitStateMachine.ChaseSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.UnitStateMachine.ChaseSystem :: public void OnDestroy(ref SystemState systemState)
@@ -9994,16 +10324,21 @@ FFSystems.UnitStateMachine.FleetIdleSystem :: public const float FormationCapEng
 FFSystems.UnitStateMachine.FleetIdleSystem :: public const float FormationCatchUpSpeed = 25
 FFSystems.UnitStateMachine.FleetIdleSystem :: public const float FormationFarDistance = 60
 FFSystems.UnitStateMachine.FleetIdleSystem :: public const float FormationGoldenAngle = 2.3999631
+FFSystems.UnitStateMachine.FleetIdleSystem :: public const float FormationMinGlideDistance = 40
+FFSystems.UnitStateMachine.FleetIdleSystem :: public const float FormationReturnSpeedRatio = 2
 FFSystems.UnitStateMachine.FleetIdleSystem :: public const float FormationSettleDecayPerSecond = 8
 FFSystems.UnitStateMachine.FleetIdleSystem :: public const float FormationSettleRadius = 0.5
 FFSystems.UnitStateMachine.FleetIdleSystem :: public const float FormationSlotSpacing = 5
 FFSystems.UnitStateMachine.FleetIdleSystem :: public const float PlayerFleetSpeedBonus = 100
+FFSystems.UnitStateMachine.FleetIdleSystem :: public static float FormationGlideDistance(float fleetIdleOffset)
 FFSystems.UnitStateMachine.FleetIdleSystem :: public static float3 GetFormationSlotOffset(int formationIndex)
 FFSystems.UnitStateMachine.FleetIdleSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.UnitStateMachine.FleetIdleSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.UnitStateMachine.FleetIdleSystem :: public void OnUpdate(ref SystemState systemState)
 FFSystems.UnitStateMachine.FleetIdleSystem :: public static bool PerformMovement(ref LinearMotion linearMotion, LocalTransform localTransform, float3 fleetPosition, int fleetSize, float3 commanderVelocity, fp dt, float distanceTolerance, float maxSpeed)
-FFSystems.UnitStateMachine.FleetIdleSystem :: public static bool PerformSlotMovement(ref LinearMotion linearMotion, LocalTransform localTransform, float3 slotPosition, float3 commanderVelocity, fp dt, float maxSpeed)
+FFSystems.UnitStateMachine.FleetIdleSystem :: public static bool PerformSlotMovement(ref LinearMotion linearMotion, LocalTransform localTransform, float3 slotPosition, float3 commanderVelocity, fp dt, float maxSpeed, float glideDistance)
+FFSystems.UnitStateMachine.FleetIdleSystem :: public static float PlayerFleetMaxSpeed(float baseMoveSpeed, float commanderSpeed)
+FFSystems.UnitStateMachine.FleetIdleSystem :: public static float3 PlayerFormationSlot(float3 fleetPosition, float3 commanderVelocity, float baseMoveSpeed, float fleetIdleOffset, int formationIndex)
 FFSystems.UnitStateMachine.FleetIdleSystem.FleetIdleJob :: public struct FleetIdleSystem.FleetIdleJob : IJobEntity, IJobChunk
 FFSystems.UnitStateMachine.FleetIdleSystem.FleetIdleJob :: public ComponentLookup<FleetCommander> AllCommanders
 FFSystems.UnitStateMachine.FleetIdleSystem.FleetIdleJob :: public ComponentLookup<Player> AllPlayers
@@ -10018,9 +10353,12 @@ FFSystems.UnitStateMachine.PlayerDisableFleetSystem :: [UpdateInGroup(typeof(FFF
 FFSystems.UnitStateMachine.PlayerDisableFleetSystem :: public const float ReturnCatchUpPerSecond = 3.2
 FFSystems.UnitStateMachine.PlayerDisableFleetSystem :: public const float ReturnMaximumClosingSpeed = 480
 FFSystems.UnitStateMachine.PlayerDisableFleetSystem :: public const float ReturnMinimumClosingSpeed = 90
+FFSystems.UnitStateMachine.PlayerDisableFleetSystem :: public const float ReturnStowDistance = 6
+FFSystems.UnitStateMachine.PlayerDisableFleetSystem :: public static bool IsStowedAfterStep(float distance, float stepDistance)
 FFSystems.UnitStateMachine.PlayerDisableFleetSystem :: public void OnCreate(ref SystemState systemState)
 FFSystems.UnitStateMachine.PlayerDisableFleetSystem :: public void OnCreateForCompiler(ref SystemState state)
 FFSystems.UnitStateMachine.PlayerDisableFleetSystem :: public void OnUpdate(ref SystemState systemState)
+FFSystems.UnitStateMachine.PlayerDisableFleetSystem :: public static float OwnerSpeed(bool isPlayerOwner, in Player owner, bool hasCommander, in FleetCommander commander)
 FFSystems.UnitStateMachine.PlayerDisableFleetSystem :: public static float ReturnStepDistance(float distance, float ownerSpeed, float deltaTime)
 FFSystems.UnitStateMachine.ReturnSystem :: [UpdateInGroup(typeof(FFFixedPreTransformGroup))] public struct ReturnSystem : ISystem, ISystemCompilerGenerated
 FFSystems.UnitStateMachine.ReturnSystem :: public void OnCreate(ref SystemState systemState)
@@ -10182,6 +10520,7 @@ NetworkOperations.Settings.StructureSettingKind :: InserterRange = 13
 NetworkOperations.Settings.StructureSettingKind :: LightConfig = 14
 NetworkOperations.Settings.StructureSettingKind :: MassDriverConfig = 15
 NetworkOperations.Settings.StructureSettingKind :: FollowTarget = 16
+NetworkOperations.Settings.StructureSettingKind :: JunctionSideLevels = 17
 NetworkOperations.Settings.StructureSettingsDispatch :: public static class StructureSettingsDispatch
 NetworkOperations.Settings.StructureSettingsDispatch :: public static void DispatchAcknowledgeDeployedShip()
 NetworkOperations.Settings.StructureSettingsDispatch :: public static void DispatchDeployPlayerCraftedShip(int shipItemId)

@@ -16,6 +16,21 @@ public class CommandCoreDeletionSystem : FinalFactorySystemBase
 | `protected override void OnCreateForCompiler()` |  |
 | `protected override void PerformSystemUpdate()` |  |
 
+## CorelessStationSettingsSystem
+
+```csharp
+[UpdateInGroup(typeof(FFFixedPostTransformGroup))] [UpdateAfter(typeof(MoveableStructurePostConnectionSystem))]
+public struct CorelessStationSettingsSystem : ISystem, ISystemCompilerGenerated
+```
+
+A station without a Command Core keeps none of the core's settings. The core's panel is the only place that sets them, so a station whose core was destroyed or deconstructed could never undo them: "Stay Separate" in particular kept it from merging with anything, for good.
+
+| Member | Summary |
+|---|---|
+| `public void OnCreate(ref SystemState state)` |  |
+| `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnUpdate(ref SystemState state)` |  |
+
 ## HaulerKey
 
 ```csharp
@@ -62,6 +77,26 @@ Rebuilds the hauler of any station whose structures point at a hauler that no lo
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState state)` |  |
 
+## MobileStationGhostRiders
+
+```csharp
+public static class MobileStationGhostRiders
+```
+
+The unbuilt ghosts a mobile station takes with it when it flies.
+
+| Member | Summary |
+|---|---|
+| `public static void AddNeighbours(in Placeable placeable, NativeParallelHashMap<int3, Entity> entityMap, NativeList<Entity> into)` | Everything on the map edge to edge with `placeable`, at every height it occupies (an empty tile adds nothing; an entity may appear more than once). |
+| `public static void Claim(NativeArray<Entity> riders, in ComponentLookup<Placeable> placeables, NativeParallelHashMap<int3, Entity> entityMap)` | Claims the riders' landing tiles in the map, as the buildings' are claimed for the descent. Adding a tile a rider already holds is a no-op, so the descent re-claims every heartbeat (a save taken mid-descent loads without the claim: flying placeables are not put on the map). |
+| `public static void FindRiders(DynamicBuffer<StationGridItem> members, NativeParallelHashMap<int3, Entity> entityMap, in ComponentLookup<Placeable> placeables, in ComponentLookup<OutOfPlay> outOfPlay, in ComponentLookup<ConstructionTaskData> tasks, in ComponentLookup<DeletionMarker> deletionMarkers, in ComponentLookup<HaulerStation> landingZones, NativeList<Entity> riders)` | The ghosts that ride with a station lifting off, by the rule in the class header, sorted by tile. Call it before the station's buildings leave the map: it walks the map from them. |
+| `public static bool HaveRoom(NativeArray<Entity> riders, NativeArray<Placeable> landing, NativeParallelHashMap<int3, Entity> entityMap)` | Whether every tile of every rider's `landing` placeable is empty or the rider's own: the riders' half of the landing claim (`MobileStationUtils.TryClaimLandingZone` is the buildings'). A landing that has no room for a rider waits in the air, as one with no room for a building does. |
+| `public static bool HaveRoom(NativeArray<Entity> riders, in ComponentLookup<Placeable> placeables, NativeParallelHashMap<int3, Entity> entityMap)` | Whether every tile of every rider's `landing` placeable is empty or the rider's own: the riders' half of the landing claim (`MobileStationUtils.TryClaimLandingZone` is the buildings'). A landing that has no room for a rider waits in the air, as one with no room for a building does. |
+| `public static bool IsUnbuiltGhost(Entity entity, in ComponentLookup<OutOfPlay> outOfPlay, in ComponentLookup<ConstructionTaskData> tasks, in ComponentLookup<DeletionMarker> deletionMarkers)` | An unbuilt ghost on the map that may ride: placed and confirmed, not deleted, not riding already. |
+| `public static void RidersOf(Entity core, NativeArray<Entity> allRiders, in ComponentLookup<StationGhostRider> riders, NativeList<Entity> into)` | The riders of the station whose Command Core is `core`, from `allRiders` (sorted by tile, so these are too). |
+| `public static LocalTransform RidingPose(in LocalTransform core, in Placeable corePlaceable, in Placeable rider, float riderScale)` | Where a rider is while its station flies: its tile's place against the Command Core's tile, carried wherever the core is and turned as far as the core is turned from its tile's facing. While the core is not turned the rider is moved by exactly the core's step (no rotation is applied at all), so a station flying straight carries it exactly. |
+| `public static void SortByTile(NativeArray<Entity> riders, in ComponentLookup<Placeable> placeables)` | Riders in tile order (x, z, y, then height position): the order every peer commits them in. |
+
 ## MobileStationPresentationInterpolation
 
 ```csharp
@@ -97,6 +132,7 @@ public static class MobileStationUtils
 | `public static void IncrementStopIndex(DynamicBuffer<HaulerStop> stops, ref Hauler hauler)` |  |
 | `public static bool IsAnythingInTheLandingZone(DynamicBuffer<StationGridItem> stationGridItems, NativeParallelHashMap<int3, Entity> entityMap, ComponentLookup<Placeable> placeableLookup)` |  |
 | `public static bool IsOnItsWayToALandingZone(Hauler hauler, DynamicBuffer<HaulerStop> stops, out Entity zone)` | `TryGetLandingZoneHeadedFor` for a station that can still get there. Taking the controls of a flying station switches its automation off and leaves its state and its resolved stop as they were (`HaulerCommandOperations.PrepareForDriving`); the transit and queue systems then stand still for it (`CheckICanMove`), so it never arrives and never joins the queue. |
+| `public static Direction LandingFacing(in HaulerStop stop, Direction zoneFacing)` | Which way a stop lands its station: the Direction its reference structure (the Command Core) takes on touchdown. A scheduled Land stop's `HaulerStop.StopDirection` is its turn from the facing of the zone it picked, Up meaning "as the zone faces", so every zone of a name turns its ships its own way while ships at one zone can still land different ways. |
 | `public static Placeable LandingPlaceable(Placeable current, Placeable reference, int3 zoneTile, Direction stopDirection)` | Where one building of a station lands on a landing zone: its placeable with the tile and facing the landing gives it, when the station's reference structure (`reference`, its placeable before the landing) comes down on `zoneTile` facing `stopDirection`. |
 | `public static void MakeTerrainExtractorsIdle(DynamicBuffer<StationGridItem> stationGridItems, BufferLookup<OwnedShip> ownedShipBufferLookup, ComponentLookup<TerrainExtractorMarker> terrainExtractorLookup, ComponentLookup<ScalableLaserOwner> scalableLaserOwnerLookup, ComponentLookup<ResearchBotPhysicalState> researchPhysicalLookup, ComponentLookup<MinerBotPhysicalState> minerPhysicalLookup, ComponentLookup<LocalTransform> researchTransformLookup, ComponentLookup<LinearMotion> researchMotionLookup, EntityCommandBufferWrapper cb)` |  |
 | `public static void MoveStation(float3 direction, float speed, fp dt, float maxSpeedOrDistanceToTarget, DynamicBuffer<StationGridItem> stationGridItems, ComponentLookup<LocalTransform> localTransformLookup, EntityCommandBufferWrapper cb)` |  |
@@ -107,6 +143,8 @@ public static class MobileStationUtils
 | `public static bool TryClaimLandingZone(DynamicBuffer<StationGridItem> stationGridItems, NativeArray<Placeable> newPlaceables, NativeParallelHashMap<int3, Entity> entityMap)` | Attempts to claim the landing footprint described by `newPlaceables` (the already-computed landing-position placeables for every station grid item, in buffer order) in the entity map. If any target tile is occupied by an entity outside this station, nothing is claimed and false is returned. |
 | `public static bool TryDuplicateStop(DynamicBuffer<HaulerStop> stops, int index, int newStopIdentifier, ref Hauler hauler)` | Inserts a copy of the stop at `index` directly after it, so a route that has to pass the same point on the way out and on the way back only needs the point entered once. The copy gets its own `newStopIdentifier`: `StopGotDeletedFromHauler` recognises the stop a station is currently flying to by identifier, so two stops sharing one would make a deleted stop look alive. |
 | `public static bool TryGetLandingZoneHeadedFor(Hauler hauler, DynamicBuffer<HaulerStop> stops, out Entity zone)` | The landing zone a station's current stop was resolved to, when that stop is a scheduled Land stop: the zone the station is flying to, waiting at or docked on. False for a coordinate stop, a move-now or land-now, and a stop that was replaced since the pick (`Hauler.CurrentStopEntity` then still names the zone of the old one). |
+| `public static Direction TurnFrom(Direction from, Direction facing)` | The turn from `from` to `facing`: `Turned` undone. |
+| `public static Direction Turned(Direction facing, Direction turn)` | `facing` turned clockwise by `turn` (Up: not at all). |
 | `public static void UpdatePlaceable(int3 targetPosition, Direction desiredDirection, ref Placeable placeable, Placeable primaryMoverPlaceable)` |  |
 
 ## MoveableStructurePostConnectionSystem
@@ -160,4 +198,47 @@ public struct RocketAdapterFuelConsumerSystem.RocketAdapterFuelConsumerJob : IJo
 |---|---|
 | `public ComponentLookup<StationGrid> StationGridLookup` |  |
 | `public void Execute(in ArchetypeChunk chunk, int chunkIndexInQuery, bool useEnabledMask, in v128 chunkEnabledMask)` |  |
+
+## StationGhostRiderFollowSystem
+
+```csharp
+[UpdateInGroup(typeof(FFFixedDeletionGroup))]
+public struct StationGhostRiderFollowSystem : ISystem, ISystemCompilerGenerated
+```
+
+Carries the unbuilt ghosts riding a station in flight with its Command Core, once per heartbeat, after every station mover has run.
+
+| Member | Summary |
+|---|---|
+| `public void OnCreate(ref SystemState state)` |  |
+| `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnUpdate(ref SystemState state)` |  |
+
+## StationGhostRiderOrphanSystem
+
+```csharp
+[UpdateInGroup(typeof(FFFixedLateGroup))]
+public struct StationGhostRiderOrphanSystem : ISystem, ISystemCompilerGenerated
+```
+
+A ghost riding a station that no longer carries it. The touchdown sets a rider down with its station (`MobileStationDockingSystem`), so this is for a station that ends its flight some other way: Its Command Core is destroyed or deleted (a black hole, a deleted core): the ghost is cancelled, as a ghost whose spot is gone is. It has nowhere to be built.
+
+| Member | Summary |
+|---|---|
+| `public void OnCreate(ref SystemState state)` |  |
+| `public void OnCreateForCompiler(ref SystemState state)` |  |
+| `public void OnUpdate(ref SystemState state)` |  |
+
+## StationLockOperations
+
+```csharp
+public static class StationLockOperations
+```
+
+The station lock switch, applied by the `SetStationLocked` hauler command on every peer during the heartbeat drain. It reads and writes simulation state only, and nothing it does depends on query order, so every peer ends with the same world.
+
+| Member | Summary |
+|---|---|
+| `public static int NextLockId(EntityManager em)` | One above every lineage id in the world, locks and hints alike, so a new lock never shares a lineage with an older station or with a ghost still waiting to be rebuilt. Read from the world, never from a counter kept in memory: a host that has been running and a client that just loaded its snapshot pick the same id. |
+| `public static void SetLocked(EntityManager em, Entity hauler, bool isLocked)` | Locking gives the station a lineage id and changes nothing else: the connections it already has stay (a lock blocks new connections only). Unlocking removes the lock and asks every landed structure of the station for a connections update, so a station unlocked while it sits flush against other buildings connects to them now, as an unlocked station landing there would have. |
 

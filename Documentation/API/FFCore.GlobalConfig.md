@@ -31,6 +31,7 @@ public struct CombatSettings
 | `public int EasySpawnRadius` |  |
 | `public int EnemyAttackChunkRadius` |  |
 | `public ushort EnemyChunkRadius` |  |
+| `public EnemyDamageZoneSettings EnemyDamageToPlayer` |  |
 | `public float EnemyDifficultyCoefficient` |  |
 | `public fp GameDifficultyCampGrowthSlopeFP` |  |
 | `public float HealthMultiplierDistanceCoefficient` |  |
@@ -44,6 +45,20 @@ public struct CombatSettings
 | `public int MinimumEnemiesNeededForAttack` |  |
 | `public int RequiredDistanceToActivePlayerChunks` |  |
 | `public fp StartZoneRadiusFP` |  |
+
+## EnemyDamageZoneSettings
+
+```csharp
+public struct EnemyDamageZoneSettings
+```
+
+how much harder enemies hit a player's own ship the further it ranges from home. Inside Haven the damage is unchanged; outside it is multiplied by `OutsideHavenMultiplier`, and at `DeepSpaceRadius` or more from the map centre by `DeepSpaceMultiplier` instead (a step: the deep multiplier is the total, not added to the outside one). Read by `FFCore.Map.EnemyDamageZones`.
+
+| Member | Summary |
+|---|---|
+| `public fp DeepSpaceMultiplier` |  |
+| `public fp DeepSpaceRadius` |  |
+| `public fp OutsideHavenMultiplier` |  |
 
 ## GlobalConfig
 

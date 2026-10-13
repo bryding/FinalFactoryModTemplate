@@ -290,6 +290,65 @@ One building of the ship a landing zone last saw land on it: which item, which t
 public struct NameUpdaterMarker : IComponentData, IQueryTypeParameter
 ```
 
+## StationCargo
+
+```csharp
+public static class StationCargo
+```
+
+what a station's wait conditions read from one of its cargo-hold buildings (the ones with `Stations.CargoHold`: Cargo Hold, Large, Provider, Requester, Networked Storage, Singularity Chest and Trash Can). MobileStationInStationStateSystem decides with it and the stop panel shows the same reading, so the two cannot disagree.
+
+| Member | Summary |
+|---|---|
+| `public static int CountOf(int item, in DynamicBuffer<InventorySlot> slots, in InventoryMetaData metaData)` |  |
+| `public static bool Counts(in DynamicBuffer<InventorySlot> slots, in InventoryMetaData metaData)` | Whether this hold counts toward "cargo holds full", "cargo holds empty" and item counts. A Trash Can does not (`InventoryOperationType.Destructive`): it destroys everything it is fed, so it never holds an item and is never full. Counted, it kept "cargo holds full" from ever passing on a station that carried one. |
+| `public static bool HasRoom(in DynamicBuffer<InventorySlot> slots, in InventoryMetaData metaData, NativeArray<AsteroItemConfigData> itemConfig, int stackSizeModifier)` | Whether an enabled primary slot of this hold can take more. Disabled slots never fill, so they do not count. |
+| `public static bool HoldsAnything(in DynamicBuffer<InventorySlot> slots, in InventoryMetaData metaData)` |  |
+
+## StationCargoReading
+
+```csharp
+public struct StationCargoReading
+```
+
+a station's counted cargo holds (`StationCargo.Counts`), summed.
+
+| Member | Summary |
+|---|---|
+| `public bool AnyItem` | Whether any counted hold holds an item. |
+| `public bool AnyRoom` | Whether any counted hold has an enabled slot that can take more. |
+| `public int Holds` | How many of the station's buildings count as cargo holds. |
+| `public readonly bool Empty { get; }` | "Cargo holds empty": no counted hold holds an item. A station with no cargo hold carries nothing, so it is empty. |
+| `public readonly bool Full { get; }` | "Cargo holds full": no counted hold can take more. A station with no cargo hold is never full; it can load nothing, and a stop that left it the moment it landed hid that its route was waiting on a hold it does not have (the stop panel says so on the row instead). |
+| `public void Add(in DynamicBuffer<InventorySlot> slots, in InventoryMetaData metaData, NativeArray<AsteroItemConfigData> itemConfig, int stackSizeModifier)` |  |
+
+## StationLock
+
+```csharp
+[Save]
+public struct StationLock : IComponentData, IQueryTypeParameter
+```
+
+A locked station: its structures form no station connection with a structure of another station, so it can land, or sit landed, flush against other buildings and keep exactly its own. Lives on the hauler, beside the other station settings (`Hauler.IsOn`, the route, the name); absent means unlocked, which is how every station starts and how every save written loads.
+
+| Member | Summary |
+|---|---|
+| `public int LockId` |  |
+
+## StationLockHint
+
+```csharp
+[Save]
+public struct StationLockHint : IComponentData, IQueryTypeParameter
+```
+
+Which locked station a structure that has no station yet came from: the replacement of an upgraded structure (`ConstructionBotTaskSystem.SwapStation`) and the ghost a destroyed one leaves (`PlaceableDeletionSystem`), when the structure belonged to a locked station.
+
+| Member | Summary |
+|---|---|
+| `public int LockId` |  |
+| `public static bool TryCreateFor(Entity structure, ComponentLookup<HaulerReference> haulerReferences, ComponentLookup<StationLock> stationLocks, out StationLockHint hint)` | The hint a structure's replacement or ghost carries: false unless its station is locked. |
+
 ## StopCondition
 
 ```csharp
@@ -298,6 +357,8 @@ public struct StopCondition : INonExistable
 
 | Member | Summary |
 |---|---|
+| `public ItemCountComparison Comparison` | ItemCount only: how the cargo holds' count of `RequiredItem` meets `RequiredItemCount`. |
+| `public StopConditionJoin Join` | How this condition joins the one above it (`StopConditionJoin`); ignored on the first. |
 | `public fp MaxTime` |  |
 | `public int RequiredItem` |  |
 | `public int RequiredItemCount` |  |

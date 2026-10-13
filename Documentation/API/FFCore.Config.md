@@ -901,6 +901,7 @@ public struct WeaponConfig : IComponentData, IQueryTypeParameter
 | `public FixedString64Bytes ImpactName` |  |
 | `public int MaxRange` |  |
 | `public int MaxTurnDegrees` |  |
+| `public fp PlayerLeadFraction` | how far an enemy with this weapon leads a moving player when it fires, as a share of a full first-order intercept (0 = straight at the ship, 1 = where it will be if it holds course). Straight shots only: homing projectiles and beams ignore it. |
 | `[Obsolete("Use Unique name instead to identify the weapon and its effect.")] public ProjectileType ProjectileType` |  |
 | `public float ShotCooldown` |  |
 | `public fp ShotCooldownFp` |  |
@@ -981,6 +982,7 @@ public struct WorldObjectConfigDataBlittable
 | `public bool IsIrregular` |  |
 | `public int ItemIdentifier` |  |
 | `public float MinDistanceFromStart` |  |
+| `public int NeighbourClearance` |  |
 | `public fp ProbabilityChildrenSpawn` |  |
 | `public RotationRandomization RotationRandomization` |  |
 | `public ScaleConfig ScaleRange` |  |

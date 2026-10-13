@@ -245,6 +245,8 @@ public struct RoundRobinOutputToConnectorSystem.RoundRobinOutputToConnectorJob :
 | `public BufferTypeHandle<InventorySlot> InventorySlotTypeHandleRW` |  |
 | `public BufferTypeHandle<InventoryUpdateNotifier> InventoryUpdateNotifierTypeHandleRW` |  |
 | `public NativeArray<AsteroItemConfigData> ItemConfigs` |  |
+| `public ComponentTypeHandle<JunctionSidePriority> JunctionSidePriorityTypeHandleRW` |  |
+| `public ComponentTypeHandle<JunctionTurns> JunctionTurnsTypeHandleRW` |  |
 | `public ComponentLookup<LocalTransform> LocalTransformLookup` |  |
 | `public ComponentTypeHandle<InventoryMetaData> MetaDataTypeHandleRO` |  |
 | `public BufferTypeHandle<ModuleOutputConnection> ModuleOutputConnectionTypeHandleRO` |  |

@@ -156,6 +156,19 @@ public struct MoveableStructureControllerStateData : IComponentData, IQueryTypeP
 public struct RideableStructure : IComponentData, IQueryTypeParameter
 ```
 
+## StationGhostRider
+
+```csharp
+[Save]
+public struct StationGhostRider : IComponentData, IQueryTypeParameter
+```
+
+An unbuilt ghost riding a mobile station in flight (, Lothsahn: "Parts that haven't been built yet (ghosts) should move and fly with the station to get built at the destination").
+
+| Member | Summary |
+|---|---|
+| `public Entity Core` |  |
+
 ## StationMoverStructure
 
 ```csharp

@@ -24,6 +24,8 @@ public struct CometCatcherSystem : ISystem, ISystemCompilerGenerated
 
 | Member | Summary |
 |---|---|
+| `public const int SpawnHeight = 500` | The height above its catcher a caught comet appears at, on the parabola. |
+| `public static int GetCometXFixedPoint(float y)` |  |
 | `public static float3 GetNextCoordinate(int nextX)` |  |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
@@ -42,6 +44,36 @@ public struct CometCatcherTransferSystem : ISystem, ISystemCompilerGenerated
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |
 
+## CometLane
+
+```csharp
+public static class CometLane
+```
+
+Where a caught comet flies on its way into a Comet Catcher and what it destroys on the way, worked out ahead of time from the simulation's own steps: the spawn point and parabola of `CometCatcherSystem`, the per-heartbeat step and the lethal height band of `CometMoverSystem`, and the comet's vision range, a sphere around its pivot (`KnnSystem` keeps the 8 nearest within the range, 3D, pivot to piv…
+
+| Member | Summary |
+|---|---|
+| `public const float DefaultVisionRange = 55` | The comet's vision range when its prefab cannot be read: CometCore.prefab's KnnFleetVision authoring, 55. |
+| `public const int MaxTicks = 4096` | Room for two candidate centres per heartbeat of a dive at up to 64 heartbeats a second. |
+| `public static bool Extent(CometLane.Tick[] ticks, int count, float radius, float height, out float min, out float max)` | The forward span of the danger zone for pivots at `height`; false when it has none. |
+| `public static float HalfWidth(CometLane.Tick[] ticks, int count, float radius, float forward, float height)` | Half the width of the danger zone at `forward` for pivots at `height`; 0 outside it. |
+| `public static bool IsInDanger(CometLane.Tick[] ticks, int count, float radius, float forward, float lateral, float height)` | Whether something with its pivot at this lane-frame point is destroyed by the dive (the 8-nearest cap aside). |
+| `public static int Trace(fp dt, float catcherWorldY, CometLane.Tick[] ticks)` | Fills `ticks` with the candidate kill-sphere centres of every heartbeat of a dive at heartbeat length `dt` into a catcher standing at world height `catcherWorldY`, and returns how many there are. |
+
+## CometLane.Tick
+
+```csharp
+public struct CometLane.Tick
+```
+
+A candidate centre of one heartbeat's kill sphere and whether that heartbeat kills.
+
+| Member | Summary |
+|---|---|
+| `public float2 Centre` | x forward, y height, in the lane frame. |
+| `public bool Lethal` |  |
+
 ## CometMoverSystem
 
 ```csharp
@@ -51,6 +83,12 @@ public struct CometMoverSystem : ISystem, ISystemCompilerGenerated
 
 | Member | Summary |
 |---|---|
+| `public const int InitialSlowdownDistance = 20000` | Below this CurrentPoopX the comet was meant to slow down; the int division makes it at most 1 slower. |
+| `public const float LethalHeightMax = 60` |  |
+| `public const float LethalHeightMin = 2` | A comet kills only while its world height is strictly between these (`IsLethalHeight`). |
+| `public const int PoopSpeed = 80000` | How fast a caught comet runs down its parabola, in thousandths of a world unit of CurrentPoopX a second. |
+| `public static bool IsLethalHeight(float y)` | Whether a comet at world height `y` destroys what its vision holds. |
+| `public static int NextPoopX(int currentPoopX, fp dt)` | The comet's CurrentPoopX one heartbeat of `dt` later (negative: it has arrived). |
 | `public void OnCreate(ref SystemState systemState)` |  |
 | `public void OnCreateForCompiler(ref SystemState state)` |  |
 | `public void OnUpdate(ref SystemState systemState)` |  |

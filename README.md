@@ -13,8 +13,9 @@ Questions? Ask in the [Final Factory Discord](https://discord.gg/finalfactory) `
 
 1. **Clone the repo** (use `git clone` — downloading the zip does not work because of Git LFS).
 2. **Copy the game DLLs into the project — before opening it in Unity.** The project references the game's assemblies, so they must exist the first time the editor opens:
-   * Rename `finalfactory.properties.template` to `finalfactory.properties`, then edit it and set `FinalFactoryDir` to your Final Factory install folder (the one containing `finalfactory_Data`). Use forward slashes; they work on Windows too.
-     * Steam example: `FinalFactoryDir=C:/Program Files (x86)/Steam/steamapps/common/FinalFactory`
+   * Rename `finalfactory.properties.template` to `finalfactory.properties`, then edit it and set `FinalFactoryDir` to your Final Factory install folder (the one containing `finalfactory_Data` on Windows, or `finalfactory.app` on macOS). Use forward slashes; they work on Windows too.
+     * Steam example (Windows): `FinalFactoryDir=C:/Program Files (x86)/Steam/steamapps/common/FinalFactory`
+     * Steam example (macOS): `FinalFactoryDir=/Users/<you>/Library/Application Support/Steam/steamapps/common/FinalFactory`
      * If you build the game locally, point it at your build output instead.
    * Run the copy script from the project root:
      * Windows: `copy-finalfactory-dlls.cmd` (double-click it, or run it from a terminal)

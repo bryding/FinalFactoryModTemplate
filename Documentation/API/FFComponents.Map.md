@@ -259,11 +259,13 @@ public struct FFGrid : IComponentData, IQueryTypeParameter
 
 | Member | Summary |
 |---|---|
+| `public const int ChunkMapCapacity = 2000000` | The chunk maps' capacity in a game. ChunkCheckingSystem fills them through ParallelWriters, which cannot grow, so they are sized for the biggest world up front. |
 | `public NativeParallelMultiHashMap<int2, Entity> EnemySpawnerChunkMap` |  |
 | `public NativeParallelHashMap<int3, Entity> EntityMap` |  |
 | `public NativeParallelHashMap<Entity, Placeable> EntityPlaceableMap` |  |
 | `public NativeParallelMultiHashMap<int2, Entity> FriendlyChunkMap` |  |
 | `public static void CreateGrid()` |  |
+| `public static void CreateGrid(int chunkMapCapacity)` | The grid with chunk maps of `chunkMapCapacity`. EcsTestBase builds one for every test: at the game's capacity the two maps are about 100 MB to allocate, clear and free each time, 69% of a test world's setup and teardown. A map that overflows still throws "HashMap is full". |
 | `public void Dispose()` |  |
 
 ## IrregularPlaceableTile

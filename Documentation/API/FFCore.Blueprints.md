@@ -77,6 +77,7 @@ public struct BlueprintMetaItem : IBufferElementData
 | `public int InserterMaxRangeTiles` |  |
 | `public bool IsLandCommand` |  |
 | `public FixedString128Bytes ItemName` |  |
+| `public int JunctionSideLevels` |  |
 | `public int Length` |  |
 | `public Color LightColor` |  |
 | `public bool LightSwitchedOff` |  |
@@ -128,6 +129,7 @@ public class BlueprintMetaItemManaged : IEquatable<BlueprintMetaItemManaged>
 | `public bool HasLightColor` |  |
 | `public int InserterMaxRangeTiles` |  |
 | `public string ItemName` |  |
+| `public int JunctionSideLevels` |  |
 | `public int Length` |  |
 | `public Color LightColor` |  |
 | `public bool LightSwitchedOff` |  |

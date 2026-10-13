@@ -20,13 +20,16 @@ if [[ -z "${dir:-}" ]]; then
   exit 1
 fi
 
-# Accept either the install root (contains finalfactory_Data/Managed) or the Managed folder itself.
+# Accept the install root on Windows/Linux (contains finalfactory_Data/Managed), the install root on macOS
+# (contains finalfactory.app, whose DLLs are in Contents/Resources/Data/Managed), the .app itself, or the
+# Managed folder itself. Same list as Tools/lib/unity-env.sh.
 managed=""
-for candidate in "$dir/finalfactory_Data/Managed" "$dir"; do
+for candidate in "$dir/finalfactory_Data/Managed" "$dir" "$dir"/*.app/Contents/Resources/Data/Managed \
+  "$dir/Contents/Resources/Data/Managed"; do
   if [[ -f "$candidate/FFCore.dll" ]]; then managed="$candidate"; break; fi
 done
 if [[ -z "$managed" ]]; then
-  echo "Could not find FFCore.dll under '$dir'. Point FinalFactoryDir at your Final Factory install folder (the one containing finalfactory_Data)." >&2
+  echo "Could not find FFCore.dll under '$dir'. Point FinalFactoryDir at your Final Factory install folder: the one containing finalfactory_Data (Windows, Linux) or finalfactory.app (macOS)." >&2
   exit 1
 fi
 
