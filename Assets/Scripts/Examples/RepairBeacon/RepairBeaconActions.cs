@@ -2,7 +2,6 @@ using System;
 using FFCore.Extensions;
 using NetworkOperations.Settings;
 using Unity.Entities;
-using UnityEngine;
 
 namespace Examples.RepairBeacon
 {
@@ -12,18 +11,18 @@ namespace Examples.RepairBeacon
   ///   the host checks and every peer applies on the same heartbeat. Single player goes through the same
   ///   path, so there is one code path to test.
   ///   <para>
-  ///     The game has no dedicated mod API for this yet. The route that works today is the game's
-  ///     SetStructureSetting operation with a setting kind of your own: register an applier on every peer
-  ///     (<see cref="Register" />, called from PostInitializationHook), then send with
-  ///     <see cref="StructureSettingsDispatch.DispatchSetting(StructureSettingKind, Entity, object)" />.
-  ///     These types live in FFSpaghetti.dll, outside the documented mod API, so a game update can change
-  ///     them. Pick your own kind number: see CLAUDE.md, "Player actions".
+  ///     The supported route is <see cref="ModActions" /> (game 0.50.0.103 and later): register an action on every peer
+  ///     (<see cref="Register" />, called from PostInitializationHook, which runs once at startup before any game
+  ///     starts), then send it with <see cref="ModActions.Send{TPayload}" />. See CLAUDE.md, "Player actions".
   ///   </para>
   /// </summary>
   public static class RepairBeaconActions
   {
-    /// <summary>This example's kind. The game's own kinds are small numbers; use a block no other mod uses.</summary>
-    public const StructureSettingKind SetEnabledKind = (StructureSettingKind)47001;
+    /// <summary>Your mod's ID (<c>IUserMod.ID</c>): the action's wire kind is derived from it.</summary>
+    public const string ModId = "RandomMovementExample";
+
+    /// <summary>This example's action number, 0 to 255, one per kind of action your mod sends.</summary>
+    public const int SetEnabledAction = 1;
 
     [Serializable]
     public class SetEnabledPayload
@@ -33,23 +32,21 @@ namespace Examples.RepairBeacon
 
     public static void Register()
     {
-      StructureSettingAppliers.Register(SetEnabledKind, new StructureSettingApplier
-      {
-        // Validate and Apply run on every peer, on the heartbeat. They must give the same answer everywhere
-        // (read only the target's components and the payload; no local player, camera, time or randomness)
-        // and must never throw.
-        Validate = (target, innerJson) => Ecs.HasComponent<RepairBeacon>(target) && TryRead(innerJson, out _),
-        Apply = (target, innerJson) =>
+      // Validate and Apply run on every peer, on the heartbeat. They must give the same answer everywhere
+      // (read only the target's components and the payload; no local player, camera, time or randomness)
+      // and must not throw: an exception is caught and logged, and the action is skipped on that peer.
+      ModActions.Register<SetEnabledPayload>(ModId, SetEnabledAction,
+        validate: (target, payload) => Ecs.HasComponent<RepairBeacon>(target),
+        apply: (target, payload) =>
         {
-          if (!TryRead(innerJson, out var payload) || !Ecs.TryGetComponent(target, out RepairBeacon beacon))
+          if (!Ecs.TryGetComponent(target, out RepairBeacon beacon))
           {
             return;
           }
 
           beacon.Enabled = payload.Enabled;
           Ecs.SetComponent(target, beacon);
-        }
-      });
+        });
     }
 
     /// <summary>
@@ -58,22 +55,7 @@ namespace Examples.RepairBeacon
     /// </summary>
     public static void RequestEnabled(Entity beacon, bool enabled)
     {
-      StructureSettingsDispatch.DispatchSetting(SetEnabledKind, beacon, new SetEnabledPayload { Enabled = enabled });
-    }
-
-    private static bool TryRead(string innerJson, out SetEnabledPayload payload)
-    {
-      payload = null;
-      try
-      {
-        payload = JsonUtility.FromJson<SetEnabledPayload>(innerJson);
-      }
-      catch (Exception)
-      {
-        return false;
-      }
-
-      return payload != null;
+      ModActions.Send(ModId, SetEnabledAction, beacon, new SetEnabledPayload { Enabled = enabled });
     }
   }
 }

@@ -112,6 +112,7 @@ Class that loads mods. All methods and member variables are Static because all e
 |---|---|
 | `public static bool AnyModsActive { get; }` | Whether this player counts as modded, which keeps them out of multiplayer: some mod's code is loaded in this process, or a switched-on mod is installed and would load on the next start. An empty or broken folder, or a switched-off mod, does not count. |
 | `public static IReadOnlyDictionary<string, string[]> ApiWarnings { get; }` |  |
+| `public static IReadOnlyDictionary<string, string[]> DependencyProblems { get; }` |  |
 | `public static IReadOnlyDictionary<string, LoadedModInfo> DisabledModInfo { get; }` | Folders under `ModPath` skipped at startup because they are switched off (`ModEnablement`), keyed by lowercased ID like `ModInfo`. Read from the manifest where there is one, so the Mods menu can list them and switch them back on. |
 | `public static IReadOnlyDictionary<IUserModLoader, LoadedModInfo> LoaderToInfoMap { get; }` |  |
 | `public static bool ModDictionaryIsStale { get; }` |  |

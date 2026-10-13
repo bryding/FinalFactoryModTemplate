@@ -6352,6 +6352,7 @@ FFCore.Modding.ModLoadException :: public static string GetEnglishTemplate(ModSt
 FFCore.Modding.ModLoader :: public class ModLoader : SingletonMono<ModLoader>
 FFCore.Modding.ModLoader :: public static bool AnyModsActive { get; }
 FFCore.Modding.ModLoader :: public static IReadOnlyDictionary<string, string[]> ApiWarnings { get; }
+FFCore.Modding.ModLoader :: public static IReadOnlyDictionary<string, string[]> DependencyProblems { get; }
 FFCore.Modding.ModLoader :: public static IReadOnlyDictionary<string, LoadedModInfo> DisabledModInfo { get; }
 FFCore.Modding.ModLoader :: public static IReadOnlyDictionary<IUserModLoader, LoadedModInfo> LoaderToInfoMap { get; }
 FFCore.Modding.ModLoader :: public static bool ModDictionaryIsStale { get; }
@@ -11540,6 +11541,13 @@ FFTechnology.TechnologiesResearched :: public delegate TechnologiesResearched
 FFTechnology.TechnologiesResearched :: public TechnologiesResearched(object @object, IntPtr method)
 FFTechnology.TechnologiesResearched :: public virtual IAsyncResult BeginInvoke(IReadOnlyList<TechnologyConfig> technologies, AsyncCallback callback, object @object)
 FFTechnology.TechnologiesResearched :: public virtual void EndInvoke(IAsyncResult result)
+NetworkOperations.Settings.ModActions :: public static class ModActions
+NetworkOperations.Settings.ModActions :: public const int ApiVersion = 1
+NetworkOperations.Settings.ModActions :: public const int FirstModKind = 1000000
+NetworkOperations.Settings.ModActions :: public const int MaxActionId = 255
+NetworkOperations.Settings.ModActions :: public static StructureSettingKind KindFor(string modId, int actionId)
+NetworkOperations.Settings.ModActions :: public static StructureSettingKind Register<TPayload>(string modId, int actionId, Func<Entity, TPayload, bool> validate, Action<Entity, TPayload> apply) where TPayload : new()
+NetworkOperations.Settings.ModActions :: public static void Send<TPayload>(string modId, int actionId, Entity target, TPayload payload)
 NetworkOperations.Settings.StructureSettingApplier :: public sealed class StructureSettingApplier
 NetworkOperations.Settings.StructureSettingApplier :: public Action<Entity, string> Apply
 NetworkOperations.Settings.StructureSettingApplier :: public Func<Entity, string, bool> Validate

@@ -152,24 +152,29 @@ components the game reads.
 ## Player actions (network operations)
 
 A click must not change the world directly: send it as a network operation, which the host checks and
-every peer applies on the same heartbeat (single player goes through the same path). The game has no
-dedicated mod API for this yet; the route that works today is its `SetStructureSetting` operation with a
-setting kind of your own. `Assets/Scripts/Examples/RepairBeacon/RepairBeaconActions.cs` is the
-worked example:
+every peer applies on the same heartbeat (single player goes through the same path). The supported route
+(game 0.50.0.103 and later, `NetworkOperations.Settings.ModActions`, `ModActions.ApiVersion` = 1) is a pair of
+calls; `Assets/Scripts/Examples/RepairBeacon/RepairBeaconActions.cs` is the worked example:
 
-- In `PostInitializationHook` (runs on every peer), register an applier:
-  `StructureSettingAppliers.Register((StructureSettingKind)N, new StructureSettingApplier { Validate, Apply })`.
-- From UI, send: `StructureSettingsDispatch.DispatchSetting(kind, buildingEntity, payload)`. The payload
-  is any `[Serializable]` class (it travels as JSON).
-- `Validate` and `Apply` run on every peer and must be deterministic (read only the target's components
-  and the payload) and must never throw. The target is found by grid tile, so it must be a building
-  (`Placeable`); `Apply` may also change other entities, deterministically.
+- In `PostInitializationHook` (runs once at startup on every peer, before any game starts), register the
+  action: `ModActions.Register<TPayload>(modId, actionId, validate, apply)`. `modId` is your `IUserMod.ID`,
+  `actionId` a number 0 to 255 you choose per kind of action; the pair gives the action its wire kind, the
+  same on every peer. It throws at startup if that kind is already taken (the same action registered twice,
+  or a hash collision with another mod: pick another number).
+- From UI, send: `ModActions.Send(modId, actionId, buildingEntity, payload)`. The payload is a `[Serializable]`
+  class of fields Unity's `JsonUtility` can write (it travels as JSON).
+- `validate` and `apply` run on every peer and must be deterministic (read only the target's components, the
+  game's config and the payload; nothing local to the peer: camera, local player, wall clock, random numbers,
+  entity handle values). `validate` returns false to refuse (the host drops the request); an exception in
+  either is caught and logged and the action is skipped on that peer, which is a desync, so do not throw.
+  The target is found by grid tile, so it must be a building (`Placeable`); `apply` may also change other
+  entities, deterministically.
 - The UI only reads; it shows the new state about one heartbeat after the click.
-- Pick a kind block of your own: the game's kinds are small numbers (0-16 today); the example uses
-  47001. Known mod blocks: 48200-48499 (Gherik's mods).
-- These types live in `FFSpaghetti.dll`, which is outside the documented mod API: a game update can
-  change them. `Documentation/API/NetworkOperations.Settings.md` has their signatures.
-- The applier is not told which player sent the action, so per-player state is not possible this way.
+- The action is not told which player sent it, so per-player state is not possible this way.
+- A break in this surface moves `ModActions.ApiVersion` and is announced in the game's release notes
+  ("API changes"); `Documentation/API/NetworkOperations.Settings.md` has the signatures. Mods written before
+  it (Gherik's, with their own kind numbers and `StructureSettingAppliers`) keep working: the game's own kinds
+  are below 1,000,000, and `ModActions` kinds start at 1,000,000.
 
 Note: the game currently turns multiplayer off while any mod is enabled. Following these rules is what
 lets a mod work in multiplayer once the game allows mods there; it also keeps single player correct (the

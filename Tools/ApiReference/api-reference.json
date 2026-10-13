@@ -18,6 +18,8 @@
         "NetworkOperations.Settings.StructureSettingApplier",
         "NetworkOperations.Settings.StructureSettingsDispatch",
         "NetworkOperations.Settings.StructureSettingKind",
+        // The supported player-action API for mods (game 0.50.0.103 and later).
+        "NetworkOperations.Settings.ModActions",
         // Examples/ChangeTechnology edits the game's loaded technologies from PostInitializationHook.
         "Behaviours.Research.TechnologyLoader"
       ]
