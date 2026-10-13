@@ -15,7 +15,12 @@
         "FFComponents.dll",
         "FFSystems.dll",
         "FFTechnology.dll",
-        "FFNetcode.dll"
+        "FFNetcode.dll",
+        "FFInput.dll",
+        "FFConfiguration.dll",
+        "System.Collections.Immutable.dll",
+        "System.Reflection.Metadata.dll",
+        "System.Reflection.MetadataLoadContext.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

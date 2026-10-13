@@ -57,5 +57,17 @@ for %%D in (FFCore.dll FFSystems.dll FFComponents.dll FFTechnology.dll FFNetcode
   set /a COUNT+=1
 )
 
+REM What FFSpaghetti.dll and FFCore.dll load in turn (w1227: 0.50.0.103 added FFInput, FFConfiguration and
+REM System.Reflection.Metadata, and the template stopped building). A game version without one skips it.
+for %%D in (FFInput.dll FFConfiguration.dll FFTests.dll GraphAndChart.dll Graphy.dll QFSW.QC.dll FMODUnity.dll Unity.Physics.Custom.dll System.Collections.Immutable.dll System.Reflection.Metadata.dll System.Reflection.MetadataLoadContext.dll) do (
+  if exist "%MANAGED%\%%D" (
+    copy /y "%MANAGED%\%%D" "%DEST%\%%D" >nul
+    echo Copied %%D
+    set /a COUNT+=1
+  ) else (
+    echo Note: %%D is not in "%MANAGED%" - this game version does not have it; skipped
+  )
+)
+
 echo Done. Copied %COUNT% DLLs to "%DEST%"
 endlocal

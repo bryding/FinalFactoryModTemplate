@@ -223,6 +223,10 @@ namespace Editor
         var managedDest = Path.Combine(modFolder, $"{modInfo.ID}.dll");
         FileUtil.CopyFileOrDirectory(managedSrc, managedDest);
 
+        // NOTE (w1227): this tests a path relative to the editor's working folder, so it never finds the library and no mod
+        // has shipped <ID>_win_x86_64.dll. Do NOT "fix" it without reading the Burst section of CLAUDE.md: a mod's Burst
+        // library carries a second copy of the game's own Burst code (504 FFSystems references, measured), and the game
+        // crashed at world creation when it loaded one (Windows player 0.50.0.103, burst.initialize.statics).
         string srcBurstDll = $"{modNamePlaceholder}_Data/Plugins/x86_64/lib_burst_generated.dll";
         // Copy Burst library
         if (File.Exists(srcBurstDll))

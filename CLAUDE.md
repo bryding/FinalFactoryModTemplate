@@ -139,7 +139,13 @@ components the game reads.
 11. **Ordering**: `UpdateBefore`/`UpdateAfter` are fine. Avoid `OrderFirst`/`OrderLast`; the one
     exception is running before a game system that is itself `OrderFirst` (the game's `KnnSystem` in
     `FFFixedEarlyGroup` refreshes vision first thing on the heartbeat), and then say why in a comment.
-12. **Burst**: keep systems `[BurstCompile]`-compatible (unmanaged types in jobs).
+12. **Burst**: keep systems `[BurstCompile]`-compatible (unmanaged types in jobs). **Burst for mods is not
+    supported yet**: `ProjectSettings/BurstAotSettings_StandaloneWindows.json` keeps
+    `EnableBurstCompilation` off, so a built mod is plain C# (Mono) and `<ID>_win_x86_64.dll` is never produced. A
+    mod's Burst library carries a second copy of the game's own Burst code (504 `FFSystems` references in the first
+    one; Burst's disabled-assemblies list did not remove them), and the game crashed at world creation when it loaded
+    one (Windows player 0.50.0.103, in `burst.initialize.statics`, w1227). The game loads such a library if it finds
+    one (`ModLoader.LoadMod`), so do not switch Burst on or "fix" `ScriptBatch.cs`'s Burst copy until that is solved.
 
 `Tools/check-mp-safety.sh` catches the common breaks; it is no substitute for reading this list.
 
