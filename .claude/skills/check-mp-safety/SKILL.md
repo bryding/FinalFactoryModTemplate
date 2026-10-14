@@ -43,5 +43,6 @@ For each system or UI file you changed, answer with a file:line:
 ## 3. Report
 
 Say which rules you checked and how (file:line), what you fixed, and what still needs a run in the
-game. You cannot test multiplayer itself from here: the game currently turns multiplayer off while
-mods are enabled.
+game. Then set `Multiplayer` in `Assets/Scripts/UserMod.cs`: `MultiplayerCompatibility.Compatible` only
+when the scanner is clean and every rule above holds, `Incompatible` when the mod breaks one on purpose.
+You cannot test multiplayer itself from here: it needs two copies of the game with the same mods.

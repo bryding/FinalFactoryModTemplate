@@ -150,9 +150,10 @@ debug — the game diverges silently and the session eventually drops.
    transforms, `LocalToWorld`, animation state, camera) is presentation; a simulation system that reads it imports
    non-determinism.
 
-`CLAUDE.md` has the full list with the reasons, and `Tools/check-mp-safety.sh` scans for the common breaks.  The
-game currently turns multiplayer off while any mod is enabled, so these rules are what make a mod ready for the
-day it allows mods there.
+`CLAUDE.md` has the full list with the reasons, and `Tools/check-mp-safety.sh` scans for the common breaks.  Players
+with the same mods can play multiplayer together; say whether yours follows these rules with
+`IUserMod.Multiplayer` (`Compatible`, `Incompatible`, or left out, which makes the game warn before every
+multiplayer game).
 
 ## Entity Lifecycle & Deletion
 
