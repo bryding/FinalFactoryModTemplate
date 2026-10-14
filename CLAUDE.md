@@ -60,7 +60,9 @@ or the asset bundle: build in Unity and test in the game for those (below).
 - Exactly one `IUserMod` per mod (`Assets/Scripts/UserMod.cs`): `ID` (letters, digits,
   underscores — no spaces; it's the folder + workshop identity), `FullName`,
   `Description`, `Author`, `EmailContact`, `Website`, `Dependencies` (other mod IDs),
-  `ModVersion` (`FFVersion`).
+  `ModVersion` (`FFVersion`), and `Multiplayer` (`MultiplayerCompatibility.Compatible` or
+  `Incompatible`; see "Multiplayer and determinism"). `Multiplayer` has a default (`Undeclared`), so a
+  mod may leave it out, and a mod built before it existed still loads.
 - Optionally one `IUserModLoader` (`Assets/Scripts/UserModLoader.cs`). The game calls, in order:
   `DefineEntityConfigs()` (new items/ships/buildings) → `AddTechnologies()` →
   `PostInitializationHook()` (once at startup, on every peer: edit any config or prefab, register
@@ -171,13 +173,27 @@ worked example:
   change them. `Documentation/API/NetworkOperations.Settings.md` has their signatures.
 - The applier is not told which player sent the action, so per-player state is not possible this way.
 
-Note: the game currently turns multiplayer off while any mod is enabled. Following these rules is what
-lets a mod work in multiplayer once the game allows mods there; it also keeps single player correct (the
+**Declare it in `UserMod.cs`.** Players with the same mods (same versions, same files) can play
+multiplayer together. Before a host starts or a player joins, the game reads each running mod's
+`IUserMod.Multiplayer`:
+
+- `MultiplayerCompatibility.Compatible`: you followed the rules above and `Tools/check-mp-safety.sh` is
+  clean. No warning; the Mods menu shows a green MP badge.
+- `MultiplayerCompatibility.Incompatible`: the mod breaks a rule on purpose (it reads the local player or
+  the camera in simulation, keeps state only on one machine, ...). The game refuses to host or join while
+  it runs and names it; red No MP badge.
+- Left out (`Undeclared`): the game warns before every multiplayer game and lets the player go on; grey
+  MP? badge. Every mod built before the flag existed is in this group.
+
+The build writes the value into the mod's `manifest.properties` (`Multiplayer=Compatible`), which is what
+the Mods menu reads for a mod that is switched off. Declaring `Compatible` is your word, not a check: a
+mod that breaks a rule still desyncs every game it is in. The rules also keep single player correct (the
 simulation runs at 16 heartbeats a second regardless of frame rate).
 
 ## Starting your own mod from this template
 
-1. `Assets/Scripts/UserMod.cs`: your `ID` (letters, digits, underscores), name, author, version.
+1. `Assets/Scripts/UserMod.cs`: your `ID` (letters, digits, underscores), name, author, version, and
+   `Multiplayer` (keep `Compatible` only while `Tools/check-mp-safety.sh` is clean and the rules hold).
 2. Keep the examples until you have built your first feature: the skills point at them as models
    (`lothPrinter`, `RepairBeacon`, ...). Then remove what you do not need: the entity configs and
    technologies in `UserModLoader.cs` and the matching lines in `PostInitializationHook`/`OnGameStart`,

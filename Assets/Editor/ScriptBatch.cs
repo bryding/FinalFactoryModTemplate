@@ -333,6 +333,12 @@ namespace Editor
         file.WriteLine($"Dependency{x}={modInfo.Dependencies[x]}");
       }
       file.WriteLine($"ModVersion={modInfo.ModVersion}");
+      // The Mods menu reads it for a mod it has not loaded (switched off); a mod's code wins when both say.
+      var multiplayer = MultiplayerCompatibilityRules.ToManifestValue(modInfo.Multiplayer);
+      if (multiplayer != null)
+      {
+        file.WriteLine($"{MultiplayerCompatibilityRules.ManifestKey}={multiplayer}");
+      }
       //TODO: Need to get the version from somewhere in the main FinalFactory game
       file.WriteLine($"GameVersion={FFVersion.FinalFactoryVersion.ToString()}");
     }

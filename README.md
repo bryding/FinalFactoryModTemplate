@@ -60,6 +60,7 @@ string EmailContact { get; }
 string Website { get; }
 string[] Dependencies { get; }  // IDs of mods yours requires (empty array if none)
 FFVersion ModVersion { get; }   // your mod's version, e.g. new(1, 0, 20, 0)
+MultiplayerCompatibility Multiplayer { get; }  // Compatible or Incompatible; optional (left out = the game warns before multiplayer)
 ```
 
 Optionally, implement `IUserModLoader` to actually change the game (see `Assets/Scripts/UserModLoader.cs`):
@@ -95,7 +96,7 @@ Final Factory multiplayer runs the simulation in deterministic lockstep on every
 * Send player actions as network operations; UI only reads (see `Assets/Scripts/Examples/RepairBeacon/`).
 * Delete entities by adding `DeletionMarker`, never `DestroyEntity`.
 
-`CLAUDE.md` has the full rules with the reasons, and `Tools/check-mp-safety.sh` scans your code for the common breaks. The game currently turns multiplayer off while any mod is enabled; following these rules is what lets your mod work there once it doesn't, and keeps single player correct meanwhile.
+`CLAUDE.md` has the full rules with the reasons, and `Tools/check-mp-safety.sh` scans your code for the common breaks. Players with the same mods can play multiplayer together. Say whether yours works there with `Multiplayer` in `UserMod.cs`: `Compatible` (no warning), `Incompatible` (the game will not host or join while it runs), or leave it out (the game warns before every multiplayer game). The Mods menu shows it as a badge before the mod's name.
 
 ## Troubleshooting
 

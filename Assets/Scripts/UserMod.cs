@@ -13,4 +13,9 @@ public class UserMod : IUserMod
   public string[] Dependencies => Array.Empty<string>();
 
   public FFVersion ModVersion => new(1, 0, 20, 0);
+
+  // Whether this mod works in multiplayer. Compatible: every system follows CLAUDE.md's "Multiplayer and determinism"
+  // rules and Tools/check-mp-safety.sh is clean. Incompatible: the game will not host or join a multiplayer game while
+  // it runs. Leave it out and the game warns the players before every multiplayer game.
+  public MultiplayerCompatibility Multiplayer => MultiplayerCompatibility.Compatible;
 }
