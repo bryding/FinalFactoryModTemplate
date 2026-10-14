@@ -96,7 +96,7 @@ Final Factory multiplayer runs the simulation in deterministic lockstep on every
 * Send player actions as network operations; UI only reads (see `Assets/Scripts/Examples/RepairBeacon/`).
 * Delete entities by adding `DeletionMarker`, never `DestroyEntity`.
 
-`CLAUDE.md` has the full rules with the reasons, and `Tools/check-mp-safety.sh` scans your code for the common breaks. Players with the same mods can play multiplayer together. Say whether yours works there with `Multiplayer` in `UserMod.cs`: `Compatible` (no warning), `Incompatible` (the game will not host or join while it runs), or leave it out (the game warns before every multiplayer game). The Mods menu shows it as a badge after the mod's name.
+`CLAUDE.md` has the full rules with the reasons, and `Tools/check-mp-safety.sh` scans your code for the common breaks. Players with the same mods can play multiplayer together. Say whether yours works there with `Multiplayer` in `UserMod.cs`: `Compatible` (no warning), `Incompatible` (the game will not host or join while it runs), or leave it out (the game warns before every multiplayer game). The Mods menu shows it as a badge before the mod's name.
 
 ## Troubleshooting
 
