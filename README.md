@@ -83,6 +83,8 @@ void OnGameStart(Canvas inGameUiCanvas);  // when a new/loaded game starts: hook
 | `Assets/Scripts/Utils/ConfigUtils.cs` | A small helper for editing accepted-ship lists |
 | `Assets/Resources/` | How icons (`Icons/`) and entity prefabs (`ItemEntities/`) get into your mod's AssetBundle |
 
+**Map icons.** From the game build that carries w1488 (1.0), every building your mod adds gets a map and minimap icon by itself: a square the size of its footprint in its structure type's colour. To choose another, set the `EntityConfig`'s `MapIcon` (`new MapIconConfig { Kind = MapIconKind.Special }` for an accent, `{ Color = ... }` for a colour of your own, `{ Kind = MapIconKind.None }` for none). A prefab that already has its own renderer on the `MapObjects` layer keeps it, and gets no automatic icon. No plane needs to be placed in the prefab.
+
 New systems you write are auto-detected when the game loads your mod — no registration call needed. For how Final Factory's systems, groups, and update timing work (and the multiplayer determinism rules your systems must follow), read **`DOCUMENTATION.md`**.
 
 ## Multiplayer & determinism (read before writing a system)
