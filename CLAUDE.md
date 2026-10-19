@@ -202,6 +202,7 @@ simulation runs at 16 heartbeats a second regardless of frame rate).
 - **Find the children of your custom entities** (`Assets/Scripts/Examples/ChildEntities/`): names are gone in a built
   player, so walk the prefab's `LinkedEntityGroup` and pick a child by a component only it carries
   (`ChildEntities.ChildrenWith<T>`), in `PostInitializationHook`, on the prefab.
+- **Map icons** (game 1.0 on, w1488): a building gets its map and minimap square by itself, sized from its footprint and coloured by its structure type; set `EntityConfig.MapIcon` (`MapIconConfig`: `Kind` = `Auto`, `None`, `Production`, `Logistics`, `Storage`, `Power`, `Defense`, `Hull`, `Research`, `Special`, `Enemy`; `Color` with alpha above 0 replaces the kind's colour) to choose. A prefab with its own renderer on the `MapObjects` layer keeps it instead. Do not place a map plane in a prefab; only a custom-drawn icon needs one.
 - **Check names before the game does.** Recipe items, technology names and research types must be
   the game's exact English names. They are the `Key` column of
   `<Final Factory>/Localization/LocalizationMasterTable_en.csv`; grep it
