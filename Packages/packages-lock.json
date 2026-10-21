@@ -1,16 +1,5 @@
 {
   "dependencies": {
-    "com.akb.knn": {
-      "version": "https://github.com/bryding/KNN.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.burst": "1.1.2",
-        "com.unity.collections": "0.1.1-preview",
-        "com.unity.mathematics": "1.1.0"
-      },
-      "hash": "0cfac4e89632c35e503f60918f87c88476fdb9de"
-    },
     "com.coplaydev.unity-mcp": {
       "version": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#v10.0.0",
       "depth": 0,
