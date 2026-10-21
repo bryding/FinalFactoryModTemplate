@@ -353,7 +353,7 @@ when it or the line before carries a `// mp-safe: <reason>` comment.
 ## External Dependencies
 
 Notable packages (see `Packages/manifest.json`): `com.unity.entities` (+graphics),
-`com.unity.physics`, `com.unity.netcode.gameobjects`,
+`com.unity.netcode.gameobjects`,
 `com.nevergames.mathematics.fixedpoint` (`fp` determinism math),
 `com.nevergames.steamworks.facepunch`, `com.coplaydev.unity-mcp` (the MCP bridge).
 

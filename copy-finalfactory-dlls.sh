@@ -42,7 +42,7 @@ dlls=(FFCore.dll FFSystems.dll FFComponents.dll FFTechnology.dll FFNetcode.dll F
 # reader the mod loader uses). A mod's build links every assembly it can reach and stops at the first one it cannot find
 # (w1227: 0.50.0.103 added FFInput, FFConfiguration and System.Reflection.Metadata, and the template stopped building).
 # Not every game version has every one, so a missing one is skipped with a note.
-extras=(FFInput.dll FFConfiguration.dll FFTests.dll GraphAndChart.dll Graphy.dll QFSW.QC.dll FMODUnity.dll Unity.Physics.Custom.dll
+extras=(FFInput.dll FFConfiguration.dll FFTests.dll GraphAndChart.dll Graphy.dll QFSW.QC.dll FMODUnity.dll
         System.Collections.Immutable.dll System.Reflection.Metadata.dll System.Reflection.MetadataLoadContext.dll)
 for dll in "${dlls[@]}"; do
   if [[ ! -f "$managed/$dll" ]]; then

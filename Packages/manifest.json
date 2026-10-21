@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "com.akb.knn": "https://github.com/bryding/KNN.git",
     "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#v10.0.0",
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
     "com.nevergames.mathematics.fixedpoint": "https://github.com/bryding/Unity.Mathematics.FixedPoint.git",
@@ -18,7 +17,6 @@
     "com.unity.multiplayer.center": "1.0.1",
     "com.unity.netcode.gameobjects": "2.13.0",
     "com.unity.nuget.newtonsoft-json": "3.2.2",
-    "com.unity.physics": "1.4.6",
     "com.unity.render-pipelines.universal": "17.3.0",
     "com.unity.services.multiplayer": "2.2.4",
     "com.unity.timeline": "1.8.12",
